@@ -35,23 +35,23 @@ The first stage we learned in the software development life cycle is planning.
 
 
 ## Team Decision Documentation
-* Team communication: Teams channel, email as needed
+* **Team communication: Teams channel, email as needed**
 
-* Team Meeting Cadence:
+* **Team Meeting Cadence:**
 	* Tuesday in-person
 	* Thursday in-person (after class)
 
- * Extra feature ideas:
+ * **Extra feature ideas:**
 	* Adding tunnel system
  	* Game within Husky world
   		* Rugby game (sharing?)
     		* Rock Paper Scissors
     	* Video chat
  
- * Work Management:
+ * **Work Management:**
  	* (Tentatively) Jira
 
-  * How are we doing sharing?
+  * **How are we doing sharing?**
 
-  * Outstanding Questions and Answers:
+  * **Outstanding Questions and Answers:**
   	* What is the requirement for this world? What does it have to look like, if anything?
