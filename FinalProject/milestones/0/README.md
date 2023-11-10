@@ -40,6 +40,7 @@ The first stage we learned in the software development life cycle is planning.
 * **Team Meeting Cadence:**
 	* Tuesday in-person
 	* Thursday in-person (after class)
+ 	* [Team's General Availability (when2meet)](https://www.when2meet.com/?22327132-ScocN)
 
  * **Extra feature ideas:**
 	* Adding tunnel system
