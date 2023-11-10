@@ -16,7 +16,7 @@ The first stage we learned in the software development life cycle is planning.
 - Week 1 (11/6-11/10)
 	* **Nov 9** First meeting - Check -in 1
 - Week 2 (11/11-11/17)
- 	* Team Milestone: UML diagram
+ 	* [Team Milestone: UML diagram](https://lucid.app/lucidchart/c3f62138-e592-4cf6-a7d6-093ab9f3f5e9/edit?viewport_loc=-1822%2C-720%2C4967%2C2061%2CHWEp-vi-RSFO&invitationId=inv_cd37627a-d9c7-4ec9-8b74-c8c7a87012da)
 	* [Milestone 1 - Use Cases](../1)
 	* [Milestone 2 - Integration](../2)
 	* [Milestone 3 - Networking](../3)
