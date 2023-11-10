@@ -43,7 +43,14 @@ The first stage we learned in the software development life cycle is planning.
 * Team Meeting Cadence:
 	* Tuesday in-person
 	* Thursday in-person (after class)
- * Extra feature:
+ * Extra feature ideas:
 	* Adding tunnel system
+ 	* Game within Husky world
+  		* Rugby game (sharing?)
  * Work Management:
  	* (Tentatively) Jira
+
+  * How are we doing sharing?
+
+  * Outstanding Questions and Answers:
+  * 	- What does the world look like?
