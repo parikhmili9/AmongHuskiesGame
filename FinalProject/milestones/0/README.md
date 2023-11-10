@@ -49,6 +49,8 @@ The first stage we learned in the software development life cycle is planning.
 	* Adding tunnel system
  	* Game within Husky world
   		* Rugby game (sharing?)
+    		* Rock Paper Scissors
+    	* Video chat
  
  * Work Management:
  	* (Tentatively) Jira
