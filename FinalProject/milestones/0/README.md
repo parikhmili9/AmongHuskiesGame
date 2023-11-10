@@ -56,3 +56,4 @@ The first stage we learned in the software development life cycle is planning.
 
   * **Outstanding Questions and Answers:**
   	* What is the requirement for this world? What does it have to look like, if anything?
+   		* This is up to us. Doesn't need to look like Northeastern campus
