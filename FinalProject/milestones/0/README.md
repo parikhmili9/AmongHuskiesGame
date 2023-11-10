@@ -26,9 +26,9 @@ The first stage we learned in the software development life cycle is planning.
 - Week 4 (11/25-12/1)
 	* **Nov 30** [Milestone 6 - Check-in #3](../6)
 	* [Milestone 8 - Code Documentation and project structure](../8)
- 	* [Milestone 9 - Code Documentation and project structure](../9)
+ 	* [Milestone 9 - Testing](../9)
 - Week 5 (12/2-12/7)
-	* [Milestone 10 - Code Documentation and project structure](../10)
+	* [Milestone 10 - Video](../10)
 	* **Dec. 7** Final Deliverable 
 	* **Dec. 7** Fill out the [team assessment form here](https://forms.gle/oULiS6RRnQy82FCSA)
 
