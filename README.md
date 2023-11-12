@@ -69,7 +69,8 @@ Team member Names:
 
 
 ## Team Decision Documentation
-* **Team communication: Teams channel, email as needed**
+* **Team communication:
+	* Teams channel, email as needed**
 
 * **Team Meeting Cadence:**
 	* Tuesday in-person
