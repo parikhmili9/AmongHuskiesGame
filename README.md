@@ -43,13 +43,14 @@ Team member Names:
 - Everyone should make code contributions to the repository (i.e. everyone should have some commits in the commit history -- even if you pair program, that means you need to switch who is in control!)
 - See the project timeline
 - Note: In semesters where I have a 'token system' for late days, **you cannot use any tokens** for the final project.
-- 
+
 ## Timeline
 
 - Week 1 (11/6-11/10)
 	* **Nov 9** First meeting - Check -in 1
 - Week 2 (11/11-11/17)
- 	* [Team Milestone: UML diagram](https://lucid.app/lucidchart/c3f62138-e592-4cf6-a7d6-093ab9f3f5e9/edit?viewport_loc=-1822%2C-720%2C4967%2C2061%2CHWEp-vi-RSFO&invitationId=inv_cd37627a-d9c7-4ec9-8b74-c8c7a87012da)
+	* Team Milestone: Set up project management tool, create stories, epics and timeline
+  	* [Team Milestone: UML diagram](https://lucid.app/lucidchart/c3f62138-e592-4cf6-a7d6-093ab9f3f5e9/edit?viewport_loc=-1822%2C-720%2C4967%2C2061%2CHWEp-vi-RSFO&invitationId=inv_cd37627a-d9c7-4ec9-8b74-c8c7a87012da)
 	* [Milestone 1 - Use Cases](../1)
 	* [Milestone 2 - Integration](../2)
 	* [Milestone 3 - Networking](../3)
