@@ -45,6 +45,7 @@ Team member Names:
 - Note: In semesters where I have a 'token system' for late days, **you cannot use any tokens** for the final project.
 
 ## Timeline
+- Timeline has changed and is subject to more change. For most recent updates, check the team's [Jira timeline](https://amonghuskies.atlassian.net/jira/software/projects/SCRUM/boards/1/timeline)
 
 - Week 1 (11/6-11/10)
 	* **Nov 9** First meeting - Check -in 1
@@ -87,7 +88,7 @@ Team member Names:
     	* Video chat
  
  * **Work Management:**
- 	* (Tentatively) Jira
+ 	* Jira
 
   * **How are we doing sharing?**
 
