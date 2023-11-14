@@ -51,19 +51,19 @@ Team member Names:
 - Week 2 (11/11-11/17)
 	* Team Milestone: Set up project management tool, create stories, epics and timeline
   	* [Team Milestone: UML diagram](https://lucid.app/lucidchart/c3f62138-e592-4cf6-a7d6-093ab9f3f5e9/edit?viewport_loc=-1822%2C-720%2C4967%2C2061%2CHWEp-vi-RSFO&invitationId=inv_cd37627a-d9c7-4ec9-8b74-c8c7a87012da)
-	* [Milestone 1 - Use Cases](../1)
-	* [Milestone 2 - Integration](../2)
-	* [Milestone 3 - Networking](../3)
+	* [Milestone 1 - Use Cases](./FinalProject/milestones/1)
+	* [Milestone 2 - Integration](./FinalProject/milestones/2)
+	* [Milestone 3 - Networking](./FinalProject/milestones/3)
 - Week 3 (11/18-11/24)
-	* **Nov 16** [Milestone 4 - Check-in #2](../4)
-	* [Milestone 5 - Extra Feature](../5)
-	* [Milestone 7 - Building Software (build config)](../7)
+	* **Nov 16** [Milestone 4 - Check-in #2](./FinalProject/milestones/4)
+	* [Milestone 5 - Extra Feature](./FinalProject/milestones/5)
+	* [Milestone 7 - Building Software (build config)](./FinalProject/milestones/7)
 - Week 4 (11/25-12/1)
-	* **Nov 30** [Milestone 6 - Check-in #3](../6)
-	* [Milestone 8 - Code Documentation and project structure](../8)
- 	* [Milestone 9 - Testing](../9)
+	* **Nov 30** [Milestone 6 - Check-in #3](./FinalProject/milestones/6)
+	* [Milestone 8 - Code Documentation and project structure](./FinalProject/milestones/8)
+ 	* [Milestone 9 - Testing](./FinalProject/milestones/9)
 - Week 5 (12/2-12/7)
-	* [Milestone 10 - Video](../10)
+	* [Milestone 10 - Video](./FinalProject/milestones/10)
 	* **Dec. 7** Final Deliverable 
 	* **Dec. 7** Fill out the [team assessment form here](https://forms.gle/oULiS6RRnQy82FCSA)
 
@@ -71,6 +71,8 @@ Team member Names:
 ## Team Decision Documentation
 * **Team communication:
 	* Teams channel, email as needed**
+ *  ** Team Project Documentation
+ 	* [Jira Board](https://amonghuskies.atlassian.net/jira/software/projects/SCRUM/boards/1)
 
 * **Team Meeting Cadence:**
 	* Tuesday in-person
