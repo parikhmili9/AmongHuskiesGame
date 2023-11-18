@@ -1,0 +1,4 @@
+##### FILE WHERE WE CAN STORE OUR QUESTIONS AS A TEAM #####
+
+TOPIC: CI/CD
+    - What is the purpose of 'labs/ci && ./ci' in actions? Do we need to write a ci program?
