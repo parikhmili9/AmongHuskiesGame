@@ -2,8 +2,6 @@ module tilemap;
 
 import bindbc.sdl;
 
-module tilemap;
-
 // Load the SDL2 library
 import bindbc.sdl;
 
@@ -53,16 +51,16 @@ struct DrawableTileMap{
         mTiles[mMapXSize-1][mMapYSize-1] = 108;
     }
  
-    void Render(SDL_Renderer* renderer, int zoomFactor=1){
+    void render(SDL_Renderer* renderer, int zoomFactor=1){
         for(int y=0; y < mMapYSize; y++){
             for(int x=0; x < mMapXSize; x++){
-                mTileSet.RenderTile(renderer,mTiles[x][y],x,y,zoomFactor);
+                mTileSet.renderTile(renderer,mTiles[x][y],x,y,zoomFactor);
             }
         }
     }
 
     // Specify a position local coorindate on the window
-    int GetTileAt(int localX, int localY, int zoomFactor=1){
+    int getTileAt(int localX, int localY, int zoomFactor=1){
         int x = localX / (mTileSet.mTileSize * zoomFactor);
         int y = localY / (mTileSet.mTileSize * zoomFactor);
 

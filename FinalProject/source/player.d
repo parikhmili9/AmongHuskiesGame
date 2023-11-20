@@ -38,7 +38,7 @@ struct Player{
     }
 
     void render(SDL_Renderer* renderer){
-        mSprite.Render(renderer);
+        mSprite.render(renderer);
         mSprite.mState = STATE.IDLE;
     }
 }

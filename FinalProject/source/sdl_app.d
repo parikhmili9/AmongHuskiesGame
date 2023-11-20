@@ -93,6 +93,11 @@ class SDLApp{
                     runApplication= false;
                 }
                 // TODO (Ryan to handle this) - Handle events in the SDL application loop
+                // Get Keyboard input
+                const ubyte* keyboard = SDL_GetKeyboardState(null);
+
+                // player movement cases
+                
             }
 
             imgSurface.blitSurfaceToWindow(window);
