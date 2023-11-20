@@ -1,6 +1,6 @@
 import std.stdio;
 import std.string;
-import SDLApp: SDLApp;
+import sdl_app: SDLApp;
 
 void main()
 {
