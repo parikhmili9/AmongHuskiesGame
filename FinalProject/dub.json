@@ -13,6 +13,9 @@
 				"bindbc-sdl": "~>1.2.4",
 				"unit-threaded": "~>2.1.2"
 			}
+			
 		}
-	]
+	],
+	"targetType": "executable",
+	"targetPath": "./bin"
 }

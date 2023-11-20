@@ -1,4 +1,4 @@
-module sdl_app;
+module SDLApp;
 
 // Import D standard libraries
 import std.stdio;
@@ -17,7 +17,7 @@ class SDLApp{
     SDL_Event e;
     SDL_Window* window;
     Surface imgSurface;
-    SDL_Support ret;
+    SDLSupport ret;
 
     this() {
 
@@ -59,7 +59,7 @@ class SDLApp{
 
 
         // every SDL app will need a window and a surface
-        string WINDOW_NAME = "AmongHuskies^TM HuskyTown";
+        const(char)* WINDOW_NAME = "AmongHuskies^TM HuskyTown".ptr;
         int WINDOW_WIDTH = 640;
         int WINDOW_HEIGHT = 480;
         window = SDL_CreateWindow(WINDOW_NAME,

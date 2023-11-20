@@ -1,6 +1,9 @@
 import std.stdio;
+import std.string;
+import SDLApp: SDLApp;
 
 void main()
 {
-	writeln("Edit source/app.d to start your project.");
+	SDLApp myApp = new SDLApp();
+  	myApp.mainApplicationLoop();
 }

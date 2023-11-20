@@ -1,4 +1,4 @@
-module surface;
+module Surface;
 
 // Load the SDL2 library
 import bindbc.sdl;
