@@ -94,7 +94,7 @@ class SDLApp{
                 }
                 // TODO (Ryan to handle this) - Handle events in the SDL application loop
                 // Get Keyboard input
-                const ubyte* keyboard = SDL_GetKeyboardState(null);
+                const ubyte* keyboardState = SDL_GetKeyboardState(null);
 
                 // player movement cases
                 
