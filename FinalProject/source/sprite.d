@@ -1,5 +1,3 @@
-module sprint;
-
 module sprite;
 
 // Load the SDL2 library
@@ -35,7 +33,7 @@ struct Sprite{
 			mRectangle.h = 64;
 		}
 
-		void Render(SDL_Renderer* renderer){
+		void render(SDL_Renderer* renderer){
 
 			SDL_Rect selection;
 			selection.x = 64*mFrame;
