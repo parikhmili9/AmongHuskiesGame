@@ -18,6 +18,7 @@ class SDLApp{
     SDL_Window* window;
     Surface imgSurface;
     SDLSupport ret;
+    SDL_Renderer* renderer;
 
     this() {
 
@@ -62,14 +63,19 @@ class SDLApp{
         const(char)* WINDOW_NAME = "AmongHuskies^TM HuskyTown".ptr;
         int WINDOW_WIDTH = 640;
         int WINDOW_HEIGHT = 480;
-        window = SDL_CreateWindow(WINDOW_NAME,
+        this.window = SDL_CreateWindow(WINDOW_NAME,
                                   SDL_WINDOWPOS_UNDEFINED,
                                   SDL_WINDOWPOS_UNDEFINED,
                                   WINDOW_WIDTH,
                                   WINDOW_HEIGHT, 
                                   SDL_WINDOW_SHOWN
                                 );
-        imgSurface = Surface(WINDOW_HEIGHT, WINDOW_WIDTH);
+        this.imgSurface = Surface(WINDOW_HEIGHT, WINDOW_WIDTH);
+        
+        // Create a hardware accelerated renderer
+        this.renderer = null;
+        renderer = SDL_CreateRenderer(window,-1,SDL_RENDERER_ACCELERATED);
+
     }
 
     ~this(){
@@ -88,7 +94,7 @@ class SDLApp{
             // handled one at a time within this loop for as many events have
             // been pushed into the internal SDL queue. Thus, we poll until there
             // are '0' events or a NULL event is returned.
-            while(SDL_PollEvent(&e) !=0) {
+            while(SDL_PollEvent(&(this.e)) !=0) {
                 if(e.type == SDL_QUIT){
                     runApplication= false;
                 }
