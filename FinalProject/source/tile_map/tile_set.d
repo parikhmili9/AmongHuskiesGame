@@ -1,10 +1,14 @@
-module tile_atlas;
+module tile_set;
+
+
+// Load the SDL2 library
+import bindbc.sdl;
 
 /** 
  * TileSet struct is passed to tileMap for rendering. This tileSet stores bmp tiles
  * loaded from a bmp file
  */
-struct TileAtlas{
+struct TileSet{
 
         // Rectangle storing a specific tile at an index
 		SDL_Rect[] mRectTiles;
@@ -17,20 +21,20 @@ struct TileAtlas{
         // Number of tiles in the tilemap in the y-dimension
         int mYTiles;
 
-        /// Constructor
+        /// Constructor creates a store of the tiles we will need to render a TileMap
 		this(SDL_Renderer* renderer, string filepath, int tileSize, int xTiles, int yTiles){
             mTileSize = tileSize;
             mXTiles   = xTiles;
             mYTiles   = yTiles;
 
-			// Load the bitmap surface
-			SDL_Surface* myTestImage   = SDL_LoadBMP(filepath.ptr);
-			// Create a texture from the surface
-			mTexture = SDL_CreateTextureFromSurface(renderer,myTestImage);
+			// Load the bitmap surface from file
+			SDL_Surface* tileSurface   = SDL_LoadBMP(filepath.ptr);
+			// Create a texture from the surface (load tilemap into gpu memory for speed)
+			mTexture = SDL_CreateTextureFromSurface(renderer, tileSurface);
 
 			// Done with the bitmap surface pixels after we create the texture, we have
 			// effectively updated memory to GPU texture.
-			SDL_FreeSurface(myTestImage);
+			SDL_FreeSurface(tileSurface);
 
             // Populate a series of rectangles with individual tiles
             for(int y = 0; y < yTiles; y++){
@@ -49,7 +53,7 @@ struct TileAtlas{
 
         /** Helper function that displays all of the tiles one after the other in an 
         animation. This is just a quick way to preview the tile **/
-        void debugTiles(SDL_Renderer* renderer, int x, int y, int zoomFactor=1){
+        void viewTilesInSet(SDL_Renderer* renderer, int x, int y, int zoomFactor=1){
             import std.stdio;
 
 			static int tilenum =0;

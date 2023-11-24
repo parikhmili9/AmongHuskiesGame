@@ -4,6 +4,8 @@ module sdl_app;
 import std.stdio;
 import std.string;
 
+import tile_set: TileSet;
+import tile_map: DrawableTileMap;
 import surface: Surface;
 
 // Load the SDL2 library
@@ -15,13 +17,12 @@ class SDLApp{
     bool runApplication = true;
     
     SDL_Event e;
+    SDLSupport ret;
     SDL_Window* window;
     Surface imgSurface;
-    SDLSupport ret;
     SDL_Renderer* renderer;
 
     this() {
-
         // OS checking for proper SDL library
         version(Windows){
             writeln("Searching for SDL on Windows");
@@ -61,8 +62,8 @@ class SDLApp{
 
         // every SDL app will need a window and a surface
         const(char)* WINDOW_NAME = "AmongHuskies^TM HuskyTown".ptr;
-        int WINDOW_WIDTH = 640;
-        int WINDOW_HEIGHT = 480;
+        const int WINDOW_WIDTH = 640;
+        const int WINDOW_HEIGHT = 480;
         this.window = SDL_CreateWindow(WINDOW_NAME,
                                   SDL_WINDOWPOS_UNDEFINED,
                                   SDL_WINDOWPOS_UNDEFINED,
@@ -72,9 +73,7 @@ class SDLApp{
                                 );
         this.imgSurface = Surface(WINDOW_HEIGHT, WINDOW_WIDTH);
         
-        // Create a hardware accelerated renderer
-        this.renderer = null;
-        renderer = SDL_CreateRenderer(window,-1,SDL_RENDERER_ACCELERATED);
+
 
     }
 
@@ -87,6 +86,15 @@ class SDLApp{
     }
 
     void mainApplicationLoop(){ 
+            const string TILEMAP_PATH = "./assets/kenney_roguelike-modern-city/Tilemap/tilemap_packed.bmp";
+            const int TILE_SIZE = 16;
+            const int X_TILES = 37;
+            const int Y_TILES = 28;
+            // Create a hardware accelerated renderer and load our tiles from an image
+            this.renderer = null;
+            this.renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+            TileSet tileSet = TileSet(renderer, TILEMAP_PATH, TILE_SIZE, X_TILES, Y_TILES);
+            DrawableTileMap tileMap = DrawableTileMap(tileSet);
 
             while(this.runApplication) {
             // Handle events
@@ -102,8 +110,25 @@ class SDLApp{
                 // Get Keyboard input
                 const ubyte* keyboardState = SDL_GetKeyboardState(null);
 
-                // player movement cases
-                
+                // (3) Clear and Draw the Screen
+                // Gives us a clear "canvas"
+                SDL_SetRenderDrawColor(renderer,100,190,255,SDL_ALPHA_OPAQUE);
+                SDL_RenderClear(renderer);
+
+                // NOTE: The draw order here is very important
+                //       We follow the 'painters algorithm' in 2D
+                //       meaning that we draw the background first,
+                //       and then our objects on top.
+
+                // Render out DrawableTileMap
+                int zoomFactor = 3;
+                tileMap.render(renderer, zoomFactor);
+                // Little frame capping hack so we don't run too fast
+                SDL_Delay(125);
+
+                // Finally show what we've drawn
+                // (i.e. anything where we have called SDL_RenderCopy will be in memory and presnted here)
+                SDL_RenderPresent(renderer);
             }
 
             imgSurface.blitSurfaceToWindow(window);
