@@ -86,7 +86,7 @@ class SDLApp{
     }
 
     void mainApplicationLoop(){ 
-            const string TILEMAP_PATH = "./assets/kenney_roguelike-modern-city/Tilemap/tilemap_packed.bmp";
+            const string TILEMAP_PATH = "./source/assets/kenney_roguelike-modern-city/Tilemap/tilemap_packed.bmp";
             const int TILE_SIZE = 16;
             const int X_TILES = 37;
             const int Y_TILES = 28;
@@ -123,6 +123,12 @@ class SDLApp{
                 // Render out DrawableTileMap
                 int zoomFactor = 3;
                 tileMap.render(renderer, zoomFactor);
+
+                // Draw the tile preview just so we can see all the different tiles in the tile map
+                if(keyboardState[SDL_SCANCODE_SPACE]){
+                    tileSet.tileSetSelector(renderer);
+                }
+
                 // Little frame capping hack so we don't run too fast
                 SDL_Delay(125);
 
