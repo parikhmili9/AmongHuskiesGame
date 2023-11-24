@@ -8,6 +8,7 @@ import bindbc.sdl;
 /// DrawableTilemap is responsible for drawing 
 /// the actual tiles for the tilemap data structure
 struct DrawableTileMap{
+    // todo - we need to expand the size of the world, likely
     const int MAP_X_SIZE = 8;
     const int MAP_Y_SIZE = 8;
  
@@ -23,6 +24,7 @@ struct DrawableTileMap{
         mapTileSet = t;
 
         // Set all tiles to 'default' tile
+        // todo - these tiles need to be modified to reflect our version of the world
         for(int y=0; y < MAP_Y_SIZE; y++){
             for(int x=0; x < MAP_X_SIZE; x++){
                 if(y==0){

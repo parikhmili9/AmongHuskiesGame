@@ -72,9 +72,6 @@ class SDLApp{
                                   SDL_WINDOW_SHOWN
                                 );
         this.imgSurface = Surface(WINDOW_HEIGHT, WINDOW_WIDTH);
-        
-
-
     }
 
     ~this(){
