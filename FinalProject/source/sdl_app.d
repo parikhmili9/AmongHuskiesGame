@@ -4,8 +4,8 @@ module sdl_app;
 import std.stdio;
 import std.string;
 
+import tile_map: TileMap;
 import tile_set: TileSet;
-import tile_map: DrawableTileMap;
 import surface: Surface;
 
 // Load the SDL2 library
@@ -62,8 +62,8 @@ class SDLApp{
 
         // every SDL app will need a window and a surface
         const(char)* WINDOW_NAME = "AmongHuskies^TM HuskyTown".ptr;
-        const int WINDOW_WIDTH = 640;
-        const int WINDOW_HEIGHT = 480;
+        const int WINDOW_WIDTH = 960;
+        const int WINDOW_HEIGHT = 960;
         this.window = SDL_CreateWindow(WINDOW_NAME,
                                   SDL_WINDOWPOS_UNDEFINED,
                                   SDL_WINDOWPOS_UNDEFINED,
@@ -83,15 +83,17 @@ class SDLApp{
     }
 
     void mainApplicationLoop(){ 
-            const string TILEMAP_PATH = "./source/assets/kenney_roguelike-modern-city/Tilemap/tilemap_packed.bmp";
-            const int TILE_SIZE = 16;
-            const int X_TILES = 37;
-            const int Y_TILES = 28;
+            const string TILEMAP_PATH = "./source/assets/tilemap.bmp";
+            const int TILE_SIZE = 32;
+            const int X_TILES = 50;
+            const int Y_TILES = 50;
+
+
             // Create a hardware accelerated renderer and load our tiles from an image
             this.renderer = null;
             this.renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
             TileSet tileSet = TileSet(renderer, TILEMAP_PATH, TILE_SIZE, X_TILES, Y_TILES);
-            DrawableTileMap tileMap = DrawableTileMap(tileSet);
+            TileMap tileMap = TileMap(tileSet);
 
             while(this.runApplication) {
             // Handle events
@@ -109,7 +111,7 @@ class SDLApp{
 
                 // (3) Clear and Draw the Screen
                 // Gives us a clear "canvas"
-                SDL_SetRenderDrawColor(renderer,100,190,255,SDL_ALPHA_OPAQUE);
+                SDL_SetRenderDrawColor(renderer, 100, 190, 255, SDL_ALPHA_OPAQUE);
                 SDL_RenderClear(renderer);
 
                 // NOTE: The draw order here is very important
@@ -118,12 +120,11 @@ class SDLApp{
                 //       and then our objects on top.
 
                 // Render out DrawableTileMap
-                int zoomFactor = 3;
+                int zoomFactor = 1;
                 tileMap.render(renderer, zoomFactor);
 
-                // Draw the tile preview just so we can see all the different tiles in the tile map
                 if(keyboardState[SDL_SCANCODE_SPACE]){
-                    tileSet.tileSetSelector(renderer);
+                    tileSet.TileSetSelector(renderer);
                 }
 
                 // Little frame capping hack so we don't run too fast
@@ -133,11 +134,6 @@ class SDLApp{
                 // (i.e. anything where we have called SDL_RenderCopy will be in memory and presnted here)
                 SDL_RenderPresent(renderer);
             }
-
-            imgSurface.blitSurfaceToWindow(window);
-            // Delay for 16 milliseconds
-            // Otherwise the program refreshes too quickly
-            SDL_Delay(16);
         }
     }
  }
