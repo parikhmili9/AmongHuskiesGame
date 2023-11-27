@@ -6,7 +6,7 @@ import std.string;
 
 import tile_map: TileMap;
 import tile_set: TileSet;
-import surface: Surface;
+import player;
 
 // Load the SDL2 library
 import bindbc.sdl;
@@ -19,7 +19,6 @@ class SDLApp{
     SDL_Event e;
     SDLSupport ret;
     SDL_Window* window;
-    Surface imgSurface;
     SDL_Renderer* renderer;
 
     this() {
@@ -71,7 +70,6 @@ class SDLApp{
                                   WINDOW_HEIGHT, 
                                   SDL_WINDOW_SHOWN
                                 );
-        this.imgSurface = Surface(WINDOW_HEIGHT, WINDOW_WIDTH);
     }
 
     ~this(){
@@ -84,16 +82,20 @@ class SDLApp{
 
     void mainApplicationLoop(){ 
             const string TILEMAP_PATH = "./source/assets/tilemap.bmp";
+            const string SPRITE_PATH = "./source/assets/test.bmp";
+
             const int TILE_SIZE = 32;
             const int X_TILES = 50;
             const int Y_TILES = 50;
-
 
             // Create a hardware accelerated renderer and load our tiles from an image
             this.renderer = null;
             this.renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
             TileSet tileSet = TileSet(renderer, TILEMAP_PATH, TILE_SIZE, X_TILES, Y_TILES);
             TileMap tileMap = TileMap(tileSet);
+
+            // render the player
+            Player player = Player(renderer, SPRITE_PATH);
 
             while(this.runApplication) {
             // Handle events
@@ -108,6 +110,8 @@ class SDLApp{
                 // TODO (Ryan to handle this) - Handle events in the SDL application loop
                 // Get Keyboard input
                 const ubyte* keyboardState = SDL_GetKeyboardState(null);
+                int playerX = player.getX();
+                int playerY = player.getY();
 
                 // (3) Clear and Draw the Screen
                 // Gives us a clear "canvas"
@@ -119,13 +123,10 @@ class SDLApp{
                 //       meaning that we draw the background first,
                 //       and then our objects on top.
 
-                // Render out DrawableTileMap
+                // Render out DrawableTileMap and player
                 int zoomFactor = 1;
                 tileMap.render(renderer, zoomFactor);
-
-                if(keyboardState[SDL_SCANCODE_SPACE]){
-                    tileSet.TileSetSelector(renderer);
-                }
+                player.render(renderer);
 
                 // Little frame capping hack so we don't run too fast
                 SDL_Delay(125);

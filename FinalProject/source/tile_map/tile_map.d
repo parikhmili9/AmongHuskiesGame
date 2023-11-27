@@ -25,10 +25,10 @@ struct TileMap {
         for(int y=0; y < MAP_Y_SIZE; y++){
             for(int x=0; x < MAP_X_SIZE; x++){
                    int selection = y * MAP_Y_SIZE + x;
-                   mTiles[x][y] = selection
-                } 
-            }
+                   mTiles[x][y] = selection;
+            } 
         }
+    }
 
         // // Adjust the corners
         // mTiles[0][0] = 32;
