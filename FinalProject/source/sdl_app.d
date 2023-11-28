@@ -15,7 +15,8 @@ import loader = bindbc.loader.sharedlib;
 class SDLApp{
 
     bool runApplication = true;
-    
+    int zoomFactor = 1;
+
     SDL_Event e;
     SDLSupport ret;
     SDL_Window* window;
@@ -95,7 +96,7 @@ class SDLApp{
             TileMap tileMap = TileMap(tileSet);
 
             // render the player
-            Player player = Player(renderer, SPRITE_PATH);
+            Player player = Player(renderer, SPRITE_PATH, 0, 0);
 
             while(this.runApplication) {
             // Handle events
@@ -113,6 +114,25 @@ class SDLApp{
                 int playerX = player.getX();
                 int playerY = player.getY();
 
+                // Check if it's legal to move a direction
+                // TODO: Consider moving this into a function
+                //       e.g. 'legal move'
+                bool canMove = true;
+
+                // Check for movement
+                if(keyboardState[SDL_SCANCODE_LEFT] && canMove){ 
+                    player.moveLeft();
+                }
+                if(keyboardState[SDL_SCANCODE_RIGHT] && canMove){
+                    player.moveRight();
+                }
+                if(keyboardState[SDL_SCANCODE_UP] && canMove){
+                    player.moveUp();
+                }
+                if(keyboardState[SDL_SCANCODE_DOWN] && canMove){
+                    player.moveDown();
+                }
+
                 // (3) Clear and Draw the Screen
                 // Gives us a clear "canvas"
                 SDL_SetRenderDrawColor(renderer, 100, 190, 255, SDL_ALPHA_OPAQUE);
@@ -124,7 +144,6 @@ class SDLApp{
                 //       and then our objects on top.
 
                 // Render out DrawableTileMap and player
-                int zoomFactor = 1;
                 tileMap.render(renderer, zoomFactor);
                 player.render(renderer);
 
