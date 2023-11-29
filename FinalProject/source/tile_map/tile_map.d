@@ -5,7 +5,7 @@ import std.stdio;
 import tile_set: TileSet;
 import bindbc.sdl;
 
-/// DrawableTilemap is responsible for drawing the world
+// DrawableTilemap is responsible for drawing the world
 struct TileMap {
     const int MAP_X_SIZE = 50;
     const int MAP_Y_SIZE = 50;
@@ -13,15 +13,15 @@ struct TileMap {
     // Tile map with tiles
     TileSet mTileSet;
 
-    // Static array for now for simplicity}
+    // Static array for now for simplicity
     int [MAP_X_SIZE][MAP_Y_SIZE] mTiles;
 
     // Set the tileset
     this(TileSet t){
-        // Set our tilemap
         mTileSet = t;
 
-        // Set all tiles to tiles from the tileset
+        // Set all tiles to tiles from the tileset since we are drawing
+        // it from a file
         for(int y=0; y < MAP_Y_SIZE; y++){
             for(int x=0; x < MAP_X_SIZE; x++){
                    int selection = y * MAP_Y_SIZE + x;
@@ -29,13 +29,6 @@ struct TileMap {
             } 
         }
     }
-
-        // // Adjust the corners
-        // mTiles[0][0] = 32;
-        // mTiles[MAP_X_SIZE-1][0] = 34;
-        // mTiles[0][MAP_Y_SIZE-1] = 106;
-        // mTiles[MAP_X_SIZE-1][MAP_Y_SIZE-1] = 108;
-    
  
     void render(SDL_Renderer* renderer, int zoomFactor=1){
         for(int y=0; y < MAP_Y_SIZE; y++){
