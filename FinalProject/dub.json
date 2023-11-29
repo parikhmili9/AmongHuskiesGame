@@ -1,0 +1,21 @@
+{
+	"authors": [
+		"rloon"
+	],
+	"copyright": "Copyright © 2023, rloon",
+	"description": "foundation for the tilemap",
+	"license": "proprietary",
+	"name": "among_huskies_final_project",
+	"configurations": [
+		{
+			"name": "executable", 
+			"dependencies": {
+				"bindbc-sdl": "~>1.2.4",
+				"unit-threaded": "~>2.1.2"
+			}
+			
+		}
+	],
+	"targetType": "executable",
+	"targetPath": "./bin"
+}
