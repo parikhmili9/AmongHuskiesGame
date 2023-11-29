@@ -62,8 +62,8 @@ class SDLApp{
 
         // every SDL app will need a window and a surface
         const(char)* WINDOW_NAME = "AmongHuskies^TM HuskyTown".ptr;
-        const int WINDOW_WIDTH = 960;
-        const int WINDOW_HEIGHT = 960;
+        const int WINDOW_WIDTH = 640;
+        const int WINDOW_HEIGHT = 800;
         this.window = SDL_CreateWindow(WINDOW_NAME,
                                   SDL_WINDOWPOS_UNDEFINED,
                                   SDL_WINDOWPOS_UNDEFINED,
