@@ -3,7 +3,7 @@ module server;
 import std.socket;
 import std.stdio;
 import core.thread.osthread;
-
+import packet.Packet, Coord;
 // The purpose of the TCPServer is to accept multiple client connections. 
 // Every client that connects will have its own thread for the server to broadcast information to each client.
 class TCPServer
@@ -87,12 +87,13 @@ class TCPServer
                     writeln("Client disconnected");
                     break;
                 }
-
                 writeln("Received some data (bytes): ", got);
 
                 // Store data that we receive in our server.
                 // We append the buffer to the end of our server data structure.
                 mServerData ~= buffer;
+
+
 
                 /// After we receive a single message, we'll just 
                 /// immediately broadcast out to all clients some data.
@@ -117,11 +118,28 @@ class TCPServer
         }
     }
 
+    char[Packet.sizeof] packetToBeSent(Coord playerCoords, char[4] playerAssignment, Coord[2] ballCoords){
+        char[packet.sizeof] sending;
+        
+        serverPacket.playerCoords = playerCoords;
+        serverPacket.playerAssignment = playerAssignment;
+        serverPacket.ballCoords = ballCoords;
+        serverPacket.message = message;
+
+        sending = serverPacket.serialize();
+
+        return sending;
+
+    }
+
     /// The purpose of this function is to broadcast
     /// messages to all of the clients that are currently
     /// connected.
-    void broadcastToAllClients()
+    void broadcastToAllClients(char[Packet.sizeof] pack)
     {
+        char[Packet.sizeof] send; 
+
+
         writeln("Broadcasting to :", mClientsConnectedToServer.length);
         foreach (idx, serverToClient; mClientsConnectedToServer)
         {
@@ -137,6 +155,8 @@ class TCPServer
             }
         }
     }
+
+    Packet serverPacket;
 
     /// The listening socket is responsible for handling new client connections.
     Socket mListeningSocket;
