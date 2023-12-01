@@ -87,10 +87,6 @@ class TCPServer
                     writeln("Client disconnected");
                     break;
                 }
-
-
-
-
                 writeln("Received some data (bytes): ", got);
 
                 // Store data that we receive in our server.
@@ -139,17 +135,16 @@ class TCPServer
     /// The purpose of this function is to broadcast
     /// messages to all of the clients that are currently
     /// connected.
-    void broadcastToAllClients()
+    void broadcastToAllClients(char[Packet.sizeof] pack)
     {
+        char[Packet.sizeof] send; 
+
 
         writeln("Broadcasting to :", mClientsConnectedToServer.length);
         foreach (idx, serverToClient; mClientsConnectedToServer)
         {
             // Send whatever the latest data was to all the 
             // clients.
-
-
-
             while (mCurrentMessageToSend[idx] <= mServerData.length - 1)
             {
                 char[80] msg = mServerData[mCurrentMessageToSend[idx]];
