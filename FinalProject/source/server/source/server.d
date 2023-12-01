@@ -1,9 +1,9 @@
-module server;
+module source.server;
 
 import std.socket;
 import std.stdio;
 import core.thread.osthread;
-import packet.Packet, Coord;
+import packet;
 // The purpose of the TCPServer is to accept multiple client connections. 
 // Every client that connects will have its own thread for the server to broadcast information to each client.
 class TCPServer
@@ -119,12 +119,12 @@ class TCPServer
     }
 
     char[Packet.sizeof] packetToBeSent(Coord playerCoords, char[4] playerAssignment, Coord[2] ballCoords){
-        char[packet.sizeof] sending;
+        char[Packet.sizeof] sending;
         
         serverPacket.playerCoords = playerCoords;
         serverPacket.playerAssignment = playerAssignment;
         serverPacket.ballCoords = ballCoords;
-        serverPacket.message = message;
+        serverPacket.message = "";
 
         sending = serverPacket.serialize();
 
@@ -135,7 +135,7 @@ class TCPServer
     /// The purpose of this function is to broadcast
     /// messages to all of the clients that are currently
     /// connected.
-    void broadcastToAllClients(char[Packet.sizeof] pack)
+    void broadcastToAllClients()
     {
         char[Packet.sizeof] send; 
 
