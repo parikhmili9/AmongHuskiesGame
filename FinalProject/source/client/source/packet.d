@@ -1,13 +1,18 @@
-module utils.packet;
+module packet;
+
+import core.stdc.string;
 
 struct Packet
 {
     // Key is Player Name  -> Value is Coordinate.
-    char[Coord] playerCoords;
+    //Coord[char] playerCoords;
+    Coord[4] playerCoords;
     // Key is Player Name -> Value is Team Name (Either R or B).
-    char[char] playerAssignment;
+    //char[char] playerAssignment;
+    char[4] playerAssignment;
     // Key is Color Name -> Value is Coordinate.
-    char[Coord] ballCoords;
+    //Coord[char] ballCoords;
+    Coord[2] ballCoords;
     // Message for chatting.
     char[200] message;
 
@@ -15,7 +20,6 @@ struct Packet
     char[Packet.sizeof] serialize()
     {
         char[Packet.sizeof] payload;
-
         memmove(&payload, &playerCoords, playerCoords.sizeof);
         memmove(&payload[playerCoords.sizeof], &playerAssignment, playerAssignment.sizeof);
         memmove(&payload[playerCoords.sizeof + playerAssignment.sizeof], &ballCoords, ballCoords
