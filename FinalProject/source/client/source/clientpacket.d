@@ -15,4 +15,13 @@ struct ClientPacket
 
     // Send a message.
     char[80] message;
+
+    char[ClientPacket.sizeof] serialize()
+    {
+        char[ClientPacket.sizeof] payload;
+        memmove(&payload, &client_id, client_id.sizeof);
+        memmove(&payload, &move_num, move_num.sizeof);
+        memmove(&payload, &message, message.sizeof);
+        return payload;
+    }
 }
