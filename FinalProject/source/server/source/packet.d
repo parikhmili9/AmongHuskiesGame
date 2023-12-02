@@ -6,34 +6,39 @@ struct Packet
 {
     // Key is Player Name  -> Value is Coordinate.
     //Coord[char] playerCoords;
-    Coord[4] playerCoords;
+    // Coord[4] playerCoords;
+    int[2] player1Coords;
+    int[2] player2Coords;
+    int[2] player3Coords;
+    int[2] player4Coords;
     // Key is Player Name -> Value is Team Name (Either R or B).
     //char[char] playerAssignment;
     char[4] playerAssignment;
     // Key is Color Name -> Value is Coordinate.
     //Coord[char] ballCoords;
-    Coord[2] ballCoords;
+    // Coord[2] ballCoords;
+    int[2] ball1Coords;
+    int[2] ball2Coords;
     // Message for chatting.
-    char[80] message;
-
-    this(Coord playerCoords, char[4] playerAssignment, Coord[2] ballCoords, char[80] message = ""){
-        this.playerCoords = playerCoords;
-        this.playerAssignment = playerAssignment;
-        this.ballCoords = ballCoords;
-        this.message = message;
-    }
+    char[200] message;
 
     // Serialize packet
     char[Packet.sizeof] serialize()
     {
         char[Packet.sizeof] payload;
-        memmove(&payload, &playerCoords, playerCoords.sizeof);
-        memmove(&payload[playerCoords.sizeof], &playerAssignment, playerAssignment.sizeof);
-        memmove(&payload[playerCoords.sizeof + playerAssignment.sizeof], &ballCoords, ballCoords
-                .sizeof);
-        memmove(&payload[playerCoords.sizeof + playerAssignment.sizeof + ballCoords.sizeof], &message, message
-                .sizeof);
+        memmove(&payload, &player1Coords, player1Coords.sizeof);
+        memmove(&payload[player1Coords.sizeof], &player2Coords, player2Coords.sizeof);
+        memmove(&payload[player1Coords.sizeof + player2Coords.sizeof], &player3Coords, player3Coords.sizeof);
+        memmove(&payload[player1Coords.sizeof + player2Coords.sizeof + player3Coords.sizeof], &player4Coords, player4Coords.sizeof);
+        size_t playerChordsSize = player1Coords.sizeof + player2Coords.sizeof + player3Coords.sizeof + player4Coords.sizeof;
+        memmove(&payload[playerChordsSize], &playerAssignment, playerAssignment.sizeof);
 
+        memmove(&payload[playerChordsSize + playerAssignment.sizeof], &ball1Coords, ball1Coords
+                .sizeof);
+        memmove(&payload[playerChordsSize + playerAssignment.sizeof + ball1Coords.sizeof], &ball2Coords, ball2Coords
+                .sizeof);
+        memmove(&payload[playerChordsSize + playerAssignment.sizeof + ball1Coords.sizeof + ball2Coords.sizeof], &message, message
+                .sizeof);
         return payload;
     }
 

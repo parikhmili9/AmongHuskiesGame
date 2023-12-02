@@ -4,6 +4,8 @@ import std.socket;
 import std.stdio;
 import core.thread.osthread;
 import packet;
+import clientpacket;
+import deserializeClient;
 // The purpose of the TCPServer is to accept multiple client connections. 
 // Every client that connects will have its own thread for the server to broadcast information to each client.
 class TCPServer
@@ -75,7 +77,7 @@ class TCPServer
             while (true)
             {
                 // Message buffer will be 80 bytes
-                char[80] buffer;
+                char[ClientPacket.sizeof] buffer;
 
                 // Server is now waiting to handle data from a specific client
                 // We'll block the server awaiting to receive a message.
@@ -90,10 +92,10 @@ class TCPServer
                 writeln("Received some data (bytes): ", got);
 
                 // Store data that we receive in our server.
-                // We append the buffer to the end of our server data structure.
+                // We append the buffer to the end of our received data queue. Dlang doesn't have queues
+                // So we have to use arrays!
+                
                 mServerData ~= buffer;
-
-
 
                 /// After we receive a single message, we'll just 
                 /// immediately broadcast out to all clients some data.
@@ -118,12 +120,22 @@ class TCPServer
         }
     }
 
-    char[Packet.sizeof] packetToBeSent(Coord playerCoords, char[4] playerAssignment, Coord[2] ballCoords){
+
+    // This is the packet that is to be sent by the server to each client. 
+    //  This has to be in the form of server packet. 
+    // The information to this packet will be fed by the game logic
+
+    // Also note that in this language, 2d array is as follows: int[num Columns][num rows]!
+    char[Packet.sizeof] packetToBeSent(int[2][4] playerCoords, char[4] playerAssignment, int[2][2] ballCoords){
         char[Packet.sizeof] sending;
         
-        serverPacket.playerCoords = playerCoords;
+        serverPacket.player1Coords = playerCoords[0];
+        serverPacket.player2Coords = playerCoords[1];
+        serverPacket.player3Coords = playerCoords[2];
+        serverPacket.player4Coords = playerCoords[3];
         serverPacket.playerAssignment = playerAssignment;
-        serverPacket.ballCoords = ballCoords;
+        serverPacket.ball1Coords = ballCoords[0];
+        serverPacket.ball2Coords = ballCoords[1];
         serverPacket.message = "";
 
         sending = serverPacket.serialize();
@@ -132,13 +144,14 @@ class TCPServer
 
     }
 
-    /// The purpose of this function is to broadcast
-    /// messages to all of the clients that are currently
-    /// connected.
+    /// Take out the server data from the list and process it.  
     void broadcastToAllClients()
     {
         char[Packet.sizeof] send; 
 
+        /// Processes each data as soon as it sees it and if there's a queue,
+        /// The mcurrentMessageToSend takes the one that came first and processes it 
+        /// Before processing the latest one. 
 
         writeln("Broadcasting to :", mClientsConnectedToServer.length);
         foreach (idx, serverToClient; mClientsConnectedToServer)
@@ -147,8 +160,10 @@ class TCPServer
             // clients.
             while (mCurrentMessageToSend[idx] <= mServerData.length - 1)
             {
-                char[80] msg = mServerData[mCurrentMessageToSend[idx]];
-                serverToClient.send(msg[0 .. 80]);
+
+                char[ClientPacket.sizeof] msg = mServerData[mCurrentMessageToSend[idx]];
+                send = checkValid(deserialize(msg));
+                serverToClient.send(send);
                 // Important to increment the message only after sending
                 // the previous message to as many clients as exist.
                 mCurrentMessageToSend[idx]++;
@@ -156,6 +171,15 @@ class TCPServer
         }
     }
 
+// _--------------- [ToDO]----------------------------
+    /// If the processed data is valid, give the transformed data
+    /// In the form of serialized server packet, and if not, 
+    /// Return the serialized packet to be unchanged.
+    char[Packet.sizeof] checkValid(ClientPacket data){
+        char[Packet.sizeof] sen; /// Use the function "packet to be sent" to serialize this. 
+        return sen;
+    }
+// ----------------[ToDO Ends]------------------------
     Packet serverPacket;
 
     /// The listening socket is responsible for handling new client connections.
@@ -165,7 +189,8 @@ class TCPServer
 
     /// Stores all of the data on the server. Ideally, we'll 
     /// use this to broadcast out to clients connected.
-    char[80][] mServerData;
+    char[ClientPacket.sizeof][] mServerData;
+
     /// Keeps track of the last message that was broadcast out to each client.
     uint[] mCurrentMessageToSend;
 }

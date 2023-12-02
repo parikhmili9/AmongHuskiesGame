@@ -1,5 +1,7 @@
 module clientpacket;
 
+
+import core.stdc.string;
 // Enables communication by sending a client id and a integer representing the move.
 struct ClientPacket
 {
