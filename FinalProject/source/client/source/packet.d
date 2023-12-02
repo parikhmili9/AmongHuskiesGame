@@ -16,9 +16,11 @@ struct Packet
     char[4] playerAssignment;
     // Key is Color Name -> Value is Coordinate.
     //Coord[char] ballCoords;
+
     // Coord[2] ballCoords;
     int[2] ball1Coords;
     int[2] ball2Coords;
+
     // Message for chatting.
     char[200] message;
 
@@ -42,12 +44,6 @@ struct Packet
         return payload;
     }
 
-}
-
-struct Coord
-{
-    int x;
-    int y;
 }
 
 // byte[] serialize(Packet p)

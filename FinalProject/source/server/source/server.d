@@ -6,6 +6,7 @@ import core.thread.osthread;
 import packet;
 import clientpacket;
 import deserializeClient;
+
 // The purpose of the TCPServer is to accept multiple client connections. 
 // Every client that connects will have its own thread for the server to broadcast information to each client.
 class TCPServer
@@ -97,6 +98,8 @@ class TCPServer
                 
                 mServerData ~= buffer;
 
+
+
                 /// After we receive a single message, we'll just 
                 /// immediately broadcast out to all clients some data.
                 broadcastToAllClients();
@@ -138,11 +141,13 @@ class TCPServer
         serverPacket.ball2Coords = ballCoords[1];
         serverPacket.message = "";
 
+
         sending = serverPacket.serialize();
 
         return sending;
 
     }
+
 
     /// Take out the server data from the list and process it.  
     void broadcastToAllClients()
@@ -180,6 +185,7 @@ class TCPServer
         return sen;
     }
 // ----------------[ToDO Ends]------------------------
+
     Packet serverPacket;
 
     /// The listening socket is responsible for handling new client connections.
