@@ -8,8 +8,8 @@ import bindbc.sdl;
 // DrawableTilemap is responsible for drawing the world
 struct TileMap
 {
-    const int MAP_X_SIZE = 50;
-    const int MAP_Y_SIZE = 50;
+    const int MAP_X_SIZE = 20;
+    const int MAP_Y_SIZE = 25;
 
     // Tile map with tiles
     TileSet mTileSet;

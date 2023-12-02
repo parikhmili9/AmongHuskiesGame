@@ -8,6 +8,7 @@ import tile_map : TileMap;
 import tile_set : TileSet;
 import player;
 import clientpacket : ClientPacket;
+import client: TCPClient;
 
 // Load the SDL2 library
 import bindbc.sdl;
@@ -18,6 +19,7 @@ class SDLApp
 
     bool runApplication = true;
     int zoomFactor = 1;
+    TCPClient tcp;
 
     SDL_Event e;
     SDLSupport ret;
@@ -70,7 +72,9 @@ class SDLApp
             writeln("SDL_Init: ", fromStringz(SDL_GetError()));
         }
 
+        this.tcp = TCPClient();
         // every SDL app will need a window and a surface
+        // todo - add params 
         const(char)* WINDOW_NAME = "AmongHuskies^TM HuskyTown".ptr;
         const int WINDOW_WIDTH = 640;
         const int WINDOW_HEIGHT = 800;
@@ -92,72 +96,57 @@ class SDLApp
         writeln("Ending application--good bye!");
     }
 
+    /**
+    * 
+    **/
     void send_movement_client_packet(const ubyte* keyboardState, char player_id)
     {
-        int player_move;
-        ClientPacket cp;
-        if (keyboardState[SDL_SCANCODE_LEFT])
-        {
-            player_move = 1;
-            cp = ClientPacket(player_id, player_move);
-        }
-        else if (keyboardState[SDL_SCANCODE_RIGHT])
-        {
-            player_move = 2;
-            cp = ClientPacket(player_id, player_move);
-        }
-        else if (keyboardState[SDL_SCANCODE_UP])
-        {
-            player_move = 3;
-            cp = ClientPacket(player_id, player_move);
-        }
-        else if (keyboardState[SDL_SCANCODE_DOWN])
-        {
-            player_move = 4;
-            cp = ClientPacket(player_id, player_move);
-        }
+        int playerMove = -1;
+        if (keyboardState[SDL_SCANCODE_LEFT])       { playerMove = 1; }
+        else if (keyboardState[SDL_SCANCODE_RIGHT]) { playerMove = 2; }
+        else if (keyboardState[SDL_SCANCODE_UP])    { playerMove = 3; }
+        else if (keyboardState[SDL_SCANCODE_DOWN])  { playerMove = 4; }
 
-        if (cp)
+        ClientPacket cp;
+        if (playerMove != -1)
         {
             // Send our client packet move.
+            cp = ClientPacket(player_id, playerMove);
+            tcp.sendPacket(cp);
         }
     }
 
     void mainApplicationLoop()
     {
+        // define necessary constants
         const string TILEMAP_PATH = "./assets/tilemap.bmp";
         const string SPRITE_PATH = "./assets/test.bmp";
 
         const int TILE_SIZE = 32;
-        const int X_TILES = 50;
-        const int Y_TILES = 50;
+        const int X_TILES = 20;
+        const int Y_TILES = 25;
 
         // Create a hardware accelerated renderer and load our tiles from an image
         this.renderer = null;
         this.renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+
+        // load in the tilemap and player assets from local storage
         TileSet tileSet = TileSet(renderer, TILEMAP_PATH, TILE_SIZE, X_TILES, Y_TILES);
-        TileMap tileMap = TileMap(tileSet); // render the player
+        TileMap tileMap = TileMap(tileSet);
         Player player = Player(renderer, SPRITE_PATH, 0, 0, 'A');
+        
         while (this.runApplication)
         {
             // Handle events
-            // Events are pushed into an 'event queue' internally in SDL, and then
-            // handled one at a time within this loop for as many events have
-            // been pushed into the internal SDL queue. Thus, we poll until there
-            // are '0' events or a NULL event is returned.
             while (SDL_PollEvent(&(this.e)) != 0)
             {
                 if (e.type == SDL_QUIT)
                 {
                     runApplication = false;
                 }
-                // TODO (Ryan to handle this) - Handle events in the SDL application loop
                 // Get Keyboard input
                 const ubyte* keyboardState = SDL_GetKeyboardState(null);
                 send_movement_client_packet(keyboardState, player.getId());
-
-                int playerX = player.getX();
-                int playerY = player.getY();
 
                 // Check if it's legal to move a direction
                 // TODO: Consider moving this into a function
