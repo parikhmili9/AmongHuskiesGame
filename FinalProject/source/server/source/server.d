@@ -97,8 +97,8 @@ class TCPServer
                 // So we have to use arrays!
                 
                 mServerData ~= buffer;
-
-
+                writeln("Got this from client:");
+                writeln(buffer);
 
                 /// After we receive a single message, we'll just 
                 /// immediately broadcast out to all clients some data.
@@ -168,6 +168,8 @@ class TCPServer
 
                 char[ClientPacket.sizeof] msg = mServerData[mCurrentMessageToSend[idx]];
                 send = checkValid(deserialize(msg));
+                writeln("Sending this");
+                writeln(send);
                 serverToClient.send(send);
                 // Important to increment the message only after sending
                 // the previous message to as many clients as exist.
@@ -181,7 +183,7 @@ class TCPServer
     /// In the form of serialized server packet, and if not, 
     /// Return the serialized packet to be unchanged.
     char[Packet.sizeof] checkValid(ClientPacket data){
-        char[Packet.sizeof] sen; /// Use the function "packet to be sent" to serialize this. 
+        char[Packet.sizeof] sen; /// Use the function "packet to be sent" to serialize this.
         return sen;
     }
 // ----------------[ToDO Ends]------------------------
@@ -199,4 +201,9 @@ class TCPServer
 
     /// Keeps track of the last message that was broadcast out to each client.
     uint[] mCurrentMessageToSend;
+}
+void main(){
+	// Note: I'm just using the defaults here.
+	TCPServer server = new TCPServer;
+	server.run();
 }

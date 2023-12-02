@@ -72,7 +72,7 @@ class SDLApp
             writeln("SDL_Init: ", fromStringz(SDL_GetError()));
         }
 
-        this.tcp = TCPClient();
+        this.tcp = new TCPClient();
         // every SDL app will need a window and a surface
         // todo - add params 
         const(char)* WINDOW_NAME = "AmongHuskies^TM HuskyTown".ptr;
@@ -112,7 +112,7 @@ class SDLApp
         {
             // Send our client packet move.
             cp = ClientPacket(player_id, playerMove);
-            tcp.sendPacket(cp);
+            // tcp.sendPacket(cp);
         }
     }
 

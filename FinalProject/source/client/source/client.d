@@ -2,6 +2,9 @@ module client;
 import std.socket;
 import std.stdio;
 import core.thread.osthread;
+import packet;
+import deserializeServer;
+import clientpacket;
 
 // The purpose of the TCPClient class is to connect to a server and send messages.
 class TCPClient
@@ -15,6 +18,7 @@ class TCPClient
         // Create a socket for connecting to a server
         mSocket = new Socket(AddressFamily.INET, SocketType.STREAM);
 
+        writeln(port);
         // Socket needs an 'endpoint', so we determine where we are going to connect to.
         mSocket.connect(new InternetAddress(host, port));
         writeln("Client conncted to server");
@@ -46,6 +50,9 @@ class TCPClient
         // Spin up the new thread that will just take in data from the server
         new Thread({ receiveDataFromServer(); }).start();
 
+        sendMove();
+        writeln("Packet sent");
+
         write(">");
         while (clientRunning)
         {
@@ -66,15 +73,40 @@ class TCPClient
         while (true)
         {
 
-            char[80] buffer;
+            char[Packet.sizeof] buffer;
 
             auto fromServer = buffer[0 .. mSocket.receive(buffer)];
             if (fromServer.length > 0)
             {
+                Packet serverData = deserialize(buffer);
+                updateGameState(serverData);
                 writeln("(from server)>", fromServer);
             }
         }
     }
+
+    void updateGameState(Packet serverData){
+        /// Write the client code here!
+        
+    }
+    void sendMove(){
+        char[ClientPacket.sizeof] buffer;
+        /// Remove the line below ---------------
+
+        ClientPacket pac;
+        pac.client_id = 'A';
+        pac.move_num = 2;
+        buffer = pac.serialize();    
+        /// ------------------------
+        /// Some logic comes here
+
+        mSocket.send(buffer);
+    }
     /// The client socket connected to a server
     Socket mSocket;
+
+}
+void main(){
+	TCPClient client = new TCPClient();
+	client.run();
 }

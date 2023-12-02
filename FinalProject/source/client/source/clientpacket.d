@@ -27,8 +27,8 @@ struct ClientPacket
     {
         char[ClientPacket.sizeof] payload;
         memmove(&payload, &client_id, client_id.sizeof);
-        memmove(&payload, &move_num, move_num.sizeof);
-        memmove(&payload, &message, message.sizeof);
+        memmove(&payload[client_id.sizeof], &move_num, move_num.sizeof);
+        memmove(&payload[client_id.sizeof + move_num.sizeof], &message, message.sizeof);
         return payload;
     }
 }
