@@ -1,8 +1,13 @@
 import std.stdio;
-import server : TCPServer;
+import source.server : TCPServer;
+import clientpacket;
+import deserializeClient;
+
+
 
 void main()
 {
 	TCPServer server = new TCPServer;
 	server.run();
+
 }
