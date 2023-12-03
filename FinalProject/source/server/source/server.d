@@ -6,6 +6,11 @@ import core.thread.osthread;
 import packet;
 import clientpacket;
 import deserializeClient;
+// import model.source.huskyplayground: HuskyPlayGround;
+import huskyplayground: HuskyPlayGround;
+
+
+
 
 // The purpose of the TCPServer is to accept multiple client connections. 
 // Every client that connects will have its own thread for the server to broadcast information to each client.
@@ -129,7 +134,7 @@ class TCPServer
     // The information to this packet will be fed by the game logic
 
     // Also note that in this language, 2d array is as follows: int[num Columns][num rows]!
-    char[Packet.sizeof] packetToBeSent(int[2][4] playerCoords, char[4] playerAssignment, int[2][2] ballCoords){
+    char[Packet.sizeof] packetToBeSent(int[2][4] playerCoords, char[4] playerAssignment, int[2][2] ballCoords, char[80] message ){
         char[Packet.sizeof] sending;
         
         serverPacket.player1Coords = playerCoords[0];
@@ -139,7 +144,7 @@ class TCPServer
         serverPacket.playerAssignment = playerAssignment;
         serverPacket.ball1Coords = ballCoords[0];
         serverPacket.ball2Coords = ballCoords[1];
-        serverPacket.message = "";
+        serverPacket.message = message;
 
 
         sending = serverPacket.serialize();
@@ -183,7 +188,32 @@ class TCPServer
     /// In the form of serialized server packet, and if not, 
     /// Return the serialized packet to be unchanged.
     char[Packet.sizeof] checkValid(ClientPacket data){
+        HuskyPlayGround h = new HuskyPlayGround();
         char[Packet.sizeof] sen; /// Use the function "packet to be sent" to serialize this.
+        char clientId = data.client_id;
+        int command = data.move_num;
+        char[80] msg = data.message;
+
+    // 1. Move Left
+    // 2. Move Right
+    // 3. Move Up
+    // 4. Move Down
+    // 5. Pick up Ball
+    // 6. Drop off Ball
+
+        string playerName = "";
+        playerName ~= clientId;
+        if(command == 1){
+            h.movePlayerLeft(playerName);
+        }else if(command==2){
+            h.movePlayerRight(playerName);
+        }else if(command == 3) {
+            h.movePlayerUp(playerName);
+        } else if(command == 4) {
+            h.movePlayerDown(playerName);
+        }
+
+        sen = packetToBeSent(h.getUpdatedPlayerLocations(),h.getPlayerNames(), h.getBallCoords(), msg );
         return sen;
     }
 // ----------------[ToDO Ends]------------------------
@@ -205,5 +235,8 @@ class TCPServer
 void main(){
 	// Note: I'm just using the defaults here.
 	TCPServer server = new TCPServer;
+    HuskyPlayGround h = new HuskyPlayGround();
+    string path = "HuskyPlayGround.txt";
+    h.readTextFile(path);
 	server.run();
 }

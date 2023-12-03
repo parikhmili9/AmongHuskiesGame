@@ -22,7 +22,7 @@ struct Packet
     int[2] ball2Coords;
 
     // Message for chatting.
-    char[200] message;
+    char[80] message;
 
     // Serialize packet
     char[Packet.sizeof] serialize()
