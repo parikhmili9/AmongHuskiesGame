@@ -85,11 +85,11 @@ class HuskyPlayGround : GameWorld!()
         writeln("Team B Players: ", numberOfTeamBPlayers);
 
         // Process player details (Lines 4-9)
-        for (size_t i = 3; i < 9; ++i)
+        for (size_t i = 3; i < 7; ++i)
         {
             auto playerDetails = lines[i].strip.split(' ');
-            string playerName = playerDetails[0];
-            string playerTeam = playerDetails[1];
+            string playerName = cast(string)playerDetails[0];
+            string playerTeam = cast(string)playerDetails[1];
             int startX = playerDetails[2].to!int;
             int startY = playerDetails[3].to!int;
 
@@ -110,13 +110,13 @@ class HuskyPlayGround : GameWorld!()
         }
 
         // Process husky details (Lines 10-13)
-        for (size_t i = 9; i < 13; ++i)
+        for (size_t i = 7; i < 9; ++i)
         {
             auto huskyDetails = lines[i].strip.split(' ');
-            string huskyName = huskyDetails[0];
-            string huskyTeam = huskyDetails[1];
-            int startX = huskyDetails[2].to!int;
-            int startY = huskyDetails[3].to!int;
+            string huskyName = cast(string)huskyDetails[0];
+            string huskyTeam = cast(string)huskyDetails[0];
+            int startX = huskyDetails[1].to!int;
+            int startY = huskyDetails[2].to!int;
 
             huskies ~= new TeamHusky(huskyName, huskyTeam, startX, startY, startX, startY);
 
