@@ -11,7 +11,7 @@ interface GameWorld()
     void movePlayerUp(string playerName);
     void movePlayerDown(string playerName);
     void pickHusky(string playerName);
-    void dropHusky(string playerName);
+    void dropHusky(string playerName, int x, int y);
     // void setGameTime(int gameTime);
     string endGame();
     void startGame();

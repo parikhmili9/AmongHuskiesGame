@@ -3,8 +3,8 @@ TeamA 3
 TeamB 3
 A R 3 10
 B R 10 10
-C B 17 20
-D B 3 20
-R 1 1
+C B 17 3
+D B 17 20
+R 17 0
 B 20 25
  

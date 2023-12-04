@@ -20,9 +20,8 @@ class HuskyPlayGround : GameWorld!()
     private string teamBName;
     private int numberOfTeamBPlayers;
     private TeamPlayer[] players;
-    // private TeamBPlayer[] teamBplayers;
     private TeamHusky[] huskies;
-    // private TeamBHusky[] teamBHuskies;
+    // private Spectator[] spectators;
     private string[string] playerHuskyPickedMap;
     private int teamAScore;
     private int teamBScore;
@@ -143,22 +142,30 @@ class HuskyPlayGround : GameWorld!()
         {
             if (player.getPlayerName() == playerName)
             {
-                int currXPos = player.getCurrXPos();
-                int currYPos = player.getCurrYPos();
-                player.setCurrXPos(currXPos);
-                player.setCurrYPos(currYPos + 1);
+                if(noCollisions(playerName)){
+                    int currXPos = player.getCurrXPos();
+                    int currYPos = player.getCurrYPos();
+                    player.setCurrXPos(currXPos + 1);
+                    player.setCurrYPos(currYPos);
 
-                if (player.hasHuskyPicked())
-                {
-                    if (playerName in playerHuskyPickedMap)
+                    //checks if after the move there is a ball then picks it up
+                    checkPickHusky(playerName);
+                    checkDropHusky(playerName); 
+
+                    //If player has already picked the opposite team's ball then it 
+                    //also updates the husky ball's positions along with the player positions
+                    if (player.hasHuskyPicked())
                     {
-                        string huskyN = playerHuskyPickedMap[playerName];
-                        foreach (TeamHusky husky; huskies)
+                        if (playerName in playerHuskyPickedMap)
                         {
-                            if (husky.getHuskyName() == huskyN)
+                            string huskyN = playerHuskyPickedMap[playerName];
+                            foreach (TeamHusky husky; huskies)
                             {
-                                husky.setCurrXPos(currXPos);
-                                husky.setCurrYPos(currYPos + 1);
+                                if (husky.getHuskyName() == huskyN)
+                                {
+                                    husky.setCurrXPos(currXPos);
+                                    husky.setCurrYPos(currYPos + 1);
+                                }
                             }
                         }
                     }
@@ -173,22 +180,30 @@ class HuskyPlayGround : GameWorld!()
         {
             if (player.getPlayerName == playerName)
             {
-                int currXPos = player.getCurrXPos;
-                int currYPos = player.getCurrYPos;
-                player.setCurrXPos(currXPos);
-                player.setCurrYPos(currYPos - 1);
+                if(noCollisions(playerName)){
+                    int currXPos = player.getCurrXPos;
+                    int currYPos = player.getCurrYPos;
+                    player.setCurrXPos(currXPos - 1);
+                    player.setCurrYPos(currYPos);
 
-                if (player.hasHuskyPicked())
-                {
-                    if (playerName in playerHuskyPickedMap)
+                    //checks if after the move there is a ball then picks it up
+                    checkPickHusky(playerName);
+                    checkDropHusky(playerName); 
+
+                    //If player has already picked the opposite team's ball then it 
+                    //also updates the husky ball's positions along with the player positions
+                    if (player.hasHuskyPicked())
                     {
-                        string huskyN = playerHuskyPickedMap[playerName];
-                        foreach (TeamHusky husky; huskies)
+                        if (playerName in playerHuskyPickedMap)
                         {
-                            if (husky.getHuskyName() == huskyN)
+                            string huskyN = playerHuskyPickedMap[playerName];
+                            foreach (TeamHusky husky; huskies)
                             {
-                                husky.setCurrXPos(currXPos);
-                                husky.setCurrYPos(currYPos - 1);
+                                if (husky.getHuskyName() == huskyN)
+                                {
+                                    husky.setCurrXPos(currXPos);
+                                    husky.setCurrYPos(currYPos - 1);
+                                }
                             }
                         }
                     }
@@ -203,22 +218,34 @@ class HuskyPlayGround : GameWorld!()
         {
             if (player.getPlayerName == playerName)
             {
-                int currXPos = player.getCurrXPos;
-                int currYPos = player.getCurrYPos;
-                player.setCurrXPos(currXPos - 1);
-                player.setCurrYPos(currYPos);
+                if(noCollisions(playerName)){
+                    int currXPos = player.getCurrXPos;
+                    int currYPos = player.getCurrYPos;
+                    player.setCurrXPos(currXPos);
+                    player.setCurrYPos(currYPos - 1);
 
-                if (player.hasHuskyPicked())
-                {
-                    if (playerName in playerHuskyPickedMap)
+                    writeln("Moved up");
+                    writeln("Player X:", currXPos);
+                    writeln("Player Y:", currYPos);
+
+                    //checks if after the move there is a ball then picks it up
+                    checkPickHusky(playerName);
+                    checkDropHusky(playerName); 
+
+                    //If player has already picked the opposite team's ball then it 
+                    //also updates the husky ball's positions along with the player positions
+                    if (player.hasHuskyPicked())
                     {
-                        string huskyN = playerHuskyPickedMap[playerName];
-                        foreach (TeamHusky husky; huskies)
+                        if (playerName in playerHuskyPickedMap)
                         {
-                            if (husky.getHuskyName() == huskyN)
+                            string huskyN = playerHuskyPickedMap[playerName];
+                            foreach (TeamHusky husky; huskies)
                             {
-                                husky.setCurrXPos(currXPos - 1);
-                                husky.setCurrYPos(currYPos);
+                                if (husky.getHuskyName() == huskyN)
+                                {
+                                    husky.setCurrXPos(currXPos - 1);
+                                    husky.setCurrYPos(currYPos);
+                                }
                             }
                         }
                     }
@@ -233,22 +260,30 @@ class HuskyPlayGround : GameWorld!()
         {
             if (player.getPlayerName == playerName)
             {
-                int currXPos = player.getCurrXPos;
-                int currYPos = player.getCurrYPos;
-                player.setCurrXPos(currXPos + 1);
-                player.setCurrYPos(currYPos);
+                if(noCollisions(playerName)){
+                    int currXPos = player.getCurrXPos;
+                    int currYPos = player.getCurrYPos;
+                    player.setCurrXPos(currXPos);
+                    player.setCurrYPos(currYPos + 1);
+                    writeln("Moved down");
+                    //checks if after the move there is a ball then picks it up
+                    checkPickHusky(playerName); 
+                    checkDropHusky(playerName);
 
-                if (player.hasHuskyPicked())
-                {
-                    if (playerName in playerHuskyPickedMap)
+                    //If player has already picked the opposite team's ball then it 
+                    //also updates the husky ball's positions along with the player positions
+                    if (player.hasHuskyPicked())
                     {
-                        string huskyN = playerHuskyPickedMap[playerName];
-                        foreach (TeamHusky husky; huskies)
+                        if (playerName in playerHuskyPickedMap)
                         {
-                            if (husky.getHuskyName() == huskyN)
+                            string huskyN = playerHuskyPickedMap[playerName];
+                            foreach (TeamHusky husky; huskies)
                             {
-                                husky.setCurrXPos(currXPos + 1);
-                                husky.setCurrYPos(currYPos);
+                                if (husky.getHuskyName() == huskyN)
+                                {
+                                    husky.setCurrXPos(currXPos + 1);
+                                    husky.setCurrYPos(currYPos);
+                                }
                             }
                         }
                     }
@@ -296,6 +331,48 @@ class HuskyPlayGround : GameWorld!()
         return res;
     }
 
+    void checkPickHusky(string playerName){
+        foreach (TeamPlayer player; players)
+        {
+            if(player.getPlayerName() == playerName){
+                int xP = player.getCurrXPos();
+                int yP = player.getCurrYPos();
+                string playerTeam = player.getPlayerTeam();
+
+                foreach (TeamHusky husky; huskies)
+                {
+                    if(husky.getCurrXPos() == xP 
+                    && husky.getCurrYPos() == yP
+                    && husky.getHuskyTeam() != playerTeam){
+                        pickHusky(playerName);
+                        writeln("Picked husky");
+                    }
+                }
+            }
+        }
+    }
+
+    void checkDropHusky(string playerName){
+        foreach (TeamPlayer player; players){
+            if(player.getPlayerName() == playerName && player.getPlayerTeam() == "R"){
+                int xP = player.getCurrXPos();
+                int yP = player.getCurrYPos();
+                if(xP >= 0 && xP <25 && yP == 0 && player.hasHuskyPicked()){
+                    dropHusky(playerName, xP, yP);
+                    writeln("Dropped Husky");
+                }
+            }
+            if(player.getPlayerName() == playerName && player.getPlayerTeam() == "B"){
+                int xP = player.getCurrXPos();
+                int yP = player.getCurrYPos();
+                if(xP >= 0 && xP <25 && yP == 24 && player.hasHuskyPicked()){
+                    dropHusky(playerName, xP, yP);
+                    writeln("Dropped Husky");
+                }
+            }
+        }
+    }
+
     void pickHusky(string playerName)
     {
         if (isHuskyDropped == false)
@@ -315,10 +392,17 @@ class HuskyPlayGround : GameWorld!()
                             && husky.getCurrYPos() == husky.getStartYPos()
                             && husky.getHuskyTeam() != player.getPlayerTeam())
                         {
+                            
                             player.setPickedHusky();
                             husky.setCurrXPos(player.getCurrXPos());
                             husky.setCurrYPos(player.getCurrYPos());
                             playerHuskyPickedMap[player.getPlayerName()] = husky.getHuskyName();
+
+                            writeln("Pick husky----------");
+                            writeln("Player x: ", playerCurrXPos);
+                            writeln("Player y: ", playerCurrYPos);
+                            writeln("Husky x: ", husky.getCurrXPos());
+                            writeln("Husky y: ", husky.getCurrYPos());
                         }
                     }
                 }
@@ -326,40 +410,59 @@ class HuskyPlayGround : GameWorld!()
         }
     }
 
-    void dropHusky(string playerName)
+    void dropHusky(string playerName, int x, int y)
     {
         foreach (TeamPlayer player; players)
         {
             if (player.getPlayerName() == playerName && player.hasHuskyPicked() == true)
             {
-                if (player.getCurrYPos() == 1)
+                if (playerName in playerHuskyPickedMap)
                 {
-                    if (playerName in playerHuskyPickedMap)
+                    string huskyN = playerHuskyPickedMap[playerName];
+                    foreach (TeamHusky husky; huskies)
                     {
-                        string huskyN = playerHuskyPickedMap[playerName];
-                        foreach (TeamHusky husky; huskies)
+                        writeln("Here");
+                        // husky.setCurrXPos(player.getCurrXPos());
+                        // husky.setCurrYPos(player.getCurrYPos());
+                        husky.setCurrXPos(x);
+                        husky.setCurrYPos(y);
+                        isHuskyDropped = true;
+
+                        writeln("Drop husky--------------");
+                        writeln("Player x: ", player.getCurrXPos());
+                        writeln("Player y: ", player.getCurrYPos());
+                        writeln("Husky x: ", husky.getCurrXPos());
+                        writeln("Husky y: ", husky.getCurrYPos());
+
+                        string team = player.getPlayerTeam();
+                        if (team == "TeamA")
                         {
-                            husky.setCurrXPos(player.getCurrXPos());
-                            husky.setCurrYPos(player.getCurrYPos());
-                            isHuskyDropped = true;
-                            string team = player.getPlayerTeam();
-                            if (team == "TeamA")
-                            {
-                                teamAScore = teamAScore + 1;
-                            }
-                            if (team == "TeamB")
-                            {
-                                teamBScore = teamBScore + 1;
-                            }
+                            teamAScore = teamAScore + 1;
+                        }
+                        if (team == "TeamB")
+                        {
+                            teamBScore = teamBScore + 1;
                         }
                     }
                 }
-                else
-                {
-                    message = "Invalid move. Not your home destination";
+            }
+        }
+    }
+
+    bool noCollisions(string playerName){
+        bool flag = false;
+        foreach (TeamPlayer player1; players){
+            if(player1.getPlayerName() == playerName){
+                foreach (TeamPlayer player2; players){
+                if(player1.getCurrXPos() != player2.getCurrXPos()+1
+                && player1.getCurrXPos() != player2.getStartXPos()-1
+                && player1.getCurrYPos() != player2.getCurrYPos()+1
+                && player1.getCurrYPos() != player2.getCurrYPos()-1)
+                    flag = true;
                 }
             }
         }
+        return flag;
     }
 
     string endGame()
@@ -375,6 +478,15 @@ class HuskyPlayGround : GameWorld!()
         }
         return winner;
     }
+
+    // void addSpectators(){
+
+    // }
+
+    // void createSpectators(int specId, int currXPos, int currYPos){
+    //     Spectator spec = new Spectator(specId, currXPos, currYPos);
+    //     spectators ~= spec;
+    // }
 
     void startGame()
     {
@@ -407,9 +519,18 @@ class HuskyPlayGround : GameWorld!()
     }
 }
 
-// void main()
-// {
-//     //Just to test all methods here are working!!
-//     HuskyPlayGround ground = new HuskyPlayGround();
-//     ground.readTextFile("source/HuskyPlayground.txt");
-// }
+void main()
+{
+    //Just to test all methods here are working!!
+    HuskyPlayGround ground = new HuskyPlayGround();
+    ground.readTextFile("HuskyPlayground.txt");
+    
+    writeln("-----------------Testing ------------------");
+    ground.movePlayerUp("C");
+    ground.movePlayerUp("C");
+    ground.movePlayerUp("C");
+
+    for(int i = 0; i<26; i++){
+        ground.movePlayerDown("C");
+    }
+}
