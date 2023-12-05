@@ -2,11 +2,11 @@ module source.server;
 
 import std.socket;
 import std.stdio;
+import std.range;
 import core.thread.osthread;
 import packet;
 import clientpacket;
 import deserializeClient;
-// import model.source.huskyplayground: HuskyPlayGround;
 import huskyplayground: HuskyPlayGround;
 
 
@@ -20,10 +20,21 @@ class TCPServer
     /// Constructor
     /// By default I have choosen localhost and a port that is likely to
     /// be free.
+
+    HuskyPlayGround h;
+
+    char[4] playersList;
+    char[] playerListDup;
+
     this(string host = "localhost", ushort port = 50001, ushort maxConnectionsBacklog = 4)
     {
         writeln("Starting server...");
         writeln("Server must be started before clients may join");
+
+        h = new HuskyPlayGround();
+        h.initialize();
+        playersList = h.getPlayerNames();
+        playerListDup = playersList.dup;
 
         mListeningSocket = new Socket(AddressFamily.INET, SocketType.STREAM);
 
@@ -54,15 +65,30 @@ class TCPServer
             writeln("(me)", newClientSocket.localAddress(), "<---->", newClientSocket.remoteAddress(), "(client)");
 
             mClientsConnectedToServer ~= newClientSocket;
+
             // Set the current client to have '0' total messages received.
             mCurrentMessageToSend ~= 0;
 
             writeln("Friends on server = ", mClientsConnectedToServer.length);
             // Let's send our new client friend a welcome message
-            newClientSocket.send("Hello friend\0");
+            // newClientSocket.send("Hello friend\0");
 
-            newClientSocket.send(dummyPacket());
-            writeln("Dummy packet send to clients");
+            char clientIdToSend;
+            if(!playerListDup.empty){
+                clientIdToSend = playerListDup[0];
+                playerListDup.popFront();
+                ubyte[] data_clientIdToSend = [cast(ubyte)clientIdToSend];
+                newClientSocket.send(data_clientIdToSend);
+                writeln("Sent to client: ", clientIdToSend);
+            } else {
+                char specId = 'S';
+                ubyte[] data_clientIdToSendForSpec = [cast(ubyte)specId];
+                newClientSocket.send(data_clientIdToSendForSpec);
+                write("Send to spectator clients: ", specId);
+            }
+
+            newClientSocket.send(initialPacketToClients());
+            writeln("Initial packet send to clients");
 
             // Now we'll spawn a new thread for the client that
             // has recently joined.
@@ -158,10 +184,19 @@ class TCPServer
 
     char[Packet.sizeof] dummyPacket(){
         int[2][4] pCoords = [[3,10], [10,10], [17,3], [17,20]];
-        int[2][2] hCoords = [[17,0], [20,25]];
+        int[2][2] bCoords = [[17,0], [20,25]];
         char[4] players = ['A', 'B', 'C', 'D'];
         char[80] msg = '\0';
-        return packetToBeSent(pCoords, players, hCoords, msg);
+        return packetToBeSent(pCoords, players, bCoords, msg);
+    }
+
+    char[Packet.sizeof] initialPacketToClients(){
+        int[2][4] pCoords = h.getUpdatedPlayerLocations();
+        writeln(pCoords);
+        int[2][2] bCoords = h.getBallCoords();
+        char[4] playerChar = h.getPlayerNames();
+        char[80] msg = '\0';
+        return packetToBeSent(pCoords, playerChar, bCoords, msg);
     }
 
 
@@ -199,7 +234,7 @@ class TCPServer
     /// In the form of serialized server packet, and if not, 
     /// Return the serialized packet to be unchanged.
     char[Packet.sizeof] checkValid(ClientPacket data){
-        HuskyPlayGround h = new HuskyPlayGround();
+        
         char[Packet.sizeof] sen; /// Use the function "packet to be sent" to serialize this.
         char clientId = data.client_id;
         int command = data.move_num;

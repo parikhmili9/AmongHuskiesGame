@@ -33,14 +33,11 @@ class HuskyPlayGround : GameWorld!()
     {
         rowsX = 50; //temp - change later
         columnsY = 100;
-
-        
     }
 
     void initialize(){
-        HuskyPlayGround h = new HuskyPlayGround();
-        string path = "HuskyPlayGround.txt";
-        h.readTextFile(path);
+        // string path = "HuskyPlayground.txt";
+        readTextFile("source/HuskyPlayground.txt");
     }
 
     int getRows()
