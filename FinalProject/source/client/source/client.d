@@ -86,7 +86,7 @@ class TCPClient
             {
                 Packet serverData = deserialize(buffer);
                 updateGameState(serverData);
-                writeln("(from server)>", fromServer);
+                writeln("(from server)>", serverData.message);
             }
         }
     }
