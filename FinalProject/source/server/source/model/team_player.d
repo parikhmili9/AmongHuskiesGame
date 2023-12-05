@@ -1,4 +1,4 @@
-module teamplayer;
+module server.source.model.team_player;
 
 class TeamPlayer
 {
@@ -36,18 +36,10 @@ class TeamPlayer
         return startXPos;
     }
 
-    // void setStartXPos(int xStartPos) {
-    //     startXPos = xStartPos;
-    // }
-
     int getStartYPos()
     {
         return startYPos;
     }
-
-    // void setStartYPos(int yStartPos) {
-    //     startYPos = yStartPos;
-    // }
 
     int getCurrXPos()
     {

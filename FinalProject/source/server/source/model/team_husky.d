@@ -1,4 +1,4 @@
-module teamhusky;
+module server.source.model.team_husky;
 
 class TeamHusky
 {
@@ -34,18 +34,10 @@ class TeamHusky
         return startXPos;
     }
 
-    // void setStartXPos(int xStartPos) {
-    //     startXPos = xStartPos;
-    // }
-
     int getStartYPos()
     {
         return startYPos;
     }
-
-    // void setStartYPos(int yStartPos) {
-    //     startYPos = yStartPos;
-    // }
 
     int getCurrXPos()
     {

@@ -1,20 +1,20 @@
-module sdl_app;
+module source.graphics.sdl_client;
 
 // Import D standard libraries
 import std.stdio;
 import std.string;
 
-import tile_map : TileMap;
-import tile_set : TileSet;
-import player;
-import clientpacket : ClientPacket;
-import client: TCPClient;
+import client.source.graphics.tile_map.tile_map : TileMap;
+import client.source.graphics.tile_map.tile_set : TileSet;
+import client.source.graphics.player.player;
+import client.source.packet.client_packet : ClientPacket;
+import client.source.client : TCPClient;
 
 // Load the SDL2 library
 import bindbc.sdl;
 import loader = bindbc.loader.sharedlib;
 
-class SDLApp
+class SDLClient
 {
 
     bool runApplication = true;
@@ -102,10 +102,22 @@ class SDLApp
     void send_movement_client_packet(const ubyte* keyboardState, char player_id)
     {
         int playerMove = -1;
-        if (keyboardState[SDL_SCANCODE_LEFT])       { playerMove = 1; }
-        else if (keyboardState[SDL_SCANCODE_RIGHT]) { playerMove = 2; }
-        else if (keyboardState[SDL_SCANCODE_UP])    { playerMove = 3; }
-        else if (keyboardState[SDL_SCANCODE_DOWN])  { playerMove = 4; }
+        if (keyboardState[SDL_SCANCODE_LEFT])
+        {
+            playerMove = 1;
+        }
+        else if (keyboardState[SDL_SCANCODE_RIGHT])
+        {
+            playerMove = 2;
+        }
+        else if (keyboardState[SDL_SCANCODE_UP])
+        {
+            playerMove = 3;
+        }
+        else if (keyboardState[SDL_SCANCODE_DOWN])
+        {
+            playerMove = 4;
+        }
 
         ClientPacket cp;
         if (playerMove != -1)
@@ -134,7 +146,7 @@ class SDLApp
         TileSet tileSet = TileSet(renderer, TILEMAP_PATH, TILE_SIZE, X_TILES, Y_TILES);
         TileMap tileMap = TileMap(tileSet);
         Player player = Player(renderer, SPRITE_PATH, 0, 0, 'A');
-        
+
         while (this.runApplication)
         {
             // Handle events

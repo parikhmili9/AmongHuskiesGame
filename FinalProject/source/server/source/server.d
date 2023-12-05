@@ -4,21 +4,15 @@ import std.socket;
 import std.stdio;
 import std.range;
 import core.thread.osthread;
-import packet;
-import clientpacket;
-import deserializeClient;
-import huskyplayground: HuskyPlayGround;
-
-
+import server.source.packet.packet;
+import server.source.packet.client_packet;
+import server.source.packet.deserialize_client;
+import server.source.model.husky_playground : HuskyPlayGround;
 
 // The purpose of the TCPServer is to accept multiple client connections. 
 // Every client that connects will have its own thread for the server to broadcast information to each client.
 class TCPServer
 {
-
-    /// Constructor
-    /// By default I have choosen localhost and a port that is likely to
-    /// be free.
 
     HuskyPlayGround h;
 
@@ -37,8 +31,10 @@ class TCPServer
 
     /// Keeps track of the last message that was broadcast out to each client.
     uint[] mCurrentMessageToSend;
-  
 
+    /// Constructor
+    /// By default I have choosen localhost and a port that is likely to
+    /// be free.
     this(string host = "localhost", ushort port = 50001, ushort maxConnectionsBacklog = 4)
     {
         writeln("Starting server...");
@@ -83,19 +79,20 @@ class TCPServer
             mCurrentMessageToSend ~= 0;
 
             writeln("Friends on server = ", mClientsConnectedToServer.length);
-            // Let's send our new client friend a welcome message
-            // newClientSocket.send("Hello friend\0");
 
             char clientIdToSend;
-            if(!playerListDup.empty){
+            if (!playerListDup.empty)
+            {
                 clientIdToSend = playerListDup[0];
                 playerListDup.popFront();
-                ubyte[] data_clientIdToSend = [cast(ubyte)clientIdToSend];
+                ubyte[] data_clientIdToSend = [cast(ubyte) clientIdToSend];
                 newClientSocket.send(data_clientIdToSend);
                 writeln("Sent to client: ", clientIdToSend);
-            } else {
-                char specId = 'S';
-                ubyte[] data_clientIdToSendForSpec = [cast(ubyte)specId];
+            }
+            else
+            {
+                char specId = '$';
+                ubyte[] data_clientIdToSendForSpec = [cast(ubyte) specId];
                 newClientSocket.send(data_clientIdToSendForSpec);
                 write("Send to spectator clients: ", specId);
             }
@@ -185,7 +182,12 @@ class TCPServer
     // The information to this packet will be fed by the game logic
 
     // Also note that in this language, 2d array is as follows: int[num Columns][num rows]!
-    char[Packet.sizeof] packetToBeSent(int[2][4] playerCoords, char[4] playerAssignment, int[2][2] ballCoords, char[80] message)
+    char[Packet.sizeof] packetToBeSent(
+        int[2][4] playerCoords,
+        char[4] playerAssignment,
+        int[2][2] ballCoords,
+        char[80] message
+    )
     {
         char[Packet.sizeof] sending;
 
@@ -193,7 +195,9 @@ class TCPServer
         serverPacket.player2Coords = playerCoords[1];
         serverPacket.player3Coords = playerCoords[2];
         serverPacket.player4Coords = playerCoords[3];
+
         serverPacket.playerAssignment = playerAssignment;
+
         serverPacket.ball1Coords = ballCoords[0];
         serverPacket.ball2Coords = ballCoords[1];
         serverPacket.message = message;
@@ -204,15 +208,17 @@ class TCPServer
 
     }
 
-    char[Packet.sizeof] dummyPacket(){
-        int[2][4] pCoords = [[3,10], [10,10], [17,3], [17,20]];
-        int[2][2] bCoords = [[17,0], [20,25]];
+    char[Packet.sizeof] dummyPacket()
+    {
+        int[2][4] pCoords = [[3, 10], [10, 10], [17, 3], [17, 20]];
+        int[2][2] bCoords = [[17, 0], [20, 25]];
         char[4] players = ['A', 'B', 'C', 'D'];
         char[80] msg = '\0';
         return packetToBeSent(pCoords, players, bCoords, msg);
     }
 
-    char[Packet.sizeof] initialPacketToClients(){
+    char[Packet.sizeof] initialPacketToClients()
+    {
         int[2][4] pCoords = h.getUpdatedPlayerLocations();
         writeln(pCoords);
         int[2][2] bCoords = h.getBallCoords();
@@ -225,13 +231,7 @@ class TCPServer
     {
         foreach (clientSocket; mClientsConnectedToServer)
         {
-            // Don't send the message back to the sender
-            // if (clientSocket != senderSocket)
-            // {
-            // Assuming serializeClient is a function that serializes a string as a ClientPacket
-
             clientSocket.send(buffer);
-            // }
         }
     }
 
@@ -269,7 +269,8 @@ class TCPServer
     /// In the form of serialized server packet, and if not, 
     /// Return the serialized packet to be unchanged.
 
-    char[Packet.sizeof] checkValid(ClientPacket data){
+    char[Packet.sizeof] checkValid(ClientPacket data)
+    {
         char[Packet.sizeof] sen; /// Use the function "packet to be sent" to serialize this.
         char clientId = data.client_id;
         int command = data.move_num;
@@ -279,8 +280,6 @@ class TCPServer
         // 2. Move Right
         // 3. Move Up
         // 4. Move Down
-        // 5. Pick up Ball
-        // 6. Drop off Ball
 
         string playerName = "";
         playerName ~= clientId;
@@ -304,15 +303,4 @@ class TCPServer
         sen = packetToBeSent(h.getUpdatedPlayerLocations(), h.getPlayerNames(), h.getBallCoords(), msg);
         return sen;
     }
-    // ----------------[ToDO Ends]------------------------
-
-   
-// void main(){
-// 	// Note: I'm just using the defaults here.
-// 	TCPServer server = new TCPServer;
-//     HuskyPlayGround h = new HuskyPlayGround();
-//     string path = "HuskyPlayGround.txt";
-//     h.readTextFile(path);
-// 	server.run();
-   
 }

@@ -1,10 +1,10 @@
-module client;
+module client.source.client;
 import std.socket;
 import std.stdio;
 import core.thread.osthread;
-import packet;
-import deserializeServer;
-import clientpacket;
+import client.source.packet.packet;
+import client.source.packet.deserialize_server;
+import client.source.packet.client_packet;
 
 // The purpose of the TCPClient class is to connect to a server and send messages.
 class TCPClient
@@ -120,7 +120,3 @@ class TCPClient
     char clientId;
 
 }
-// void main(){
-// 	TCPClient client = new TCPClient();
-// 	client.run();
-// }

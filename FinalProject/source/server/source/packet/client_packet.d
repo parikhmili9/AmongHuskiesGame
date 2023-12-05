@@ -1,4 +1,4 @@
-module clientpacket;
+module server.source.packet.client_packet;
 
 import core.stdc.string;
 
@@ -11,13 +11,12 @@ struct ClientPacket
     // 2. Move Right
     // 3. Move Up
     // 4. Move Down
-    // 5. Pick up Ball
-    // 6. Drop off Ball
     int move_num;
 
     // Send a message.
     char[80] message;
 
+    // Converts a ClientPacket to a character buffer to be passed to the server.
     char[ClientPacket.sizeof] serialize()
     {
         char[ClientPacket.sizeof] payload;

@@ -1,6 +1,8 @@
+module client.source.graphics.player.player;
+
 import bindbc.sdl;
-import sprite;
-import clientpacket : ClientPacket;
+import client.source.graphics.player.sprite;
+import client.source.packet.client_packet : ClientPacket;
 
 struct Player
 {

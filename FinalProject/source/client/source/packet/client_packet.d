@@ -1,4 +1,4 @@
-module clientpacket;
+module client.source.packet.client_packet;
 
 import core.stdc.string;
 
@@ -11,7 +11,6 @@ struct ClientPacket
     // 2. Move Right
     // 3. Move Up
     // 4. Move Down
-    // 5. Pick up Ball
     int move_num;
 
     // Send a message.

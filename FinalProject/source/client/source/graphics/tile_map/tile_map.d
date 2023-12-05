@@ -1,8 +1,8 @@
-module tile_map;
+module client.source.graphics.tile_map.tile_map;
 import std.stdio;
 
 // Load the SDL2 library
-import tile_set : TileSet;
+import client.source.graphics.tile_map.tile_set : TileSet;
 import bindbc.sdl;
 
 // DrawableTilemap is responsible for drawing the world
