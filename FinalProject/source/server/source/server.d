@@ -11,7 +11,6 @@ import huskyplayground: HuskyPlayGround;
 
 
 
-
 // The purpose of the TCPServer is to accept multiple client connections. 
 // Every client that connects will have its own thread for the server to broadcast information to each client.
 class TCPServer
@@ -25,6 +24,20 @@ class TCPServer
 
     char[4] playersList;
     char[] playerListDup;
+    Packet serverPacket;
+
+    /// The listening socket is responsible for handling new client connections.
+    Socket mListeningSocket;
+    /// Stores the clients that are currently connected to the server.
+    Socket[] mClientsConnectedToServer;
+
+    /// Stores all of the data on the server. Ideally, we'll 
+    /// use this to broadcast out to clients connected.
+    char[ClientPacket.sizeof][] mServerData;
+
+    /// Keeps track of the last message that was broadcast out to each client.
+    uint[] mCurrentMessageToSend;
+  
 
     this(string host = "localhost", ushort port = 50001, ushort maxConnectionsBacklog = 4)
     {
@@ -129,14 +142,24 @@ class TCPServer
                 // Store data that we receive in our server.
                 // We append the buffer to the end of our received data queue. Dlang doesn't have queues
                 // So we have to use arrays!
-                
-                mServerData ~= buffer;
-                writeln("Got this from client:");
-                writeln(buffer);
+                if (buffer[0] == '~')
+                {
+                    ClientPacket message = deserialize(buffer);
+                    char[Packet.sizeof] sen;
+                    sen = packetToBeSent(h.getUpdatedPlayerLocations(), h.getPlayerNames(), h.getBallCoords(), message
+                            .message);
+                    broadcastMessage(sen);
+                }
+                else
+                {
+                    mServerData ~= buffer;
+                    writeln("Got this from client:");
+                    writeln(buffer);
 
-                /// After we receive a single message, we'll just 
-                /// immediately broadcast out to all clients some data.
-                broadcastToAllClients();
+                    /// After we receive a single message, we'll just 
+                    /// immediately broadcast out to all clients some data.
+                    broadcastToAllClients();
+                }
             }
         }
         catch (Throwable t)
@@ -157,15 +180,15 @@ class TCPServer
         }
     }
 
-
     // This is the packet that is to be sent by the server to each client. 
     //  This has to be in the form of server packet. 
     // The information to this packet will be fed by the game logic
 
     // Also note that in this language, 2d array is as follows: int[num Columns][num rows]!
-    char[Packet.sizeof] packetToBeSent(int[2][4] playerCoords, char[4] playerAssignment, int[2][2] ballCoords, char[80] message ){
+    char[Packet.sizeof] packetToBeSent(int[2][4] playerCoords, char[4] playerAssignment, int[2][2] ballCoords, char[80] message)
+    {
         char[Packet.sizeof] sending;
-        
+
         serverPacket.player1Coords = playerCoords[0];
         serverPacket.player2Coords = playerCoords[1];
         serverPacket.player3Coords = playerCoords[2];
@@ -174,7 +197,6 @@ class TCPServer
         serverPacket.ball1Coords = ballCoords[0];
         serverPacket.ball2Coords = ballCoords[1];
         serverPacket.message = message;
-
 
         sending = serverPacket.serialize();
 
@@ -199,11 +221,24 @@ class TCPServer
         return packetToBeSent(pCoords, playerChar, bCoords, msg);
     }
 
+    void broadcastMessage(char[Packet.sizeof] buffer)
+    {
+        foreach (clientSocket; mClientsConnectedToServer)
+        {
+            // Don't send the message back to the sender
+            // if (clientSocket != senderSocket)
+            // {
+            // Assuming serializeClient is a function that serializes a string as a ClientPacket
+
+            clientSocket.send(buffer);
+            // }
+        }
+    }
 
     /// Take out the server data from the list and process it.  
     void broadcastToAllClients()
     {
-        char[Packet.sizeof] send; 
+        char[Packet.sizeof] send;
 
         /// Processes each data as soon as it sees it and if there's a queue,
         /// The mcurrentMessageToSend takes the one that came first and processes it 
@@ -229,55 +264,49 @@ class TCPServer
         }
     }
 
-// _--------------- [ToDO]----------------------------
+    // _--------------- [ToDO]----------------------------
     /// If the processed data is valid, give the transformed data
     /// In the form of serialized server packet, and if not, 
     /// Return the serialized packet to be unchanged.
+
     char[Packet.sizeof] checkValid(ClientPacket data){
-        
         char[Packet.sizeof] sen; /// Use the function "packet to be sent" to serialize this.
         char clientId = data.client_id;
         int command = data.move_num;
         char[80] msg = data.message;
 
-    // 1. Move Left
-    // 2. Move Right
-    // 3. Move Up
-    // 4. Move Down
-    // 5. Pick up Ball
-    // 6. Drop off Ball
+        // 1. Move Left
+        // 2. Move Right
+        // 3. Move Up
+        // 4. Move Down
+        // 5. Pick up Ball
+        // 6. Drop off Ball
 
         string playerName = "";
         playerName ~= clientId;
-        if(command == 1){
+        if (command == 1)
+        {
             h.movePlayerLeft(playerName);
-        }else if(command==2){
+        }
+        else if (command == 2)
+        {
             h.movePlayerRight(playerName);
-        }else if(command == 3) {
+        }
+        else if (command == 3)
+        {
             h.movePlayerUp(playerName);
-        } else if(command == 4) {
+        }
+        else if (command == 4)
+        {
             h.movePlayerDown(playerName);
         }
 
-        sen = packetToBeSent(h.getUpdatedPlayerLocations(),h.getPlayerNames(), h.getBallCoords(), msg );
+        sen = packetToBeSent(h.getUpdatedPlayerLocations(), h.getPlayerNames(), h.getBallCoords(), msg);
         return sen;
     }
-// ----------------[ToDO Ends]------------------------
+    // ----------------[ToDO Ends]------------------------
 
-    Packet serverPacket;
-
-    /// The listening socket is responsible for handling new client connections.
-    Socket mListeningSocket;
-    /// Stores the clients that are currently connected to the server.
-    Socket[] mClientsConnectedToServer;
-
-    /// Stores all of the data on the server. Ideally, we'll 
-    /// use this to broadcast out to clients connected.
-    char[ClientPacket.sizeof][] mServerData;
-
-    /// Keeps track of the last message that was broadcast out to each client.
-    uint[] mCurrentMessageToSend;
-}
+   
 // void main(){
 // 	// Note: I'm just using the defaults here.
 // 	TCPServer server = new TCPServer;
@@ -285,4 +314,5 @@ class TCPServer
 //     string path = "HuskyPlayGround.txt";
 //     h.readTextFile(path);
 // 	server.run();
-// }
+   
+}

@@ -64,11 +64,17 @@ class TCPClient
                 write(">");
 
                 // Send the packet of information
-                mSocket.send(line);
+                char[80] fixedLine;
+                foreach (i, charElement; line)
+                {
+                    fixedLine[i] = charElement;
+                }
+
+                ClientPacket p = ClientPacket('~', -1, fixedLine);
+                mSocket.send(p.serialize());
             }
         }
     }
-
 
     /// Receive data from the server as it is broadcast out.
     void receiveDataFromServer()
@@ -83,23 +89,26 @@ class TCPClient
             {
                 Packet serverData = deserialize(buffer);
                 updateGameState(serverData);
-                writeln("(from server)>", fromServer);
+                writeln("(from server)>", serverData.message);
             }
         }
     }
 
-    void updateGameState(Packet serverData){
+    void updateGameState(Packet serverData)
+    {
         /// Write the client code here!
-        
+
     }
-    void sendMove(){
+
+    void sendMove()
+    {
         char[ClientPacket.sizeof] buffer;
         /// Remove the line below ---------------
 
         ClientPacket pac;
         pac.client_id = 'A';
         pac.move_num = 2;
-        buffer = pac.serialize();    
+        buffer = pac.serialize();
         /// ------------------------
         /// Some logic comes here
 
