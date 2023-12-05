@@ -26,8 +26,11 @@ class TCPClient
         // Our client waits until we receive at least one message confirming that we are connected
         // This will be something like "Hello friend\0"
         char[80] buffer;
-        auto received = mSocket.receive(buffer);
-        writeln("(incoming from server) ", buffer[0 .. received]);
+
+        auto received1 = mSocket.receive(buffer);
+        writeln("(client id from server)", buffer);
+        clientId = buffer[0];
+        writeln("Client id is: ", clientId);
     }
 
     /// Destructor 
@@ -50,7 +53,7 @@ class TCPClient
         // Spin up the new thread that will just take in data from the server
         new Thread({ receiveDataFromServer(); }).start();
 
-        sendMove();
+        // sendMove();
         writeln("Packet sent");
 
         write(">");
@@ -113,6 +116,8 @@ class TCPClient
     }
     /// The client socket connected to a server
     Socket mSocket;
+
+    char clientId;
 
 }
 // void main(){

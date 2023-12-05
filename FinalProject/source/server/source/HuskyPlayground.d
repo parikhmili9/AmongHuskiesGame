@@ -33,14 +33,11 @@ class HuskyPlayGround : GameWorld!()
     {
         rowsX = 50; //temp - change later
         columnsY = 100;
-
-        
     }
 
     void initialize(){
-        HuskyPlayGround h = new HuskyPlayGround();
-        string path = "HuskyPlayGround.txt";
-        h.readTextFile(path);
+        // string path = "HuskyPlayground.txt";
+        readTextFile("source/HuskyPlayground.txt");
     }
 
     int getRows()
@@ -527,18 +524,18 @@ class HuskyPlayGround : GameWorld!()
     }
 }
 
-void main()
-{
-    //Just to test all methods here are working!!
-    HuskyPlayGround ground = new HuskyPlayGround();
-    ground.readTextFile("HuskyPlayground.txt");
+// void main()
+// {
+//     //Just to test all methods here are working!!
+//     HuskyPlayGround ground = new HuskyPlayGround();
+//     ground.readTextFile("HuskyPlayground.txt");
     
-    writeln("-----------------Testing ------------------");
-    ground.movePlayerUp("C");
-    ground.movePlayerUp("C");
-    ground.movePlayerUp("C");
+//     writeln("-----------------Testing ------------------");
+//     ground.movePlayerUp("C");
+//     ground.movePlayerUp("C");
+//     ground.movePlayerUp("C");
 
-    for(int i = 0; i<26; i++){
-        ground.movePlayerDown("C");
-    }
-}
+//     for(int i = 0; i<26; i++){
+//         ground.movePlayerDown("C");
+//     }
+// }
