@@ -106,7 +106,7 @@ class TCPClient
     Socket mSocket;
 
 }
-void main(){
-	TCPClient client = new TCPClient();
-	client.run();
-}
+// void main(){
+// 	TCPClient client = new TCPClient();
+// 	client.run();
+// }

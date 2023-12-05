@@ -527,18 +527,18 @@ class HuskyPlayGround : GameWorld!()
     }
 }
 
-void main()
-{
-    //Just to test all methods here are working!!
-    HuskyPlayGround ground = new HuskyPlayGround();
-    ground.readTextFile("HuskyPlayground.txt");
+// void main()
+// {
+//     //Just to test all methods here are working!!
+//     HuskyPlayGround ground = new HuskyPlayGround();
+//     ground.readTextFile("HuskyPlayground.txt");
     
-    writeln("-----------------Testing ------------------");
-    ground.movePlayerUp("C");
-    ground.movePlayerUp("C");
-    ground.movePlayerUp("C");
+//     writeln("-----------------Testing ------------------");
+//     ground.movePlayerUp("C");
+//     ground.movePlayerUp("C");
+//     ground.movePlayerUp("C");
 
-    for(int i = 0; i<26; i++){
-        ground.movePlayerDown("C");
-    }
-}
+//     for(int i = 0; i<26; i++){
+//         ground.movePlayerDown("C");
+//     }
+// }

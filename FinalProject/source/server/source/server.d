@@ -61,6 +61,9 @@ class TCPServer
             // Let's send our new client friend a welcome message
             newClientSocket.send("Hello friend\0");
 
+            newClientSocket.send(dummyPacket());
+            writeln("Dummy packet send to clients");
+
             // Now we'll spawn a new thread for the client that
             // has recently joined.
             // The server will now be running multiple threads and
@@ -153,6 +156,14 @@ class TCPServer
 
     }
 
+    char[Packet.sizeof] dummyPacket(){
+        int[2][4] pCoords = [[3,10], [10,10], [17,3], [17,20]];
+        int[2][2] hCoords = [[17,0], [20,25]];
+        char[4] players = ['A', 'B', 'C', 'D'];
+        char[80] msg = '\0';
+        return packetToBeSent(pCoords, players, hCoords, msg);
+    }
+
 
     /// Take out the server data from the list and process it.  
     void broadcastToAllClients()
@@ -232,11 +243,11 @@ class TCPServer
     /// Keeps track of the last message that was broadcast out to each client.
     uint[] mCurrentMessageToSend;
 }
-void main(){
-	// Note: I'm just using the defaults here.
-	TCPServer server = new TCPServer;
-    HuskyPlayGround h = new HuskyPlayGround();
-    string path = "HuskyPlayGround.txt";
-    h.readTextFile(path);
-	server.run();
-}
+// void main(){
+// 	// Note: I'm just using the defaults here.
+// 	TCPServer server = new TCPServer;
+//     HuskyPlayGround h = new HuskyPlayGround();
+//     string path = "HuskyPlayGround.txt";
+//     h.readTextFile(path);
+// 	server.run();
+// }
