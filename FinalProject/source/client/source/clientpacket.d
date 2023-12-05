@@ -1,7 +1,7 @@
 module clientpacket;
 
-
 import core.stdc.string;
+
 // Enables communication by sending a client id and a integer representing the move.
 struct ClientPacket
 {
@@ -17,12 +17,19 @@ struct ClientPacket
     // Send a message.
     char[80] message;
 
-
     this(char client_id, int move_num)
     {
         this.client_id = client_id;
         this.move_num = move_num;
     }
+
+    this(char client_id, int move_num, char[80] message)
+    {
+        this.client_id = client_id;
+        this.move_num = move_num;
+        this.message = message;
+    }
+
     char[ClientPacket.sizeof] serialize()
     {
         char[ClientPacket.sizeof] payload;
