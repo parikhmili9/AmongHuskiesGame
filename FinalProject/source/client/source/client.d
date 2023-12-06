@@ -2,7 +2,7 @@ module client.source.client;
 import std.socket;
 import std.stdio;
 import core.thread.osthread;
-import client.source.packet.packet;
+import client.source.packet.packet: Packet;
 import client.source.packet.deserialize_server;
 import client.source.packet.client_packet;
 import source.deque: Deque;
@@ -38,6 +38,8 @@ class TCPClient
         writeln("(client id from server)", buffer);
         clientId = buffer[0];
         writeln("Client id is: ", clientId);
+        // Spin up the new thread that will just take in data from the server
+        new Thread({ receiveDataFromServer(); }).start();
     }
 
     /// Destructor 
@@ -45,6 +47,13 @@ class TCPClient
     {
         // Close the socket
         mSocket.close();
+    }
+
+    /// For now this works but the server needs to send 
+    /// The spawn location to the client as well for all the players
+    /// Its better to do that 
+    char intitalize_self(){
+        return clientId;
     }
 
     // Run the client thread to constantly send data to the server.
@@ -57,8 +66,8 @@ class TCPClient
 
         bool clientRunning = true;
 
-        // Spin up the new thread that will just take in data from the server
-        new Thread({ receiveDataFromServer(); }).start();
+        // // Spin up the new thread that will just take in data from the server
+        // new Thread({ receiveDataFromServer(); }).start();
 
         // sendMove();
         writeln("Packet sent");
@@ -96,7 +105,7 @@ class TCPClient
             {
                 Packet serverData = deserialize(buffer);
                 recieved_packets.push_back(serverData);
-                writeln("(from server)>", serverData.message);
+                writeln("(from server)>", serverData);
             }
         }
     }
@@ -115,15 +124,12 @@ class TCPClient
 
     }
 
-    void sendMove()
+    void sendMove(ClientPacket info)
     {
         char[ClientPacket.sizeof] buffer;
         /// Remove the line below ---------------
 
-        ClientPacket pac;
-        pac.client_id = 'A';
-        pac.move_num = 2;
-        buffer = pac.serialize();
+        buffer = info.serialize();
         /// ------------------------
         /// Some logic comes here
 

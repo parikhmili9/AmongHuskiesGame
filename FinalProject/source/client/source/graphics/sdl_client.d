@@ -3,12 +3,14 @@ module source.graphics.sdl_client;
 // Import D standard libraries
 import std.stdio;
 import std.string;
+import core.thread.osthread;
 
 import client.source.graphics.tile_map.tile_map : TileMap;
 import client.source.graphics.tile_map.tile_set : TileSet;
 import client.source.graphics.player.player;
 import client.source.packet.client_packet : ClientPacket;
 import client.source.client : TCPClient;
+import client.source.packet.packet: Packet;
 
 // Load the SDL2 library
 import bindbc.sdl;
@@ -21,7 +23,7 @@ class SDLClient
     int zoomFactor = 1;
     TCPClient tcp;
     Packet current_server_packet;
-
+    char self_id;
     SDL_Event e;
     SDLSupport ret;
     SDL_Window* window;
@@ -103,11 +105,12 @@ class SDLClient
 
     void tcp_client_loop(){
         tcp = new TCPClient();
+        self_id = tcp.intitalize_self();
+        writeln("Your Player ID is: ", self_id);
         auto temp = tcp.server_packet_recieved();
-        if (temp.player1Coords == [-999,-999]){
-            continue;
+        if (temp.player1Coords != [-999,-999]){
+            current_server_packet = temp;
         } 
-        current_server_packet = temp;
 
     }
 
@@ -139,12 +142,14 @@ class SDLClient
         {
             // Send our client packet move.
             cp = ClientPacket(player_id, playerMove);
+            tcp.sendMove(cp);
             // tcp.sendPacket(cp);
         }
     }
 
     void mainApplicationLoop()
     {
+        writeln(current_server_packet);
         // define necessary constants
         const string TILEMAP_PATH = "./assets/tilemap.bmp";
         const string SPRITE_PATH = "./assets/test.bmp";

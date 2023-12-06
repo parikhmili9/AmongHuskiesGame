@@ -371,11 +371,11 @@ unittest
     assert(myInd == corInd);
 }
 
-void main(){
-    // No need for a 'main', use the unit test feature.
-    // Note: The D Compiler can generate a 'main' for us automatically
-    //       if we are just unit testing, and we'll look at that feature
-    //       later on in the course.
-}
+// void main(){
+//     // No need for a 'main', use the unit test feature.
+//     // Note: The D Compiler can generate a 'main' for us automatically
+//     //       if we are just unit testing, and we'll look at that feature
+//     //       later on in the course.
+// }
 
 /**************** End of the Docs *****************/
