@@ -81,24 +81,28 @@ class TCPServer
             writeln("Friends on server = ", mClientsConnectedToServer.length);
 
             char clientIdToSend;
-            if (!playerListDup.empty)
-            {
-                clientIdToSend = playerListDup[0];
-                playerListDup.popFront();
-                ubyte[] data_clientIdToSend = [cast(ubyte) clientIdToSend];
-                newClientSocket.send(data_clientIdToSend);
-                writeln("Sent to client: ", clientIdToSend);
-            }
-            else
-            {
-                char specId = '$';
-                ubyte[] data_clientIdToSendForSpec = [cast(ubyte) specId];
-                newClientSocket.send(data_clientIdToSendForSpec);
-                write("Send to spectator clients: ", specId);
-            }
+                if (!playerListDup.empty)
+                {
+                    clientIdToSend = playerListDup[0];
+                    playerListDup.popFront();
+                    ubyte[] data_clientIdToSend = [cast(ubyte) clientIdToSend];
+                    newClientSocket.send(data_clientIdToSend);
+                    writeln("Sent to client: ", clientIdToSend);
+                }
+                else
+                {
+                    char specId = '$';
+                    ubyte[] data_clientIdToSendForSpec = [cast(ubyte) specId];
+                    newClientSocket.send(data_clientIdToSendForSpec);
+                    write("Send to spectator clients: ", specId);
+                }
 
-            newClientSocket.send(initialPacketToClients());
-            writeln("Initial packet send to clients");
+            if(mClientsConnectedToServer.length >= 4){
+                char[Packet.sizeof] initialPacket = initialPacketToClients();
+                sendPacketToAllClients(initialPacket);
+                // newClientSocket.send(initialPacketToClients());
+                writeln("Initial packet send to clients");
+            }
 
             // Now we'll spawn a new thread for the client that
             // has recently joined.
@@ -108,6 +112,14 @@ class TCPServer
             // NOTE: The index sent indicates the connection in our data structures,
             //       this can be useful to identify different clients.
             new Thread({ clientLoop(newClientSocket); }).start();
+        }
+    }
+
+    //Sends packets to all clients that are currently connected
+    void sendPacketToAllClients(char[Packet.sizeof] initialPacket){
+        foreach (idx, serverToClient; mClientsConnectedToServer)
+        {
+            serverToClient.send(initialPacket);
         }
     }
 
