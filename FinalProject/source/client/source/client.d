@@ -5,10 +5,17 @@ import core.thread.osthread;
 import client.source.packet.packet;
 import client.source.packet.deserialize_server;
 import client.source.packet.client_packet;
+import source.deque: Deque;
 
 // The purpose of the TCPClient class is to connect to a server and send messages.
 class TCPClient
 {
+    /// The client socket connected to a server
+    Socket mSocket;
+
+    char clientId;
+    auto recieved_packets = new Deque!(Packet);
+    // Packet[] recieved_packets;
 
     // Constructor
     this(string host = "localhost", ushort port = 50001)
@@ -88,15 +95,23 @@ class TCPClient
             if (fromServer.length > 0)
             {
                 Packet serverData = deserialize(buffer);
-                updateGameState(serverData);
+                recieved_packets.push_back(serverData);
                 writeln("(from server)>", serverData.message);
             }
         }
     }
 
-    void updateGameState(Packet serverData)
+    Packet server_packet_recieved()
     {
-        /// Write the client code here!
+        Packet toBeSent;
+        /// Update add the new state to the list. 
+        if(recieved_packets.size() == 0){
+            toBeSent.player1Coords = [-999,-999];
+            return toBeSent;
+        }
+        toBeSent = recieved_packets.pop_front();
+        
+        return toBeSent;
 
     }
 
@@ -114,9 +129,5 @@ class TCPClient
 
         mSocket.send(buffer);
     }
-    /// The client socket connected to a server
-    Socket mSocket;
-
-    char clientId;
 
 }

@@ -20,6 +20,7 @@ class SDLClient
     bool runApplication = true;
     int zoomFactor = 1;
     TCPClient tcp;
+    Packet current_server_packet;
 
     SDL_Event e;
     SDLSupport ret;
@@ -72,7 +73,9 @@ class SDLClient
             writeln("SDL_Init: ", fromStringz(SDL_GetError()));
         }
 
-        this.tcp = new TCPClient();
+        /// Make a new thread for TCP client. 
+
+        new Thread({ tcp_client_loop(); }).start();
         // every SDL app will need a window and a surface
         // todo - add params 
         const(char)* WINDOW_NAME = "AmongHuskies^TM HuskyTown".ptr;
@@ -94,6 +97,18 @@ class SDLClient
         // Quit the SDL Application 
         SDL_Quit();
         writeln("Ending application--good bye!");
+    }
+
+    /// Writing an independent TCP client loop
+
+    void tcp_client_loop(){
+        tcp = new TCPClient();
+        auto temp = tcp.server_packet_recieved();
+        if (temp.player1Coords == [-999,-999]){
+            continue;
+        } 
+        current_server_packet = temp;
+
     }
 
     /**
