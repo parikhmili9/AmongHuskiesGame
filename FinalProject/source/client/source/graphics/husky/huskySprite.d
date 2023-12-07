@@ -12,6 +12,16 @@ struct HuskySprite
 	SDL_Rect mRectangle;
 	SDL_Texture* mTexture;
 
+	/**
+	* Constructor for the husky sprite class.
+	*
+	* Params:
+	*   - renderer: SDL renderer for rendering graphics.
+	*   - filepath: Filepath to the sprite image.
+	*   - startX: Initial X coordinate in pixels.
+	*   - startY: Initial Y coordinate in pixels.
+	*   - spritePixelSize: Optional parameter, size of the sprite in pixels (default: 149).
+	*/
 	this(SDL_Renderer* renderer, string filepath, int startX, int startY, int spritePixelSize=149)
 	{
 		// Load the bitmap surface
@@ -35,6 +45,12 @@ struct HuskySprite
 		mRectangle.h = spritePixelSize;
 	}
 
+	/**
+    * Render the husky sprite to the screen.
+    *
+    * Params:
+    *   - renderer: SDL renderer for rendering the husky.
+    */
 	void render(SDL_Renderer* renderer)
 	{
 		SDL_Rect selection;

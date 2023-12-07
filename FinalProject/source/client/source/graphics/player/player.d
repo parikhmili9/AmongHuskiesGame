@@ -14,6 +14,18 @@ struct Player
     const int TILE_TO_PIXEL = 32;
     string currFilePath;
     string activeFilePath;
+
+    /**
+	* Constructor for the Player class.
+	*
+	* Params:
+	*   - renderer: SDL renderer for rendering graphics.
+    *   - currFilePath: filePath to the sprites currently representing this player.
+	*   - activeFilePath: Filepath to the sprites for this player for when they are actively carrying a husky.
+	*   - startX: Initial X coordinate in pixels.
+	*   - startY: Initial Y coordinate in pixels.
+	*   - playerId: unique id for this player object
+	*/
     this(SDL_Renderer* renderer, string currFilePath, string activeFilePath, int startX, int startY, char player_id)
     {
         this.currFilePath = currFilePath;
@@ -33,30 +45,45 @@ struct Player
         return playerSprite.yPos;
     }
 
+    /**
+    * Moves this player up in the tilemap it is represented on.
+    */
     void moveUp()
     {
         playerSprite.yPos -= 16;
         playerSprite.mState = STATE.WALK_UP;
     }
 
+    /**
+    * Moves this player down in the tilemap it is represented on.
+    */
     void moveDown()
     {
         playerSprite.yPos += 16;
         playerSprite.mState = STATE.WALK_DOWN;
     }
 
+    /**
+    * Moves this player left in the tilemap it is represented on.
+    */
     void moveLeft()
     {
         playerSprite.xPos -= 16;
         playerSprite.mState = STATE.WALK_LEFT;
     }
 
+    /**
+    * Moves this player right in the tilemap it is represented on.
+    */
     void moveRight()
     {
         playerSprite.xPos += 16;
         playerSprite.mState = STATE.WALK_RIGHT;
     }
 
+    /**
+    * Renders this player in the tilemap it is represented on.
+    */
     void render(SDL_Renderer* renderer)
     {
         playerSprite.render(renderer);
@@ -79,8 +106,16 @@ struct Player
         return TILE_TO_PIXEL * tileValue;
     }
 
-    // First, we need to know which direction the sprite is moving so that we can set the state.
-    // Then, we can move to the target and update the state value.
+    
+    
+    /**
+    * First, we need to know which direction the sprite is moving so that we can set the state.
+    * Then, we can move to the target and update the state value.
+    *
+    * params:
+    *   - targetX: the target x-coordinate for this player 
+    *   - targety: the target y-coordinate for this player 
+    */
     void movePlayer(int targetX, int targetY){
         if (targetX > this.getX()){
             playerSprite.xPos += TILE_TO_PIXEL;
@@ -104,6 +139,12 @@ struct Player
 
     }
 
+    /**
+	* Tells whether this player is holding the opposing team's husky (ball).
+	*
+	* Params:
+	*   - oppBallCoords: the coordinates of the opposing team's Husky (ball).
+	*/
     bool isHoldingOpponentBall(int[] oppBallCoords){
         auto ballX = oppBallCoords[0] * TILE_TO_PIXEL;
         auto ballY = oppBallCoords[1] * TILE_TO_PIXEL;
@@ -116,9 +157,25 @@ struct Player
         return false;
     }
 
+
+    /**
+	* Mark's this player as active (carrying the opposing team's husky) and updates their
+    * sprite accordingly.
+	*
+	* Params:
+	*   - renderer: the SDL renderer for this player's sprite
+	*/
     void markActive(SDL_Renderer* renderer){
         this.playerSprite.updateImage(renderer, activeFilePath);
     }
+
+    /**
+	* Mark's this player as inactive (carrying the opposing team's husky) and updates their
+    * sprite accordingly.
+    * 
+	* Params:
+	*   - renderer: the SDL renderer for this player's sprite
+	*/
     void markInactive(SDL_Renderer* renderer){
         this.playerSprite.updateImage(renderer,currFilePath);
     }
