@@ -10,6 +10,7 @@ import core.thread;
 import client.source.graphics.tile_map.tile_map : TileMap;
 import client.source.graphics.tile_map.tile_set : TileSet;
 import client.source.graphics.player.player;
+import client.source.graphics.husky.husky;
 import client.source.packet.client_packet : ClientPacket;
 import client.source.client : TCPClient;
 import client.source.packet.packet: Packet;
@@ -18,10 +19,19 @@ import client.source.packet.packet: Packet;
 import bindbc.sdl;
 import loader = bindbc.loader.sharedlib;
 
+
+/**
+* The main graphical application for our program.
+*/
 class SDLClient
 {
 
     bool runApplication = true;
+    bool endGame = true;
+    bool player1Activated = false;
+    bool player2Activated = false;
+    bool player3Activated = false;
+    bool player4Activated = false;
     int zoomFactor = 1;
     TCPClient tcp;
     Packet current_server_packet;
@@ -31,6 +41,9 @@ class SDLClient
     SDL_Window* window;
     SDL_Renderer* renderer;
 
+    /**
+    * The constructor for the SDL_CLient.
+    */ 
     this()
     {
         // OS checking for proper SDL library
@@ -81,8 +94,7 @@ class SDLClient
         tcp = new TCPClient();
         new Thread({ tcp_client_loop(); }).start();
         new Thread({ tcp.run(); }).start();
-        // every SDL app will need a window and a surface
-        // todo - add params 
+
         const(char)* WINDOW_NAME = "AmongHuskies^TM HuskyTown".ptr;
         const int WINDOW_WIDTH = 640;
         const int WINDOW_HEIGHT = 800;
@@ -95,6 +107,7 @@ class SDLClient
         );
     }
 
+    /// destructor
     ~this()
     {
         // Destroy our window
@@ -104,14 +117,15 @@ class SDLClient
         writeln("Ending application--good bye!");
     }
 
-    /// Writing an independent TCP client loop
-
+    /**
+    * method called inside of the tcp client via a thread. This method handles providing packets from the
+    * server to this sdl_client via the tcp client.
+    */
     void tcp_client_loop(){
         self_id = tcp.intitalize_self();
         writeln("Your Player ID is: ", self_id);
-        // writeln("I am here, size: ", tcp.recieved_packets.size());
         
-        while(true){
+        while(this.runApplication){
             Packet temp;
             while(tcp.recieved_packets.size() != 0){
             temp = tcp.server_packet_recieved();
@@ -121,10 +135,8 @@ class SDLClient
                     trim_and_print(temp.message);
                 }
                 this.current_server_packet = temp;
-                //writeln(this.current_server_packet);
-                //ownerTid.send("HELLO",this.current_server_packet);
-            }
 
+            }
         }
     }
 
@@ -139,6 +151,13 @@ class SDLClient
         writeln(toPrint);
     }
 
+
+    /**
+    * Determines whether the packet received from the tcp client is null.
+    * 
+    * params:
+    *   p: the packet in question
+    */
     bool is_null_packet(Packet p){
         if(p.player1Coords == [0,0]
         && p.player2Coords == [0,0]
@@ -150,8 +169,12 @@ class SDLClient
     }
 
     /**
+    * Sends to the server a client_packet that expresses a move from this client.
     * 
-    **/
+    * params:
+    *   keyboardState: The state of the keyboard
+    *   player_id: The id of the player sending the move
+    */
     void send_movement_client_packet(const ubyte* keyboardState, char player_id)
     {
         int playerMove = -1;
@@ -181,19 +204,75 @@ class SDLClient
         }
     }
 
-    // Updates the positions of the objects on the game board based on the current_server_packet.
-    void updateObjectPositions(ref Player player1, ref Player player2, ref Player player3, ref Player player4)
+    /**
+    * Updates the positions of the objects on the game board based on the current_server_packet.
+    *
+    * param:
+    *   - renderer: The SDL renderer for the objects in question
+    *   - player1: the object representing player1
+    *   - player2:  the object representing player2
+    *   - player3: the object representing player3
+    *   - player4: the object representing player4
+    *   - husky1: the object representing husky1
+    *   - husky2: the object representing husky2
+    */
+    void updateObjectPositions(SDL_Renderer* renderer, ref Player player1, ref Player player2, ref Player player3,
+    ref Player player4, ref Husky husky1, ref Husky husky2)
     {
         player1.setPositionFromTileValues(this.current_server_packet.player1Coords);
-
         player2.setPositionFromTileValues(this.current_server_packet.player2Coords);
+
         player3.setPositionFromTileValues(this.current_server_packet.player3Coords);
         player4.setPositionFromTileValues(this.current_server_packet.player4Coords);
 
+        husky1.setPositionFromTileValues(this.current_server_packet.ball1Coords);
+        husky2.setPositionFromTileValues(this.current_server_packet.ball2Coords);
+
+        if (player1.isHoldingOpponentBall(
+            this.current_server_packet.ball2Coords)){
+                writeln("Player 1 is Holding the Opponent Husky");
+                player1.markActive(renderer);
+                player1Activated = true;
+        } else if (player2.isHoldingOpponentBall(
+        this.current_server_packet.ball2Coords)){
+            player2.markActive(renderer);
+            player2Activated = true;
+        }
+
+        if (player3.isHoldingOpponentBall(
+        this.current_server_packet.ball1Coords)){
+            player3.markActive(renderer);
+            player3Activated = true;
+        } else if (player4.isHoldingOpponentBall(
+        this.current_server_packet.ball1Coords)){
+            player4.markActive(renderer);
+            player4Activated = true;
+        }
+
     }
+
+    /**
+    * Checks if the game is over
+    */ 
+    void checkEndGame(){
+        if(player1Activated && player2Activated){
+            this.endGame = true;
+            this.runApplication = false;
+            writeln("Team Red Won!");
+        }
+        if(player3Activated && player4Activated){
+            this.endGame = true;
+            this.runApplication = false;
+            write("Team Blue Won!");
+        }
+    }
+
+
+    /**
+    * The game loop.
+    */ 
     void mainApplicationLoop()
     {
-
         // enumerate asset paths
         const string TILEMAP_PATH = "./assets/grid.bmp";
         const string STANDARD_BLUE_SPRITE_PATH = "./assets/light_blue_player_sprites.bmp";
@@ -217,21 +296,27 @@ class SDLClient
         TileSet tileSet = TileSet(renderer, TILEMAP_PATH, TILE_SIZE, X_TILES, Y_TILES);
         TileMap tileMap = TileMap(tileSet);
 
-        // TODO - UN-HARDCODE THIS; USE DATA FROM THE SERVER
         // Render 4 characters, 2 for each team
-        Player player1 = Player(renderer, STANDARD_BLUE_SPRITE_PATH, 0, 0, 'A');
-        Player player2 = Player(renderer, STANDARD_BLUE_SPRITE_PATH, 32, 0, 'B');
-        Player player3 = Player(renderer, STANDARD_RED_SPRITE_PATH, 64, 0, 'C');
-        Player player4 = Player(renderer, STANDARD_RED_SPRITE_PATH, 32 * 10, 32 * 6, 'D');
+        Player player1 = Player(renderer, STANDARD_RED_SPRITE_PATH,ACTIVE_RED_SPRITE_PATH, 0, 0, 'A');
+        Player player2 = Player(renderer, STANDARD_RED_SPRITE_PATH,ACTIVE_RED_SPRITE_PATH, 32, 0, 'B');
+        Player player3 = Player(renderer, STANDARD_BLUE_SPRITE_PATH, ACTIVE_BLUE_SPRITE_PATH, 64, 0, 'C');
+        Player player4 = Player(renderer, STANDARD_BLUE_SPRITE_PATH,ACTIVE_BLUE_SPRITE_PATH, 32 * 10, 32 * 6, 'D');
+
+        Husky husky1 = Husky(renderer, HUSKY_SPRITE_RED, 544, 128, 'R');
+        Husky husky2 = Husky(renderer, HUSKY_SPRITE_BLUE, 544, 640, 'B');
 
         auto player1Coords = this.current_server_packet.player1Coords;
         while (this.runApplication)
         {
+            checkEndGame();
+
             if (this.current_server_packet.player1Coords != player1Coords){
                 writeln(this.current_server_packet.player1Coords);
                 player1Coords = this.current_server_packet.player1Coords;
             }
-            updateObjectPositions(player1, player2, player3, player4);
+            if (!is_null_packet(this.current_server_packet)){
+                updateObjectPositions(renderer, player1, player2, player3, player4, husky1, husky2);
+            }
             // Handle events
             while (SDL_PollEvent(&(this.e)) != 0)
             {
@@ -257,6 +342,8 @@ class SDLClient
                 player2.render(renderer);
                 player3.render(renderer);
                 player4.render(renderer);
+                husky1.render(renderer);
+                husky2.render(renderer);
 
                 // Little frame capping hack so we don't run too fast
                 SDL_Delay(125); // Finally show what we've drawn
@@ -264,5 +351,6 @@ class SDLClient
                 SDL_RenderPresent(renderer);
             }
         }
+        scope(exit) SDL_Quit();
     }
 }

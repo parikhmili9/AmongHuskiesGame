@@ -7,8 +7,6 @@ import bindbc.sdl;
  * TileSet struct is passed to tileMap for rendering. This tileSet stores bmp tiles
  * loaded from a bmp file
  */
-/// Tilemap struct for loading a tilemap
-/// and rendering tiles
 struct TileSet
 {
 
@@ -24,7 +22,23 @@ struct TileSet
     // Number of tiles in the tilemap in the y-dimension
     int mYTiles;
 
-    /// Constructor
+    /**
+    * 
+    *
+    * params:
+    *   - [name]
+    */
+
+    /**
+    * Constructor for the TileSet class.
+    *
+    * params:
+    *   - renderer: The SDL Renderer to render this tile_set.
+    *   - filepath: The filepath to the image that represents this tile_set
+    *   - tileSize: the size of the tiles in this tile_set, in pixels
+    *   - xTiles: the number of tiles in the x dimension of this tile_set
+    *   - yTiles: the number of tiles in the y dimension of this tile_set
+    */
     this(SDL_Renderer* renderer, string filepath, int tileSize, int xTiles, int yTiles)
     {
         mTileSize = tileSize;
@@ -55,7 +69,16 @@ struct TileSet
         }
     }
 
-    /// Draw a specific tile from our tilemap
+    /**
+    * Draw a specific tile from our tilemap.
+    *
+    * params:
+    *   - renderer: The SDL Renderer to render this tile_set.
+    *   - tile: the index of this tile in the tile_set
+    *   - x: the x position of this tile on the screen
+    *   - y: the y position of this tile on the screen
+    *   - zoomFactor: the level of zoom we have applied to this tileset (optional, default = 1)
+    */
     void renderTile(SDL_Renderer* renderer, int tile, int x, int y, int zoomFactor = 1)
     {
         if (tile > mRectTiles.length - 1)
