@@ -118,7 +118,7 @@ class SDLClient
             }
             if (temp.player1Coords != [-999,-999] && !is_null_packet(temp)){
                 if(temp.message != ""){
-                    writeln(temp.message);
+                    trim_and_print(temp.message);
                 }
                 this.current_server_packet = temp;
                 //writeln(this.current_server_packet);
@@ -126,6 +126,17 @@ class SDLClient
             }
 
         }
+    }
+
+    void trim_and_print(char[200] message){
+        string toPrint;
+        foreach(char c; message){
+            int ascii_c = cast(int) c;
+            if (c != '\0' && (ascii_c != 255)){
+                toPrint ~= c;
+            }
+        }
+        writeln(toPrint);
     }
 
     bool is_null_packet(Packet p){

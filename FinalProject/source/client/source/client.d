@@ -83,9 +83,13 @@ class TCPClient
 
                 // Send the packet of information
                 char[80] fixedLine;
+                fixedLine[0] = clientId;
+                fixedLine[1] = ' ';
+                fixedLine[2] = ':';
+                fixedLine[3] =  ' ';
                 foreach (i, charElement; line)
                 {
-                    fixedLine[i] = charElement;
+                    fixedLine[i+4] = charElement;
                 }
 
                 ClientPacket p = ClientPacket('~', -1, fixedLine);
@@ -106,9 +110,7 @@ class TCPClient
             if (fromServer.length > 0)
             {
                 Packet serverData = deserialize(buffer);
-                // writeln(serverData.player1Coords);
                 recieved_packets.push_back(serverData);
-                // writeln("Data From the server: ", recieved_packets.front());
             }
         }
     }
