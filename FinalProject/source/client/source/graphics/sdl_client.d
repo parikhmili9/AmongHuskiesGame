@@ -93,7 +93,8 @@ class SDLClient
         /// Make a new thread for TCP client. 
         tcp = new TCPClient();
         new Thread({ tcp_client_loop(); }).start();
-        // every SDL app will need a window
+        new Thread({ tcp.run(); }).start();
+
         const(char)* WINDOW_NAME = "AmongHuskies^TM HuskyTown".ptr;
         const int WINDOW_WIDTH = 640;
         const int WINDOW_HEIGHT = 800;
@@ -130,11 +131,26 @@ class SDLClient
             temp = tcp.server_packet_recieved();
             }
             if (temp.player1Coords != [-999,-999] && !is_null_packet(temp)){
+                if(temp.message != ""){
+                    trim_and_print(temp.message);
+                }
                 this.current_server_packet = temp;
 
             }
         }
     }
+
+    void trim_and_print(char[200] message){
+        string toPrint;
+        foreach(char c; message){
+            int ascii_c = cast(int) c;
+            if (c != '\0' && (ascii_c != 255)){
+                toPrint ~= c;
+            }
+        }
+        writeln(toPrint);
+    }
+
 
     /**
     * Determines whether the packet received from the tcp client is null.
