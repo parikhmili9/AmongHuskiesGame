@@ -14,12 +14,13 @@ class TCPClient
     Socket mSocket;
 
     char clientId;
-    auto recieved_packets = new Deque!(Packet);
+    Deque!(Packet) recieved_packets;
     // Packet[] recieved_packets;
 
     // Constructor
     this(string host = "localhost", ushort port = 50001)
     {
+        recieved_packets = new Deque!(Packet);
         writeln("Starting client...attempt to create socket");
 
         // Create a socket for connecting to a server
@@ -40,6 +41,7 @@ class TCPClient
         writeln("Client id is: ", clientId);
         // Spin up the new thread that will just take in data from the server
         new Thread({ receiveDataFromServer(); }).start();
+        writeln("Data From the server: ", recieved_packets.size());
     }
 
     /// Destructor 
@@ -105,6 +107,7 @@ class TCPClient
             {
                 Packet serverData = deserialize(buffer);
                 recieved_packets.push_back(serverData);
+                // writeln("Data From the server: ", recieved_packets.front());
             }
         }
     }
@@ -117,8 +120,10 @@ class TCPClient
             toBeSent.player1Coords = [-999,-999];
             return toBeSent;
         }
+        writeln("pre-Pop: ", recieved_packets.size());
         toBeSent = recieved_packets.pop_front();
         
+        writeln("post-Pop: ", recieved_packets.size());
         return toBeSent;
 
     }

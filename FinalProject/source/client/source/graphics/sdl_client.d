@@ -76,7 +76,7 @@ class SDLClient
         }
 
         /// Make a new thread for TCP client. 
-
+        tcp = new TCPClient();
         new Thread({ tcp_client_loop(); }).start();
         // every SDL app will need a window and a surface
         // todo - add params 
@@ -104,15 +104,33 @@ class SDLClient
     /// Writing an independent TCP client loop
 
     void tcp_client_loop(){
-        tcp = new TCPClient();
         self_id = tcp.intitalize_self();
         writeln("Your Player ID is: ", self_id);
-        auto temp = tcp.server_packet_recieved();
-        if (temp.player1Coords != [-999,-999]){
-            current_server_packet = temp;
-            writeln(current_server_packet);
-        } 
+        // writeln("I am here, size: ", tcp.recieved_packets.size());
+        
+        while(true){
+            Packet temp;
+            while(tcp.recieved_packets.size() != 0){
+            temp = tcp.server_packet_recieved();
+            }
+            if (temp.player1Coords != [-999,-999] && !is_null_packet(temp)){
+                writeln(temp);
+                this.current_server_packet = temp;
+            } 
 
+        }
+        // writeln(current_server_packet);
+
+    }
+
+    bool is_null_packet(Packet p){
+        if(p.player1Coords == [0,0]
+        && p.player2Coords == [0,0]
+        && p.player3Coords == [0,0]
+        && p.player4Coords == [0,0]){
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -149,6 +167,7 @@ class SDLClient
 
     void mainApplicationLoop()
     {
+        writeln(current_server_packet);
         // writeln("Is this it? ----------------------------------------------");
         // writeln(current_server_packet);
         // define necessary constants

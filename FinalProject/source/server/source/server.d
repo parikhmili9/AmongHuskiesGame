@@ -100,13 +100,14 @@ class TCPServer
                     write("Send to spectator clients: ", specId);
                 }
 
-            if(mClientsConnectedToServer.length >= 4){
-                char[Packet.sizeof] initialPacket = initialPacketToClients();
-                sendPacketToAllClients(initialPacket);
-                // newClientSocket.send(initialPacketToClients());
-                writeln("Initial packet send to clients");
-            }
-
+            // if(mClientsConnectedToServer.length >= 4){
+            //     char[Packet.sizeof] initialPacket = initialPacketToClients();
+            //     sendPacketToAllClients(initialPacket);
+            //     // newClientSocket.send(initialPacketToClients());
+            //     writeln("Initial packet send to clients");
+            // }
+             char[Packet.sizeof] initialPacket = initialPacketToClients();
+            sendPacketToAllClients(initialPacket);
             // Now we'll spawn a new thread for the client that
             // has recently joined.
             // The server will now be running multiple threads and
