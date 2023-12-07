@@ -1,5 +1,7 @@
 module client.source.graphics.player.player;
 
+import std.stdio;
+
 import bindbc.sdl;
 import client.source.graphics.player.sprite;
 import client.source.packet.client_packet : ClientPacket;
