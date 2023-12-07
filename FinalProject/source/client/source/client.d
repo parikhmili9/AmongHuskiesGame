@@ -11,7 +11,7 @@ class TCPClient
 {
 
     // Constructor
-    this(string host = "localhost", ushort port = 50001)
+    this(string host = "155.33.132.2", ushort port = 50001)
     {
         writeln("Starting client...attempt to create socket");
 
