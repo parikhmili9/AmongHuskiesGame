@@ -10,7 +10,7 @@ import core.thread;
 import client.source.graphics.tile_map.tile_map : TileMap;
 import client.source.graphics.tile_map.tile_set : TileSet;
 import client.source.graphics.player.player;
-import client.source.graphics.player.husky;
+import client.source.graphics.husky.husky;
 import client.source.packet.client_packet : ClientPacket;
 import client.source.client : TCPClient;
 import client.source.packet.packet: Packet;
