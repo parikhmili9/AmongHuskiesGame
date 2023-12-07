@@ -106,6 +106,7 @@ class TCPClient
             if (fromServer.length > 0)
             {
                 Packet serverData = deserialize(buffer);
+                // writeln(serverData.player1Coords);
                 recieved_packets.push_back(serverData);
                 // writeln("Data From the server: ", recieved_packets.front());
             }

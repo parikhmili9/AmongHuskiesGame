@@ -80,6 +80,7 @@ class SDLClient
         /// Make a new thread for TCP client. 
         tcp = new TCPClient();
         new Thread({ tcp_client_loop(); }).start();
+        new Thread({ tcp.run(); }).start();
         // every SDL app will need a window and a surface
         // todo - add params 
         const(char)* WINDOW_NAME = "AmongHuskies^TM HuskyTown".ptr;
@@ -116,6 +117,9 @@ class SDLClient
             temp = tcp.server_packet_recieved();
             }
             if (temp.player1Coords != [-999,-999] && !is_null_packet(temp)){
+                if(temp.message != ""){
+                    writeln(temp.message);
+                }
                 this.current_server_packet = temp;
                 //writeln(this.current_server_packet);
                 //ownerTid.send("HELLO",this.current_server_packet);
