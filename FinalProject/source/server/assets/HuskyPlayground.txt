@@ -1,9 +1,9 @@
 HuskyPlayground
 TeamA 3
 TeamB 3
-A R 1 1
-B R 18 1
-C B 1 22
-D B 18 22
-R 10 1
-B 10 23
+A R 3 3
+B R 15 3
+C B 3 20
+D B 15 20
+R 10 3
+B 10 21
