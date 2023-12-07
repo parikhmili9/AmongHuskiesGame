@@ -42,7 +42,14 @@ struct Husky
     void setPositionFromTileValues(int[2] huskyCoords){
         auto newX = convertToPixels(huskyCoords[0]);
         auto newY = convertToPixels(huskyCoords[1]);
+        this.moveHusky(newX, newY);
+    }
 
+    // First, we need to know which direction the sprite is moving so that we can set the state.
+    // Then, we can move to the target and update the state value.
+    void moveHusky(int targetX, int targetY){
+        huskySprite.xPos = targetX;
+        huskySprite.yPos = targetY;
     }
 
     int convertToPixels(int tileValue){

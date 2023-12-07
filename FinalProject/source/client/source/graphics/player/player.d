@@ -105,12 +105,15 @@ struct Player
     }
 
     bool isHoldingOpponentBall(int[] oppBallCoords){
-        if(abs(this.getX() - oppBallCoords[0]) <= 32 &&  abs(this.getY() - oppBallCoords[1]) <= 32){
+        auto ballX = oppBallCoords[0] * TILE_TO_PIXEL;
+        auto ballY = oppBallCoords[1] * TILE_TO_PIXEL;
+        if(abs(this.getX() - ballX) <= TILE_TO_PIXEL &&  abs(this.getY() - ballY) <= TILE_TO_PIXEL){
             writeln(this.getX());
             writeln(this.getY());
             writeln(oppBallCoords);
+            return true;
         }
-        return oppBallCoords[0] == this.getX() && oppBallCoords[1] == this.getY();
+        return false;
     }
 
     void markActive(SDL_Renderer* renderer){

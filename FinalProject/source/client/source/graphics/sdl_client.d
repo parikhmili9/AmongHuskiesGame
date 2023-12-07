@@ -180,9 +180,6 @@ class SDLClient
         husky1.setPositionFromTileValues(this.current_server_packet.ball1Coords);
         husky2.setPositionFromTileValues(this.current_server_packet.ball2Coords);
 
-        writeln(player1.getX());
-        writeln(player1.getY());
-        writeln(this.current_server_packet.ball2Coords);
         if (player1.isHoldingOpponentBall(
             this.current_server_packet.ball2Coords)){
                 writeln("Player 1 is Holding the Opponent Husky");
@@ -245,7 +242,9 @@ class SDLClient
                 writeln(this.current_server_packet.player1Coords);
                 player1Coords = this.current_server_packet.player1Coords;
             }
-            updateObjectPositions(renderer, player1, player2, player3, player4, husky1, husky2);
+            if (!is_null_packet(this.current_server_packet)){
+                updateObjectPositions(renderer, player1, player2, player3, player4, husky1, husky2);
+            }
             // Handle events
             while (SDL_PollEvent(&(this.e)) != 0)
             {
