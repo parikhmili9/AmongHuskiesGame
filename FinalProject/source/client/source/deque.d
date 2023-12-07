@@ -1,381 +1,455 @@
-module source.deque;
+module client.source.deque;
+
 // Run your program with: 
 // dmd Deque.d -unittest -of=test && ./test
 //
 // This will execute each of the unit tests telling you if they passed.
 
 import std.stdio;
-import std.conv;
+import std.random: uniform;
+import std.algorithm.mutation;
+import std.algorithm: canFind;
+import std.exception: assertThrown;
+import core.exception: AssertError;
 
-
-
-
-/++ 
- * A Deque is a double-ended queue in which we can push and
-    pop elements.
-    
-    Note: Remember we implement Deque as a class 
-          because it is implementing an interface.
- +/
-
-/*********************************
-   ## Methods in the Deque: 
-   void push_front(T x); -  Element is on the front of collection
+/** 
+    An interface for a Container abstract data type    
  */
-
-/++
-   void push_back(T x); - Element is on the back of the collection
- +/
-/++
-   T pop_front(); - Element is removed from front and returned
-    assert size > 0 before operation
-
-    T pop_back(); - Element is removed from back and returned
-    assert size > 0 before operation
-
-    ref T at(size_t pos);- Retrieve reference to element at position at index
-    assert pos is between [0 .. $] and size > 0
-
-    ref T back(); - Retrieve reference to element at back of position
-    assert size > 0 before operation
-
-    ref T front(); - Retrieve element at front of position
-    assert size > 0 before operation
- +/
-
 interface Container(T){
-    // Element is on the front of collection
+    /** Push element to the front of collection */
     void push_front(T x);
-    // Element is on the back of the collection
+    /** Push the element to the back of collection */
     void push_back(T x);
-    // Element is removed from front and returned
-    // assert size > 0 before operation
+    /** Pop an element removed from front and returned */
     T pop_front();
-    // Element is removed from back and returned
-    // assert size > 0 before operation
+    /** Element is removed from back and returned */
     T pop_back();
-    // Retrieve reference to element at position at index
-    // assert pos is between [0 .. $] and size > 0
+    /** Retrieve reference to element at position at index */
     ref T at(size_t pos);
-    // Retrieve reference to element at back of position
-    // assert size > 0 before operation
+    /** Retrieve reference to element at back of position */
     ref T back();
-    // Retrieve element at front of position
-    // assert size > 0 before operation
+    /** Retrieve element at front of position */
     ref T front();
-    // Retrieve number of elements currently in container
+    /** Retrieve number of elements currently in container */
     size_t size();
+    /** Tells whether the container is empty */
+    bool empty();
 }
 
-/*
+/**
     A Deque is a double-ended queue in which we can push and
     pop elements.
-    
-    Note: Remember we implement Deque as a class 
-          because it is implementing an interface.
+
+    Implements the Container interface.
+
 */
-/++ 
- ## Implementation Dets:
-
- The Deque is built on the basis of a collection - Dynamic Array. 
- It has two variables tracking the start and the end of the deque itself.  
- +/
-
-/++ 
-  ## It also has: 
-  ### General Constructor 
-  This is where one can create a new deque using the "new" keyword.
- +/
-
- /++ 
- ### Copy Constructor
- This is where one can create a new deque using another existing deque by copying the values of the existing deque to the new deque.
-+/
-
-/++
-### opAssign  
-This is so that the deque can use '=' to assign its values to a new deque. 
-+/
-
-/++ 
-### opEquals 
-This is a custom equals mthod that allows the deque to use '==' to compare the values istead of just the instances. 
-+/
-
-/++ 
-### size
-This is a method that allows user to see the size of the existing deque. 
-+/
 class Deque(T) : Container!(T){
-    // Implement here
-    private T[] deque;
-    private auto stInd = 0;
-    private size_t enInd = 0;
-    this(){
-        deque = new T[0];
+    
+    T[] deque;
+    
+    this() {
+        deque = [];
     }
 
-    // Copy constructor
-    this(Deque!(T) rhs) {
-        // writeln("Copy being made");
-        deque = rhs.deque.dup;
-        stInd = rhs.stInd;
-        enInd = rhs.enInd;
+    // Copy Constructor    
+    this(const Deque dequeCopy) {
+        // make a deep copy of this deque's array and assign it to the
+        // incoming deque
+        this.deque = dequeCopy.deque.dup();
     }
 
-    // opAssign = 
-    void opAssign(T[] other) {
-        // Copy the elements from the other deque to this deque
-        this.deque = other.dup;
-        // writeln("Assign");
+    /***********************************
+    * Non-identity assignment operator overload.
+    * Params:
+    *      dequeData = the T[] that will represent the deque's 
+    *                  data after an assignment operation.
+    */
+    void opAssign(const T[] dequeData) {
+        // copy the data to ensure that we are only copying values
+        this.deque = dequeData.dup();
     }
 
-    // opEquals
-    bool opEquals(Deque!(T) other) const {
-        // Compare the elements of the two deques
-        // writeln("Equals");
-        return (this.deque == other.deque);
-    }
-
-    private T[] temp;
-    void push_front(T x){
-        deque = [x] ~ deque;
-        stInd = 0;
-
-    }
-    void push_back(T x){
-        deque ~= x;
-        enInd = deque.length - 1;
-    }
-    T pop_front() {
-        assert(deque.length > 0);
-        T val = deque[stInd];
-        deque = deque[stInd + 1 .. $];
-        stInd = 0;
+    
+    /***********************************
+    * Equivalence operator overload.
+    * Params:
+    *      other = the Deque object to which this Deque object
+    *              will be compared.
+    */
+    bool opEquals(const Deque other) const {
         
-        return val;
-    }
-    T pop_back(){
-        size_t size = deque.length;
-        assert(size > 0);
-        T val = deque[enInd];
-        deque = deque[0 .. size- 1];
-        enInd = enInd - 1;
-        return val;
-    }
-    ref T at(size_t pos){
-        assert(size() > 0);
-        assert(pos < size());
+        // if lengths aren't matching they can't be equal
+        if (other.deque.length != this.deque.length) { return false; }
+        
+        // address is the same then they are equal
+        auto addrA = &this;
+        auto addrB = &other;
+        if (addrA == addrB) { return true; }
 
+        // element equality check
+        for (int i = 0; i < other.deque.length; i++) {
+            if (this.deque[i] != other.deque[i]) { return false; }
+        }
+        return true;
+    }
+
+    /***********************************
+    * Pushes element `x` to the front of this Deque object.
+    * Params:
+    *      x = the element to be pushed to the front of the Deque.
+    */
+    void push_front(T x) {
+        // deque reallocated with new element at the front
+        T[] front = [x];
+        deque = front ~= deque;
+    }
+    
+    /***********************************
+    * Pushes element `x` to the back of this Deque object.
+    * Params:
+    *      x = The element to be pushed to the back of the Deque.
+    */
+    void push_back(T x) {
+        // deque reallocated with new element at the back
+        deque ~= x;
+    }
+
+    /***********************************
+    * Pops and returns the element that is at the front of this Deque object.
+    * Returns: `T` type element from the front of the Deque
+    */
+    T pop_front() {
+
+        // ensure something can be removed
+        assert(deque.length > 0);
+        T val = deque[0];
+        deque = deque[1..deque.length];
+        return val;
+    }
+    
+    /***********************************
+    * Pops and returns the element that is at the back of this Deque object.
+    * Returns: `T` type element from the back of the Deque
+    */
+    T pop_back() {
+        assert(deque.length > 0);
+        auto idx = (deque.length)-1;
+        
+        T val = deque[idx];
+        deque = deque[0..idx];
+        return val;
+    }
+    
+    /***********************************
+    * Retrieves (but does not remove) the element at the requested index from this Deque object.
+    * Returns: `T` reference of the element at the specified index within the Deque.
+    */
+    ref T at(size_t pos) {
+        assert(pos >= 0 && pos < deque.length && deque.length > 0);
         return deque[pos];
     }
-    ref T back(){
-        assert((size() > 0));
-        return deque[enInd];
-    }
-    ref T front(){
-        assert(size() > 0);
-        return deque[stInd];
-    }
-    size_t size(){
-        return this.deque.length;
-    }
-    override string toString()
-    {
-        return to!(string)(deque);
+
+    /***********************************
+    * Retrieves (but does not remove) the element from the back of the Deque object.
+    * Returns: `T` reference of the element at the back of the Deque.
+    */
+    ref T back() {
+        assert(deque.length > 0);
+        auto idx = (deque.length)-1;
+        return deque[idx];
     }
 
+    /***********************************
+    * Retrieves (but does not remove) the element from the front of the Deque object.
+    * Returns: `T` reference of the element at the front of the Deque.
+    */
+    ref T front() {
+        assert(deque.length > 0);
+        return deque[0];
+    }
+
+    /***********************************
+    * Gets the size of the Deque in terms of the number of elements it holds.
+    */
+    size_t size() {
+        return deque.length;
+    }
+
+    /***********************************
+    * Tells whether the Deque is empty.
+    */
+    bool empty() {
+        return deque.length <= 0;
+    }
+
+    /***********************************
+    * popFront implementation for iterator implementation
+    */
+    void popFront() {
+        // ensure something can be removed
+        assert(deque.length > 0);
+        deque = deque[1..deque.length];
+    }
 }
+
+const int N = 5;
+const int UPPER_RANGE = 5;
 
 // An example unit test that you may consider.
 // Try writing more unit tests in separate blocks
 // and use different data types.
-
-/++ 
-Following are the Unit tests for the Deque. These are so that we can test the proper functioning of the deque Data Structure.
-+/
-
-
 unittest{
+    // initial unit test
     auto myDeque = new Deque!(int);
     myDeque.push_front(1);
     auto element = myDeque.pop_front();
     assert(element == 1);
 }
 
-/++ 
-These are so that we can test the proper functioning of the deque Data Structure.
-+/
-
-unittest {
-        auto deque = new Deque!(int);
-        deque.push_front(1);
-        deque.push_front(2);
-        deque.push_front(3);
-        assert(deque.front == 3);
-        // writeln(deque.toString);
-        assert(deque.size() == 3);
-    }
-
-    // Test push_back, back, and size methods with strings
-/++ 
-Test push_back, back, and size methods with strings
-+/
-
-unittest {
-    auto deque = new Deque!(string);
-    deque.push_back("a");
-    deque.push_back("b");
-    deque.push_back("c");
-    assert(deque.back == "c");
-    assert(deque.size == 3);
-}
-
-// Test pop_front and size methods with integers
-/++ 
-Test pop_front and size methods with integers
-+/
-unittest {
-    auto deque = new Deque!(int);
-    deque.push_back(1);
-    deque.push_back(2);
-    deque.push_back(3);
-    assert(deque.pop_front == 1);
-    assert(deque.size == 2);
-}
-
-// Test pop_back and size methods with strings
-/++ 
-Test pop_back and size methods with strings
-+/
-unittest {
-    auto deque = new Deque!(string);
-    deque.push_back("a");
-    deque.push_back("b");
-    deque.push_back("c");
-    assert(deque.pop_back == "c");
-    assert(deque.size == 2);
-}
-
-// Test at method with integers
-/++ 
-Test at method with integers
-+/
-unittest {
-    auto deque = new Deque!(int);
-    deque.push_back(1);
-    deque.push_back(2);
-    deque.push_back(3);
-    assert(deque.at(1) == 2);
-}
-
-// Test at method with strings
-unittest {
-    auto deque = new Deque!(string);
-    deque.push_back("apple");
-    deque.push_back("banana");
-    deque.push_back("cherry");
-    // writeln(deque.back());
-    assert(deque.at(2) == "cherry");
-}
-
-// Copy Constructor Unit test
-/++ 
-Copy Constructor Unit test
-+/
-unittest {
-    auto deque = new Deque!(int);
-        deque.push_front(1);
-        deque.push_front(2);
-        deque.push_front(3);
-    auto dq2 = new Deque!(int)(deque);
-
-    assert(dq2.front == deque.front);
-    
-}
-
-// OpAssign Unit test
-/++ 
-OpAssign Unit test
-+/
-unittest {
-    auto deque = new Deque!(string);
-
-    deque.push_back("apple");
-    deque.push_back("banana");
-    deque.push_back("cherry");
-
-    auto copiedDeque = new Deque!(string);
-    copiedDeque = deque.deque;
-
-    assert(copiedDeque.toString == deque.toString);
-}
-
-// opEquals Unit test
-/++ 
-opEquals Unit test
-+/
+/* Test removal from the back of an empty deque */
+///
 unittest
 {
-    auto deque = new Deque!(string);
-
-    deque.push_back("apple");
-    deque.push_back("banana");
-    deque.push_back("cherry");
-
-    auto copiedDeque = new Deque!(string);
-    auto dq2 = new Deque!(string)(deque);
-    copiedDeque = deque.deque;
-
-    bool myAns = copiedDeque == dq2;
-    bool[] actual = new bool[3];
-    int i = 0;
-    foreach (string key; copiedDeque.deque)
-    {
-        actual[i] = key == dq2.deque[i];
-        i++;
-    }
-    bool act;
-    for(int j = 1; j < actual.length; j++){
-        if (actual[j] != actual[j-1]){
-            assert(false);
-        }
-        act = actual[j];
-    }
-
-    assert(act == myAns);
+    auto myDeque = new Deque!(int);
+    assertThrown!AssertError(myDeque.pop_back());
 }
 
-// Testing iterator using foreach loop
-/++ 
-Testing iterator using foreach loop
-+/
+/* Test removal from the front of an empty deque */
 unittest
 {
-    auto deque = new Deque!(int);
-    deque.push_back(1);
-    deque.push_back(2);
-    deque.push_back(3);
-    deque.push_back(4);
-
-    ulong corInd = 1;
-    ulong myInd;
-    foreach (ind,int key; deque.deque)
-    {
-        if (key == 2){
-            myInd = ind;
-        }
-    }
-
-    
-    assert(myInd == corInd);
+    auto myDeque = new Deque!(int);
+    assertThrown!AssertError(myDeque.pop_front());
 }
 
-// void main(){
-//     // No need for a 'main', use the unit test feature.
-//     // Note: The D Compiler can generate a 'main' for us automatically
-//     //       if we are just unit testing, and we'll look at that feature
-//     //       later on in the course.
-// }
+/* Test retrieval from empty deque */
+unittest
+{
+    auto myDeque = new Deque!(int);
+    assertThrown!AssertError(myDeque.pop_front());
+}
 
-/**************** End of the Docs *****************/
+/* test size is working as expected (Deque of Deques) */
+unittest
+{
+    auto myDeque = new Deque!(string);
+    assert(myDeque.size() == 0);
+    // push random values to the front of the deque and store them in an array
+    for (int i = 0; i < N; i++) {
+        auto val = "new Deque!(int)";
+        myDeque.push_front(val);
+    }
+    assert(myDeque.size() == N);
+}
+
+/* Test retrieval from out-of-bounds index */
+unittest
+{
+    int[] randomVals; 
+    auto myDeque = new Deque!(int);
+    // push random values to the front of the deque and store them in an array
+    for (int i = 0; i < N; i++) {
+        auto val = uniform(0, UPPER_RANGE);
+        randomVals ~= val;
+        myDeque.push_front(val);
+    }
+    assertThrown!AssertError(myDeque.at(N + 10));
+}
+/* Test retrieval from valid index */
+unittest
+{
+    int[] randomVals; 
+    auto myDeque = new Deque!(int);
+    // push random values to the front of the deque and store them in an array
+    for (int i = 0; i < N; i++) {
+        auto val = uniform(0, UPPER_RANGE);
+        randomVals ~= val;
+        myDeque.push_back(val);
+    }
+    auto validIdx = uniform(0, N);
+    assert(myDeque.at(validIdx) == randomVals[validIdx]);
+}
+
+/* add from the front and assert value equality from the back */
+unittest
+{
+    int[] randomVals; 
+    auto myDeque = new Deque!(int);
+    // push random values to the front of the deque and store them in an array
+    for (int i = 0; i < N; i++) {
+        auto val = uniform(0, UPPER_RANGE);
+        randomVals ~= val;
+        myDeque.push_front(val);
+    }
+    
+    // iterate the array and assert that values popped from the deque are the same as the ones entered
+    for (int j = 0; j < N; j++) {
+        auto insertedVal = randomVals[j];
+        assert(myDeque.back() == insertedVal);
+        auto pop = myDeque.pop_back();
+        assert(pop == insertedVal);
+    }
+}
+
+/* add from the back and assert value equality from the back */
+unittest
+{
+    int[] randomVals; 
+    auto myDeque = new Deque!(int);
+    // push random values to the back of the deque and store them in an array
+    for (int i = 0; i < N; i++) {
+        auto val = uniform(0, UPPER_RANGE);
+        randomVals ~= val;
+        myDeque.push_back(val);
+    }
+    
+    // reverse iterate the array and assert that values popped from the deque are the same as the ones entered
+    for (int j = N-1; j > 0; j--) {
+        auto insertedVal = randomVals[j];
+        assert(myDeque.back() == insertedVal);
+        auto pop = myDeque.pop_back();
+        assert(pop == insertedVal);
+    }
+}
+
+/* add from the front and assert value equality from the front */
+unittest
+{
+    int[] randomVals; 
+    auto myDeque = new Deque!(int);
+    // push random values to the back of the deque and store them in an array
+    for (int i = 0; i < N; i++) {
+        auto val = uniform(0, UPPER_RANGE);
+        randomVals ~= val;
+        myDeque.push_front(val);
+    }
+        // reverse iterate the array and assert that values popped from the deque are the same as the ones entered
+    for (int j = N-1; j > 0; j--) {
+        auto insertedVal = randomVals[j];
+        assert(myDeque.front() == insertedVal);
+        auto pop = myDeque.pop_front();
+        assert(pop == insertedVal);
+    }
+}
+
+/* add from the back and assert value equality from the front */
+unittest
+{
+    int[] randomVals; 
+    auto myDeque = new Deque!(int);
+    // push random values to the back of the deque and store them in an array
+    for (int i = 0; i < N; i++) {
+        auto val = uniform(0, UPPER_RANGE);
+        randomVals ~= val;
+        myDeque.push_back(val);
+    }
+    
+    // reverse iterate the array and assert that values popped from the deque are the same as the ones entered
+    for (int j = 0; j < N; j++) {
+        auto insertedVal = randomVals[j];
+        assert(myDeque.front() == insertedVal);
+        auto pop = myDeque.pop_front();
+        assert(pop == insertedVal);
+    }
+}
+
+/* Test the copy constructor */
+unittest {
+    
+    Deque!(string) original = new Deque!(string);
+    
+    original.push_front("hey");            
+    original.push_front("we're");
+    original.push_front("testing");
+
+    // Create a copy
+    Deque!(string) duplicate = new Deque!(string)(original);
+
+    // assert that the values of the original and the copy are the same
+    assert(original.front() == duplicate.front());
+
+    // assert that values contained within the deque are not referring to the same address
+    string x = original.front();
+    string y = original.front();
+    assert(&x != &y);
+    
+    // mutate the duplicate and assert that the front values are no longer equal
+    duplicate.pop_front();
+    assert(original.front() != duplicate.front());
+}
+
+/** Test opAssign */
+/** Authors: me */
+unittest {
+    Deque!(string) myDeque = new Deque!(string);
+    string[] myArray1 = ["we're", "testing", "now"];
+
+    // populate the deque
+    myDeque.push_front("a");
+    myDeque.push_front("b");
+    myDeque.push_front("c");
+    
+    // opAssign the array to the dequeu
+    myDeque = myArray1;
+    string[] testArray = [];
+    
+    // fill the test array with the values from the deque
+    testArray ~= myDeque.pop_front();
+    testArray ~= myDeque.pop_front();
+    testArray ~= myDeque.pop_front();
+
+    // assert that the values taken from the deque are the values given to it
+    // from the opAssign
+    for (int i = 0; i < myArray1.length; i++) {
+        assert(testArray[i] == myArray1[i]);
+    }
+}
+
+/* Test opEquals */
+unittest {
+    Deque!(string) dequeA = new Deque!(string);
+    Deque!(string) dequeB = new Deque!(string);
+    Deque!(string) dequeC = dequeA;
+    string[] myArray1 = ["we're", "testing", "now"];
+
+    // assert equal addresses
+    assert(dequeA == dequeC);
+    
+    // populate the deque
+    foreach (string el; myArray1) {
+        dequeA.push_front(el);
+        dequeB.push_front(el);
+    }
+
+    // assert equal elements
+    assert(dequeA == dequeB);
+
+    // assert equal length; unequal elements
+    dequeA.pop_front();
+    dequeA.push_front("new string");
+    assert(!(dequeA == dequeB));
+
+    // assert unequal length; unequal elements
+    dequeA.pop_front();
+    assert(!(dequeA == dequeB));
+}
+
+// test iterator
+unittest {
+    
+    auto myIterator = new Deque!(int);
+
+    int[] ints = [];
+    // populate the deque and an aux-array that will 
+    // be used for verifying foreach loop
+    foreach (i; 0..20) {
+        auto x = uniform(1, 100);
+        myIterator.push_front(x);
+        ints ~= x;
+    }
+
+    // assert that everything put into the deque
+    // is seen on the foreach
+    foreach (int el; myIterator) {
+        assert(canFind(ints, el));
+    }
+}

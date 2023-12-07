@@ -110,6 +110,7 @@ class SDLClient
         auto temp = tcp.server_packet_recieved();
         if (temp.player1Coords != [-999,-999]){
             current_server_packet = temp;
+            writeln(current_server_packet);
         } 
 
     }
@@ -143,7 +144,6 @@ class SDLClient
             // Send our client packet move.
             cp = ClientPacket(player_id, playerMove);
             tcp.sendMove(cp);
-            // tcp.sendPacket(cp);
         }
     }
 
@@ -156,8 +156,8 @@ class SDLClient
         const string SPRITE_PATH = "./assets/test.bmp";
 
         const int TILE_SIZE = 32;
-        const int X_TILES = 20;
-        const int Y_TILES = 25;
+        const int X_TILES = 50;
+        const int Y_TILES = 50;
 
         // Create a hardware accelerated renderer and load our tiles from an image
         this.renderer = null;

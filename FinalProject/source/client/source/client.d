@@ -5,7 +5,7 @@ import core.thread.osthread;
 import client.source.packet.packet: Packet;
 import client.source.packet.deserialize_server;
 import client.source.packet.client_packet;
-import source.deque: Deque;
+import client.source.deque;
 
 // The purpose of the TCPClient class is to connect to a server and send messages.
 class TCPClient
@@ -105,7 +105,6 @@ class TCPClient
             {
                 Packet serverData = deserialize(buffer);
                 recieved_packets.push_back(serverData);
-                writeln("(from server)>", serverData);
             }
         }
     }
