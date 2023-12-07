@@ -17,7 +17,12 @@ struct TileMap
     // Static array for now for simplicity
     int[MAP_X_SIZE][MAP_Y_SIZE] mTiles;
 
-    // Set the tileset
+    /**
+    * Constructor for this tile_map.
+    *
+    * params:
+    *   - t: the TileSet that will be used to create this tilemap
+    */
     this(TileSet t)
     {
         mTileSet = t;
@@ -34,6 +39,13 @@ struct TileMap
         }
     }
 
+    /**
+    * Renders this tilemap.
+    *
+    * params:
+    *   - renderer: The SDL Renderer to render this tile_set.
+    *   - zoomFactor: the level of zoom being applied to this tileMap
+    */
     void render(SDL_Renderer* renderer, int zoomFactor = 1)
     {
         for (int y = 0; y < MAP_Y_SIZE; y++)
@@ -43,22 +55,5 @@ struct TileMap
                 mTileSet.renderTile(renderer, mTiles[x][y], x, y, zoomFactor);
             }
         }
-    }
-
-    
-    int getTileAt(int localX, int localY, int zoomFactor = 1)
-    {
-        int x = localX / (mTileSet.mTileSize * zoomFactor);
-        int y = localY / (mTileSet.mTileSize * zoomFactor);
-
-        if (x < 0 || y < 0 || x > MAP_X_SIZE - 1 || y > MAP_Y_SIZE - 1)
-        {
-            // TODO: Perhaps log error?
-            // Maybe throw an exception -- think if this is possible!
-            // You decide the proper mechanism!
-            return -1;
-        }
-
-        return mTiles[x][y];
     }
 }

@@ -123,7 +123,6 @@ class SDLClient
     void tcp_client_loop(){
         self_id = tcp.intitalize_self();
         writeln("Your Player ID is: ", self_id);
-        // writeln("I am here, size: ", tcp.recieved_packets.size());
         
         while(this.runApplication){
             Packet temp;
@@ -132,8 +131,7 @@ class SDLClient
             }
             if (temp.player1Coords != [-999,-999] && !is_null_packet(temp)){
                 this.current_server_packet = temp;
-                //writeln(this.current_server_packet);
-                //ownerTid.send("HELLO",this.current_server_packet);
+
             }
         }
     }
@@ -290,7 +288,6 @@ class SDLClient
 
         Husky husky1 = Husky(renderer, HUSKY_SPRITE_RED, 544, 128, 'R');
         Husky husky2 = Husky(renderer, HUSKY_SPRITE_BLUE, 544, 640, 'B');
-
 
         auto player1Coords = this.current_server_packet.player1Coords;
         while (this.runApplication)
