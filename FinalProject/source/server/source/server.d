@@ -20,7 +20,7 @@ import server.source.model.husky_playground : HuskyPlayGround;
 /**
  * Class: TCPServer
  *
- * The purpose of TCPServer is to accept multiple client connections.
+ * Description: The purpose of TCPServer is to accept multiple client connections.
  * Each connected client has its own thread for server communication.
  */
 class TCPServer

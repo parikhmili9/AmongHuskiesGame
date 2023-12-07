@@ -1,8 +1,27 @@
+/**
+ * Module: client.source.packet.deserialize_server
+ *
+ * Description: This module provides functionality for deserializing 
+ * server packets in a custom networking protocol for a multiplayer game.
+ */
 module client.source.packet.deserialize_server;
 
+// Import
 import std.stdio;
 import client.source.packet.packet;
 
+/**
+ * Method: deserialize
+ *
+ * Description: This is a method to deserialize a server packet.
+ * Given a byte array representing a server packet, this method extracts and
+ * populates a Packet struct with the relevant information.
+ *
+ * Params:
+ *      pac = A byte array containing the serialized server packet.
+ *
+ * Returns: A populated Packet struct with information from the deserialized server packet.
+ */
 Packet deserialize(char[Packet.sizeof] pac)
 {
     Packet result;
@@ -25,5 +44,4 @@ Packet deserialize(char[Packet.sizeof] pac)
     result.message = pac[52 .. pac.sizeof];
 
     return result;
-
 }
