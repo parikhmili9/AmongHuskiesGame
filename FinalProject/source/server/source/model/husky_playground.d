@@ -5,7 +5,6 @@
  * a game world with players and huskies. It provides methods to initialize the game,
  * move players within the world, pick and drop huskies, and determine the winner.
  */
-
 module server.source.model.husky_playground;
 
 import server.source.model.game_world : GameWorld;

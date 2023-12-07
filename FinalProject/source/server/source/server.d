@@ -1,5 +1,13 @@
+/**
+ * Module: source.server
+ *
+ * Description: This module defines a TCPServer class for a simple multiplayer game server.
+ * The server accepts multiple client connections, assigns player IDs, and
+ * broadcasts game state information to connected clients.
+ */
 module source.server;
 
+// Import
 import std.socket;
 import std.stdio;
 import std.range;
@@ -9,11 +17,14 @@ import server.source.packet.client_packet;
 import server.source.packet.deserialize_client;
 import server.source.model.husky_playground : HuskyPlayGround;
 
-// The purpose of the TCPServer is to accept multiple client connections. 
-// Every client that connects will have its own thread for the server to broadcast information to each client.
+/**
+ * Class: TCPServer
+ *
+ * The purpose of TCPServer is to accept multiple client connections.
+ * Each connected client has its own thread for server communication.
+ */
 class TCPServer
 {
-
     HuskyPlayGround h;
 
     char[4] playersList;
@@ -22,19 +33,27 @@ class TCPServer
 
     /// The listening socket is responsible for handling new client connections.
     Socket mListeningSocket;
+
     /// Stores the clients that are currently connected to the server.
     Socket[] mClientsConnectedToServer;
 
     /// Stores all of the data on the server. Ideally, we'll 
-    /// use this to broadcast out to clients connected.
+    /// Use this to broadcast out to clients connected.
     char[ClientPacket.sizeof][] mServerData;
 
     /// Keeps track of the last message that was broadcast out to each client.
     uint[] mCurrentMessageToSend;
 
-    /// Constructor
-    /// By default I have choosen localhost and a port that is likely to
-    /// be free.
+    /**
+    * Constructor: this
+    *
+    * Description: Initializes the TCPServer with default values.
+    *
+    * Params:
+    *      host = Hostname (default is "localhost").
+    *      port = Port number (default is 50001).
+    *      maxConnectionsBacklog = Maximum connections backlog (default is 4).
+    */
     this(string host = "localhost", ushort port = 50001, ushort maxConnectionsBacklog = 4)
     {
         writeln("Starting server...");
@@ -52,24 +71,35 @@ class TCPServer
         mListeningSocket.listen(maxConnectionsBacklog);
     }
 
-    /// Destructor
+    /**
+    * Destructor: ~this
+    *
+    * Description: Closes the server listening socket.
+    */
     ~this()
     {
         // Close our server listening socket
         mListeningSocket.close();
     }
 
-    /// Call this after the server has been created to start running the server
+    /**
+    * Method: run
+    *
+    * Description: This method is called after the server has been created to start running 
+    * the server. Listens for new connections and spawns threads for each connected client.
+    */
     void run()
     {
         bool serverIsRunning = true;
         while (serverIsRunning)
         {
-            // The servers job now is to just accept connections
+            // Accept connections
             writeln("Waiting to accept more connections");
-            /// accept is a blocking call.
+
+            /// Accept is a blocking call.
             auto newClientSocket = mListeningSocket.accept();
-            // After a new connection is accepted, let's confirm.
+
+            // Confirm after a new connection is accepted.
             writeln("Hey, a new client joined!");
             writeln("(me)", newClientSocket.localAddress(), "<---->", newClientSocket.remoteAddress(), "(client)");
 
@@ -100,19 +130,22 @@ class TCPServer
             newClientSocket.send(initialPacketToClients());
             writeln("Initial packet send to clients");
 
-            // Now we'll spawn a new thread for the client that
-            // has recently joined.
+            // Spawn a new thread for the client that has recently joined.
             // The server will now be running multiple threads and
             // handling a chat here with clients.
-            //
-            // NOTE: The index sent indicates the connection in our data structures,
-            //       this can be useful to identify different clients.
             new Thread({ clientLoop(newClientSocket); }).start();
         }
     }
 
-    // Function to spawn from a new thread for the client.
-    // The purpose is to listen for data sent from the client and then rebroadcast that information to all other clients.
+    /**
+    * Method: clientLoop
+    *
+    * Description: This is a function to spawn from a new thread for each client.
+    * Listens for data from the client and rebroadcasts it to all other clients.
+    *
+    * Params:
+    *      clientSocket = Socket for the connected client.
+    */
     void clientLoop(Socket clientSocket)
     {
         writeln("\t Starting clientLoop:(me)", clientSocket.localAddress(), "<---->", clientSocket.remoteAddress(), "(client)");
@@ -177,11 +210,23 @@ class TCPServer
         }
     }
 
-    // This is the packet that is to be sent by the server to each client. 
-    //  This has to be in the form of server packet. 
-    // The information to this packet will be fed by the game logic
-
-    // Also note that in this language, 2d array is as follows: int[num Columns][num rows]!
+    /**
+    * Method: packetToBeSent
+    * 
+    * Description: This method constructs a serialized packet to be sent to the server.
+    * It takes various game-related data, such as player coordinates,
+    * player assignments, ball coordinates, and a message, and constructs a packet
+    * to be sent to the server. The packet is then serialized using the `serialize()`
+    * method of the `serverPacket` struct.
+    *
+    * Params: 
+    *      playerCoords = A 2D array representing the coordinates of four players.
+    *      playerAssignment = An array representing player assignments (char[4]).
+    *      ballCoords = A 2D array representing the coordinates of two balls.
+    *      message = A string message with a maximum length of 80 characters.
+    *
+    * Returns: A serialized packet ready to be sent to the server.
+    */
     char[Packet.sizeof] packetToBeSent(
         int[2][4] playerCoords,
         char[4] playerAssignment,
@@ -205,9 +250,17 @@ class TCPServer
         sending = serverPacket.serialize();
 
         return sending;
-
     }
 
+    /**
+    * Method: dummyPacket
+    *
+    * Description: This method generates a dummy packet for testing purposes.
+    * It creates a dummy packet with predefined player coordinates,
+    * ball coordinates, player labels, and an empty message.
+    *
+    * Returns: A char array representing the dummy packet.
+    */
     char[Packet.sizeof] dummyPacket()
     {
         int[2][4] pCoords = [[3, 10], [10, 10], [17, 3], [17, 20]];
@@ -217,6 +270,15 @@ class TCPServer
         return packetToBeSent(pCoords, players, bCoords, msg);
     }
 
+    /**
+    * Method: initialPacketToClients
+    *
+    * Description: This method generates an initial packet to be sent to clients.
+    * It retrieves updated player locations, ball coordinates, and player names
+    * to construct an initial packet for communication with clients.
+    *
+    * Returns: A character array representing the packet to be sent.
+    */
     char[Packet.sizeof] initialPacketToClients()
     {
         int[2][4] pCoords = h.getUpdatedPlayerLocations();
@@ -227,6 +289,17 @@ class TCPServer
         return packetToBeSent(pCoords, playerChar, bCoords, msg);
     }
 
+    /**
+    * Method: broadcastMessage
+    *
+    * Description: This method broadcasts a message to all connected clients.
+    * This function sends a provided buffer (message packet) to all clients
+    * currently connected to the server. It utilizes a foreach loop to iterate
+    * through the list of client sockets and sends the message to each client.
+    *
+    * Params:
+    *      buffer = A character array representing the message packet to be broadcasted.
+    */
     void broadcastMessage(char[Packet.sizeof] buffer)
     {
         foreach (clientSocket; mClientsConnectedToServer)
@@ -235,7 +308,12 @@ class TCPServer
         }
     }
 
-    /// Take out the server data from the list and process it.  
+    /**
+    * Method: broadcastToAllClients
+    *
+    * Description: This is a method that takes out the server data 
+    * from the list and process it.
+    */
     void broadcastToAllClients()
     {
         char[Packet.sizeof] send;
@@ -243,43 +321,41 @@ class TCPServer
         /// Processes each data as soon as it sees it and if there's a queue,
         /// The mcurrentMessageToSend takes the one that came first and processes it 
         /// Before processing the latest one. 
-
         writeln("Broadcasting to :", mClientsConnectedToServer.length);
         foreach (idx, serverToClient; mClientsConnectedToServer)
         {
-            // Send whatever the latest data was to all the 
-            // clients.
+            // Send whatever the latest data was to all the clients.
             while (mCurrentMessageToSend[idx] <= mServerData.length - 1)
             {
-
                 char[ClientPacket.sizeof] msg = mServerData[mCurrentMessageToSend[idx]];
                 send = checkValid(deserialize(msg));
                 writeln("Sending this");
                 writeln(send);
                 serverToClient.send(send);
-                // Important to increment the message only after sending
-                // the previous message to as many clients as exist.
                 mCurrentMessageToSend[idx]++;
             }
         }
     }
 
-    // _--------------- [ToDO]----------------------------
-    /// If the processed data is valid, give the transformed data
-    /// In the form of serialized server packet, and if not, 
-    /// Return the serialized packet to be unchanged.
-
+    /**
+    * Method: checkValid
+    *
+    * Description: Checks the validity of a ClientPacket and performs corresponding actions.
+    * It takes a ClientPacket as input, extracts relevant information such as
+    * client ID, move number, and message. It then processes the move based on the command
+    * received and updates player locations, player names, ball coordinates, and the message.
+    *
+    * Params: 
+    *      data = The ClientPacket to be validated and processed.
+    * 
+    * Returns: A char array representing the packet to be sent as a response.
+    */
     char[Packet.sizeof] checkValid(ClientPacket data)
     {
-        char[Packet.sizeof] sen; /// Use the function "packet to be sent" to serialize this.
+        char[Packet.sizeof] sen;
         char clientId = data.client_id;
         int command = data.move_num;
         char[80] msg = data.message;
-
-        // 1. Move Left
-        // 2. Move Right
-        // 3. Move Up
-        // 4. Move Down
 
         string playerName = "";
         playerName ~= clientId;
