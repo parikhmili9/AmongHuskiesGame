@@ -23,6 +23,11 @@ class SDLClient
 {
 
     bool runApplication = true;
+    bool endGame = true;
+    bool player1Activated = false;
+    bool player2Activated = false;
+    bool player3Activated = false;
+    bool player4Activated = false;
     int zoomFactor = 1;
     TCPClient tcp;
     Packet current_server_packet;
@@ -111,7 +116,7 @@ class SDLClient
         writeln("Your Player ID is: ", self_id);
         // writeln("I am here, size: ", tcp.recieved_packets.size());
         
-        while(true){
+        while(this.runApplication){
             Packet temp;
             while(tcp.recieved_packets.size() != 0){
             temp = tcp.server_packet_recieved();
@@ -121,7 +126,6 @@ class SDLClient
                 //writeln(this.current_server_packet);
                 //ownerTid.send("HELLO",this.current_server_packet);
             }
-
         }
     }
 
@@ -184,23 +188,40 @@ class SDLClient
             this.current_server_packet.ball2Coords)){
                 writeln("Player 1 is Holding the Opponent Husky");
                 player1.markActive(renderer);
+                player1Activated = true;
         } else if (player2.isHoldingOpponentBall(
         this.current_server_packet.ball2Coords)){
             player2.markActive(renderer);
+            player2Activated = true;
         }
 
         if (player3.isHoldingOpponentBall(
         this.current_server_packet.ball1Coords)){
             player3.markActive(renderer);
+            player3Activated = true;
         } else if (player4.isHoldingOpponentBall(
         this.current_server_packet.ball1Coords)){
             player4.markActive(renderer);
+            player4Activated = true;
         }
 
     }
+
+    void checkEndGame(){
+        if(player1Activated && player2Activated){
+            this.endGame = true;
+            this.runApplication = false;
+            writeln("Team Red Won!");
+        }
+        if(player3Activated && player4Activated){
+            this.endGame = true;
+            this.runApplication = false;
+            write("Team Blue Won!");
+        }
+    }
+
     void mainApplicationLoop()
     {
-
         // enumerate asset paths
         const string TILEMAP_PATH = "./assets/grid.bmp";
         const string STANDARD_BLUE_SPRITE_PATH = "./assets/light_blue_player_sprites.bmp";
@@ -238,6 +259,8 @@ class SDLClient
         auto player1Coords = this.current_server_packet.player1Coords;
         while (this.runApplication)
         {
+            checkEndGame();
+
             if (this.current_server_packet.player1Coords != player1Coords){
                 writeln(this.current_server_packet.player1Coords);
                 player1Coords = this.current_server_packet.player1Coords;
@@ -279,5 +302,6 @@ class SDLClient
                 SDL_RenderPresent(renderer);
             }
         }
+        scope(exit) SDL_Quit();
     }
 }
