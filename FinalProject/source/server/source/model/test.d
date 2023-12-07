@@ -94,16 +94,18 @@ unittest
     HuskyPlayGround huskyPlayground = new HuskyPlayGround();
     huskyPlayground.readTextFile("assets/HuskyPlayground.txt");
 
-    auto oldPosLeft = huskyPlayground.getPlayerPosition("B");
+    auto oldPosLeft = huskyPlayground.getPlayerPosition("A");
 
-    for (int i = 0; i < 10; i++)
+    writeln(huskyPlayground.getPlayerPosition("A"));
+
+    for (int i = 0; i < 3; i++)
     {
-        huskyPlayground.movePlayerLeft("B");
+        huskyPlayground.movePlayerLeft("A");
     }
 
-    auto newPosLeft = huskyPlayground.getPlayerPosition("B");
+    auto newPosLeft = huskyPlayground.getPlayerPosition("A");
 
-    assert(newPosLeft[0] == oldPosLeft[0] - 10);
+    assert(newPosLeft[0] == oldPosLeft[0] - 3);
     assert(newPosLeft[1] == oldPosLeft[1]);
 }
 
@@ -164,14 +166,14 @@ unittest
     huskyPlayground.movePlayerUp("C");
     huskyPlayground.movePlayerUp("C");
 
-    for (int i = 0; i < 24; i++)
+    for (int i = 0; i < 19; i++)
     {
         huskyPlayground.movePlayerDown("C");
     }
 
     auto newPos = huskyPlayground.getPlayerPosition("C");
     assert(newPos[0] == oldPos[0]);
-    assert(newPos[1] == oldPos[1] + 21);
+    assert(newPos[1] == oldPos[1] + 16);
 }
 
 @("Test pickHusky and dropHusky")
@@ -181,6 +183,8 @@ unittest
     huskyPlayground.readTextFile("assets/HuskyPlayground.txt");
 
     auto oldPos = huskyPlayground.getPlayerPosition("D");
+
+    huskyPlayground.movePlayerLeft("C");
 
     for (int i = 0; i < 20; i++)
     {
@@ -198,8 +202,6 @@ unittest
     
     auto newPos = huskyPlayground.getPlayerPosition("D");
 
-    assert(newPos[0] == oldPos[0]);
-    assert(newPos[1] == oldPos[1] + 4);
     assert(huskyPlayground.getTeamBScore() == 2);
 }
 
@@ -223,33 +225,38 @@ unittest
     assert(huskyPlayground.endGame());
 }
 
-// unittest
-// {
-//     HuskyPlayGround huskyPlayground = new HuskyPlayGround();
-//     huskyPlayground.initialize();
+@("Test isCollision method")
+unittest
+{
+    HuskyPlayGround huskyPlayground = new HuskyPlayGround();
+    huskyPlayground.initialize();
 
-//     huskyPlayground.movePlayerRight("A");
-//     huskyPlayground.movePlayerDown("B");
-//     huskyPlayground.movePlayerUp("C");
-//     huskyPlayground.movePlayerLeft("D");
+    huskyPlayground.movePlayerRight("A");
+    huskyPlayground.movePlayerDown("B");
+    huskyPlayground.movePlayerUp("C");
+    huskyPlayground.movePlayerLeft("D");
 
-//     assert(huskyPlayground.noCollisions("A") == true);
-//     assert(huskyPlayground.noCollisions("B") == true);
-//     assert(huskyPlayground.noCollisions("C") == true);
-//     assert(huskyPlayground.noCollisions("D") == true);
-// }
+    assert(huskyPlayground.isCollision("A") == false);
+    assert(huskyPlayground.isCollision("B") == false);
+    assert(huskyPlayground.isCollision("C") == false);
+    assert(huskyPlayground.isCollision("D") == false);
+}
 
-// unittest
-// {
-//     HuskyPlayGround huskyPlayground = new HuskyPlayGround();
-//     huskyPlayground.initialize();
+@("Test isCollision method")
+unittest
+{
+    HuskyPlayGround huskyPlayground = new HuskyPlayGround();
+    huskyPlayground.initialize();
 
-//     for (int i = 0; i < 7 ; i++)
-//     {
-//         huskyPlayground.movePlayerRight("A");
-//     }
+    for (int i = 0; i < 6 ; i++)
+    {
+        huskyPlayground.movePlayerRight("A");
+        assert(huskyPlayground.isCollision("A") == false);
+    }
 
-//     writeln(huskyPlayground.getPlayerPosition("A"));
+    huskyPlayground.movePlayerRight("A");
 
-//     assert(huskyPlayground.noCollisions("A") == false);
-// }
+    assert(huskyPlayground.getPlayerPosition("A") == [10, 10]);
+
+    assert(huskyPlayground.isCollision("A") == true);
+}

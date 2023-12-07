@@ -135,9 +135,8 @@ class HuskyPlayGround : GameWorld!()
             && player.getCurrXPos() < rowsX
             && player.getCurrYPos() < columnsY)
             {
-                if (noCollisions(playerName))
+                if (!isCollision(playerName))
                 {
-                    writeln("Inside");
                     int currXPos = player.getCurrXPos();
                     int currYPos = player.getCurrYPos();
                     player.setCurrXPos(currXPos + 1);
@@ -180,7 +179,7 @@ class HuskyPlayGround : GameWorld!()
             && player.getCurrXPos() < rowsX
             && player.getCurrYPos() < columnsY)
             {
-                if (noCollisions(playerName))
+                if (!isCollision(playerName))
                 {
                     int currXPos = player.getCurrXPos;
                     int currYPos = player.getCurrYPos;
@@ -224,7 +223,7 @@ class HuskyPlayGround : GameWorld!()
             && player.getCurrXPos() < rowsX
             && player.getCurrYPos() < columnsY)
             {
-                if (noCollisions(playerName))
+                if (!isCollision(playerName))
                 {
                     int currXPos = player.getCurrXPos;
                     int currYPos = player.getCurrYPos;
@@ -272,7 +271,7 @@ class HuskyPlayGround : GameWorld!()
             && player.getCurrXPos() < rowsX
             && player.getCurrYPos() < columnsY)
             {
-                if (noCollisions(playerName))
+                if (!isCollision(playerName))
                 {
                     int currXPos = player.getCurrXPos;
                     int currYPos = player.getCurrYPos;
@@ -486,24 +485,22 @@ class HuskyPlayGround : GameWorld!()
         }
     }
 
-    bool noCollisions(string playerName)
+    bool isCollision(string playerName)
     {
-        bool flag = false;
         foreach (TeamPlayer player1; players)
         {
             if (player1.getPlayerName() == playerName)
             {
                 foreach (TeamPlayer player2; players)
                 {
-                    if (player1.getCurrXPos() != player2.getCurrXPos() + 1
-                        &&  player1.getCurrXPos() != player2.getCurrXPos() - 1
-                        && player1.getCurrYPos() != player2.getCurrYPos() + 1
-                        && player1.getCurrYPos() != player2.getCurrYPos() - 1)
-                        flag = true;
+                    if (player1.getCurrXPos() == player2.getCurrXPos()
+                        && player1.getCurrYPos() == player2.getCurrYPos()
+                        && player1.getPlayerName() != player2.getPlayerName())
+                        return true;
                 }
             }
         }
-        return flag;
+        return false;
     }
 
     string endGame()
