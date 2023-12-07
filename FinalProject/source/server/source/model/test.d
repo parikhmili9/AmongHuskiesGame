@@ -15,11 +15,11 @@ unittest
     assert(huskyPlayground.getColumns() == 25);
 }
 
-@("Test reading from the HuskyPlayground.txt file and initial scores of Team A and Team B")
+@("Test reading from the HuskyPlaygroundTesting.txt file and initial scores of Team A and Team B")
 unittest
 {
     HuskyPlayGround huskyPlayground = new HuskyPlayGround();
-    huskyPlayground.initialize();
+    huskyPlayground.readTextFile("assets/HuskyPlaygroundTesting.txt");
 
     assert(huskyPlayground.getWorldName() == "HuskyPlayground");
     assert(huskyPlayground.getTeamAScore() == 0);
@@ -30,7 +30,7 @@ unittest
 unittest
 {
     HuskyPlayGround huskyPlayground = new HuskyPlayGround();
-    huskyPlayground.initialize();
+    huskyPlayground.readTextFile("assets/HuskyPlaygroundTesting.txt");
 
     int[] posA = huskyPlayground.getPlayerPosition("A");
     int[] posB = huskyPlayground.getPlayerPosition("B");
@@ -47,7 +47,7 @@ unittest
 unittest
 {
     HuskyPlayGround huskyPlayground = new HuskyPlayGround();
-    huskyPlayground.initialize();
+    huskyPlayground.readTextFile("assets/HuskyPlaygroundTesting.txt");
 
     char[] playerNames = huskyPlayground.getPlayerNames();
 
@@ -61,7 +61,7 @@ unittest
 unittest
 {
     HuskyPlayGround huskyPlayground = new HuskyPlayGround();
-    huskyPlayground.initialize();
+    huskyPlayground.readTextFile("assets/HuskyPlaygroundTesting.txt");
 
     int[2][2] ballCoords = huskyPlayground.getBallCoords();
 
@@ -73,7 +73,7 @@ unittest
 unittest
 {
     HuskyPlayGround huskyPlayground = new HuskyPlayGround();
-    huskyPlayground.readTextFile("assets/HuskyPlayground.txt");
+    huskyPlayground.readTextFile("assets/HuskyPlaygroundTesting.txt");
 
     auto oldPosRight = huskyPlayground.getPlayerPosition("A");
 
@@ -92,7 +92,7 @@ unittest
 unittest
 {
     HuskyPlayGround huskyPlayground = new HuskyPlayGround();
-    huskyPlayground.readTextFile("assets/HuskyPlayground.txt");
+    huskyPlayground.readTextFile("assets/HuskyPlaygroundTesting.txt");
 
     auto oldPosLeft = huskyPlayground.getPlayerPosition("A");
 
@@ -113,7 +113,7 @@ unittest
 unittest
 {
     HuskyPlayGround huskyPlayground = new HuskyPlayGround();
-    huskyPlayground.initialize();
+    huskyPlayground.readTextFile("assets/HuskyPlaygroundTesting.txt");
 
     huskyPlayground.movePlayerRight("A");
     auto pos = huskyPlayground.getUpdatedPlayerLocations();
@@ -128,7 +128,7 @@ unittest
 unittest
 {
     HuskyPlayGround huskyPlayground = new HuskyPlayGround();
-    huskyPlayground.readTextFile("assets/HuskyPlayground.txt");
+    huskyPlayground.readTextFile("assets/HuskyPlaygroundTesting.txt");
 
     auto oldPosUp = huskyPlayground.getPlayerPosition("C");
 
@@ -143,7 +143,7 @@ unittest
 unittest
 {
     HuskyPlayGround huskyPlayground = new HuskyPlayGround();
-    huskyPlayground.readTextFile("assets/HuskyPlayground.txt");
+    huskyPlayground.readTextFile("assets/HuskyPlaygroundTesting.txt");
 
     auto oldPosDown = huskyPlayground.getPlayerPosition("D");
 
@@ -158,7 +158,7 @@ unittest
 unittest
 {
     HuskyPlayGround huskyPlayground = new HuskyPlayGround();
-    huskyPlayground.readTextFile("assets/HuskyPlayground.txt");
+    huskyPlayground.readTextFile("assets/HuskyPlaygroundTesting.txt");
 
     auto oldPos = huskyPlayground.getPlayerPosition("C");
 
@@ -180,7 +180,7 @@ unittest
 unittest
 {
     HuskyPlayGround huskyPlayground = new HuskyPlayGround();
-    huskyPlayground.readTextFile("assets/HuskyPlayground.txt");
+    huskyPlayground.readTextFile("assets/HuskyPlaygroundTesting.txt");
 
     auto oldPos = huskyPlayground.getPlayerPosition("D");
 
@@ -209,7 +209,7 @@ unittest
 unittest
 {
     HuskyPlayGround huskyPlayground = new HuskyPlayGround();
-    huskyPlayground.readTextFile("assets/HuskyPlayground.txt");
+    huskyPlayground.readTextFile("assets/HuskyPlaygroundTesting.txt");
 
     for (int i = 0; i < 14; i++)
     {
@@ -229,7 +229,7 @@ unittest
 unittest
 {
     HuskyPlayGround huskyPlayground = new HuskyPlayGround();
-    huskyPlayground.initialize();
+    huskyPlayground.readTextFile("assets/HuskyPlaygroundTesting.txt");
 
     huskyPlayground.movePlayerRight("A");
     huskyPlayground.movePlayerDown("B");
@@ -246,7 +246,7 @@ unittest
 unittest
 {
     HuskyPlayGround huskyPlayground = new HuskyPlayGround();
-    huskyPlayground.initialize();
+    huskyPlayground.readTextFile("assets/HuskyPlaygroundTesting.txt");
 
     for (int i = 0; i < 6 ; i++)
     {
