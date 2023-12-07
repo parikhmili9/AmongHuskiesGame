@@ -19,6 +19,10 @@ import client.source.packet.packet: Packet;
 import bindbc.sdl;
 import loader = bindbc.loader.sharedlib;
 
+
+/**
+* The main graphical application for our program.
+*/
 class SDLClient
 {
 
@@ -37,6 +41,9 @@ class SDLClient
     SDL_Window* window;
     SDL_Renderer* renderer;
 
+    /**
+    * The constructor for the SDL_CLient.
+    */ 
     this()
     {
         // OS checking for proper SDL library
@@ -86,8 +93,7 @@ class SDLClient
         /// Make a new thread for TCP client. 
         tcp = new TCPClient();
         new Thread({ tcp_client_loop(); }).start();
-        // every SDL app will need a window and a surface
-        // todo - add params 
+        // every SDL app will need a window
         const(char)* WINDOW_NAME = "AmongHuskies^TM HuskyTown".ptr;
         const int WINDOW_WIDTH = 640;
         const int WINDOW_HEIGHT = 800;
@@ -100,6 +106,7 @@ class SDLClient
         );
     }
 
+    /// destructor
     ~this()
     {
         // Destroy our window
@@ -109,8 +116,10 @@ class SDLClient
         writeln("Ending application--good bye!");
     }
 
-    /// Writing an independent TCP client loop
-
+    /**
+    * method called inside of the tcp client via a thread. This method handles providing packets from the
+    * server to this sdl_client via the tcp client.
+    */
     void tcp_client_loop(){
         self_id = tcp.intitalize_self();
         writeln("Your Player ID is: ", self_id);
@@ -129,6 +138,12 @@ class SDLClient
         }
     }
 
+    /**
+    * Determines whether the packet received from the tcp client is null.
+    * 
+    * params:
+    *   p: the packet in question
+    */
     bool is_null_packet(Packet p){
         if(p.player1Coords == [0,0]
         && p.player2Coords == [0,0]
@@ -140,8 +155,12 @@ class SDLClient
     }
 
     /**
+    * Sends to the server a client_packet that expresses a move from this client.
     * 
-    **/
+    * params:
+    *   keyboardState: The state of the keyboard
+    *   player_id: The id of the player sending the move
+    */
     void send_movement_client_packet(const ubyte* keyboardState, char player_id)
     {
         int playerMove = -1;
@@ -171,7 +190,18 @@ class SDLClient
         }
     }
 
-    // Updates the positions of the objects on the game board based on the current_server_packet.
+    /**
+    * Updates the positions of the objects on the game board based on the current_server_packet.
+    *
+    * param:
+    *   - renderer: The SDL renderer for the objects in question
+    *   - player1: the object representing player1
+    *   - player2:  the object representing player2
+    *   - player3: the object representing player3
+    *   - player4: the object representing player4
+    *   - husky1: the object representing husky1
+    *   - husky2: the object representing husky2
+    */
     void updateObjectPositions(SDL_Renderer* renderer, ref Player player1, ref Player player2, ref Player player3,
     ref Player player4, ref Husky husky1, ref Husky husky2)
     {
@@ -207,6 +237,9 @@ class SDLClient
 
     }
 
+    /**
+    * Checks if the game is over
+    */ 
     void checkEndGame(){
         if(player1Activated && player2Activated){
             this.endGame = true;
@@ -220,6 +253,10 @@ class SDLClient
         }
     }
 
+
+    /**
+    * The game loop.
+    */ 
     void mainApplicationLoop()
     {
         // enumerate asset paths
@@ -245,7 +282,6 @@ class SDLClient
         TileSet tileSet = TileSet(renderer, TILEMAP_PATH, TILE_SIZE, X_TILES, Y_TILES);
         TileMap tileMap = TileMap(tileSet);
 
-        // TODO - UN-HARDCODE THIS; USE DATA FROM THE SERVER
         // Render 4 characters, 2 for each team
         Player player1 = Player(renderer, STANDARD_RED_SPRITE_PATH,ACTIVE_RED_SPRITE_PATH, 0, 0, 'A');
         Player player2 = Player(renderer, STANDARD_RED_SPRITE_PATH,ACTIVE_RED_SPRITE_PATH, 32, 0, 'B');

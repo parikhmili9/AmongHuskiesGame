@@ -45,7 +45,7 @@ struct TileMap
         }
     }
 
-    // Specify a position local coorindate on the window
+    
     int getTileAt(int localX, int localY, int zoomFactor = 1)
     {
         int x = localX / (mTileSet.mTileSize * zoomFactor);
