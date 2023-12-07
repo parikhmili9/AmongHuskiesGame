@@ -8,6 +8,8 @@ import server.source.packet.packet;
 import server.source.packet.client_packet;
 import server.source.packet.deserialize_client;
 import server.source.model.husky_playground : HuskyPlayGround;
+import server.source.deque;
+
 
 // The purpose of the TCPServer is to accept multiple client connections. 
 // Every client that connects will have its own thread for the server to broadcast information to each client.
@@ -20,6 +22,7 @@ class TCPServer
     char[] playerListDup;
     Packet serverPacket;
 
+    auto client_moves = new Deque!(ClientPacket);
     /// The listening socket is responsible for handling new client connections.
     Socket mListeningSocket;
     /// Stores the clients that are currently connected to the server.
@@ -162,12 +165,23 @@ class TCPServer
                 else
                 {
                     mServerData ~= buffer;
+
+                    /// The new code with deque.
+                    ClientPacket temp =  deserialize(buffer);
+                    client_moves.push_back(temp);
+
                     writeln("Got this from client:");
                     writeln(buffer);
 
                     /// After we receive a single message, we'll just 
                     /// immediately broadcast out to all clients some data.
-                    broadcastToAllClients();
+                    // broadcastToAllClients();
+
+                    while(client_moves.size != 0){
+                        ClientPacket move = client_moves.pop_front();
+                        char[Packet.sizeof] save =  checkValid(move);
+                        sendPacketToAllClients(save);
+                    }
                 }
             }
         }
