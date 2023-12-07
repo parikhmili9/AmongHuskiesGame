@@ -1,5 +1,5 @@
 module server.source.deque;
-// Run your program with: 
+// Run your program with:
 // dmd Deque.d -unittest -of=test && ./test
 //
 // This will execute each of the unit tests telling you if they passed.

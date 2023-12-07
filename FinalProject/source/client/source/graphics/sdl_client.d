@@ -4,6 +4,8 @@ module source.graphics.sdl_client;
 import std.stdio;
 import std.string;
 import core.thread.osthread;
+import std.concurrency;
+import core.thread;
 
 import client.source.graphics.tile_map.tile_map : TileMap;
 import client.source.graphics.tile_map.tile_set : TileSet;
@@ -114,13 +116,12 @@ class SDLClient
             temp = tcp.server_packet_recieved();
             }
             if (temp.player1Coords != [-999,-999] && !is_null_packet(temp)){
-                writeln(temp);
                 this.current_server_packet = temp;
-            } 
+                //writeln(this.current_server_packet);
+                //ownerTid.send("HELLO",this.current_server_packet);
+            }
 
         }
-        // writeln(current_server_packet);
-
     }
 
     bool is_null_packet(Packet p){
@@ -165,24 +166,24 @@ class SDLClient
         }
     }
 
+    // Updates the positions of the objects on the game board based on the current_server_packet.
+    void updateObjectPositions(ref Player player1, ref Player player2, ref Player player3, ref Player player4)
+    {
+        player1.setPositionFromTileValues(this.current_server_packet.player1Coords);
+
+        player2.setPositionFromTileValues(this.current_server_packet.player2Coords);
+        player3.setPositionFromTileValues(this.current_server_packet.player3Coords);
+        player4.setPositionFromTileValues(this.current_server_packet.player4Coords);
+
+    }
     void mainApplicationLoop()
     {
-        writeln(current_server_packet);
 
         // enumerate asset paths
         const string TILEMAP_PATH = "./assets/grid.bmp";
-        const string STANDARD_BLUE_SPRITE_PATH = "./assets/dark_blue_player_sprites.bmp";
-        const string STANDARD_RED_SPRITE_PATH = "./assets/red_player_sprites.bmp";
-        const string ACTIVE_ORANGE_SPRITE_PATH = "./assets/orange_player_sprites.bmp";
-        const string ACTIVE_BLUE_SPRITE_PATH = "./assets/dark_blue_player_sprites.bmp";
-        const string HUSKY_SPRITE_BLUE = "./assets/blue_husky_sprite.bmp";
-        const string HUSKY_SPRITE_RED = "./assets/red_husky_sprite.bmp";
-
-        // enumerate asset paths
-        const string TILEMAP_PATH = "./assets/grid.bmp";
-        const string STANDARD_BLUE_SPRITE_PATH = "./assets/dark_blue_player_sprites.bmp";
-        const string STANDARD_RED_SPRITE_PATH = "./assets/red_player_sprites.bmp";
-        const string ACTIVE_ORANGE_SPRITE_PATH = "./assets/orange_player_sprites.bmp";
+        const string STANDARD_BLUE_SPRITE_PATH = "./assets/light_blue_player_sprites.bmp";
+        const string STANDARD_RED_SPRITE_PATH = "./assets/orange_player_sprites.bmp";
+        const string ACTIVE_RED_SPRITE_PATH = "./assets/red_player_sprites.bmp";
         const string ACTIVE_BLUE_SPRITE_PATH = "./assets/dark_blue_player_sprites.bmp";
         const string HUSKY_SPRITE_BLUE = "./assets/blue_husky_sprite.bmp";
         const string HUSKY_SPRITE_RED = "./assets/red_husky_sprite.bmp";
@@ -208,8 +209,14 @@ class SDLClient
         Player player3 = Player(renderer, STANDARD_RED_SPRITE_PATH, 64, 0, 'C');
         Player player4 = Player(renderer, STANDARD_RED_SPRITE_PATH, 32 * 10, 32 * 6, 'D');
 
+        auto player1Coords = this.current_server_packet.player1Coords;
         while (this.runApplication)
         {
+            if (this.current_server_packet.player1Coords != player1Coords){
+                writeln(this.current_server_packet.player1Coords);
+                player1Coords = this.current_server_packet.player1Coords;
+            }
+            updateObjectPositions(player1, player2, player3, player4);
             // Handle events
             while (SDL_PollEvent(&(this.e)) != 0)
             {
@@ -219,7 +226,7 @@ class SDLClient
                 }
                 // Get Keyboard input
                 const ubyte* keyboardState = SDL_GetKeyboardState(null);
-                // send_movement_client_packet(keyboardState, self_id);
+                send_movement_client_packet(keyboardState, self_id);
 
                 // (3) Clear and Draw the Screen
                 // Gives us a clear "canvas"

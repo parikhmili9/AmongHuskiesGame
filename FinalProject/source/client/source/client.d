@@ -120,10 +120,8 @@ class TCPClient
             toBeSent.player1Coords = [-999,-999];
             return toBeSent;
         }
-        writeln("pre-Pop: ", recieved_packets.size());
         toBeSent = recieved_packets.pop_front();
-        
-        writeln("post-Pop: ", recieved_packets.size());
+
         return toBeSent;
 
     }
