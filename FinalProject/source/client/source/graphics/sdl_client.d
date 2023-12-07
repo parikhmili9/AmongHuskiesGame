@@ -149,7 +149,8 @@ class SDLClient
 
     void mainApplicationLoop()
     {
-        writeln(current_server_packet);
+        // writeln("Is this it? ----------------------------------------------");
+        // writeln(current_server_packet);
         // define necessary constants
         const string TILEMAP_PATH = "./assets/tilemap.bmp";
         const string SPRITE_PATH = "./assets/test.bmp";
@@ -178,7 +179,7 @@ class SDLClient
                 }
                 // Get Keyboard input
                 const ubyte* keyboardState = SDL_GetKeyboardState(null);
-                send_movement_client_packet(keyboardState, player.getId());
+                send_movement_client_packet(keyboardState, self_id);
 
                 // Check if it's legal to move a direction
                 // TODO: Consider moving this into a function

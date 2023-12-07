@@ -285,7 +285,9 @@ class TCPServer
     {
         char[Packet.sizeof] sen; /// Use the function "packet to be sent" to serialize this.
         char clientId = data.client_id;
+        writeln("Check valid (client_id)", clientId);
         int command = data.move_num;
+        writeln("Check valid (command)", command);
         char[80] msg = data.message;
 
         // 1. Move Left

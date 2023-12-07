@@ -135,6 +135,7 @@ class HuskyPlayGround : GameWorld!()
             {
                 if (noCollisions(playerName))
                 {
+                    writeln("Player name moving right: ", playerName);
                     int currXPos = player.getCurrXPos();
                     int currYPos = player.getCurrYPos();
                     player.setCurrXPos(currXPos + 1);
