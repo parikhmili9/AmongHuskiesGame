@@ -149,12 +149,17 @@ class SDLClient
 
     void mainApplicationLoop()
     {
-        // writeln("Is this it? ----------------------------------------------");
-        // writeln(current_server_packet);
-        // define necessary constants
-        const string TILEMAP_PATH = "./assets/tilemap.bmp";
-        const string SPRITE_PATH = "./assets/test.bmp";
 
+        // enumerate asset paths
+        const string TILEMAP_PATH = "./assets/grid.bmp";
+        const string STANDARD_BLUE_SPRITE_PATH = "./assets/dark_blue_player_sprites.bmp";
+        const string STANDARD_RED_SPRITE_PATH = "./assets/red_player_sprites.bmp";
+        const string ACTIVE_ORANGE_SPRITE_PATH = "./assets/orange_player_sprites.bmp";
+        const string ACTIVE_BLUE_SPRITE_PATH = "./assets/dark_blue_player_sprites.bmp";
+        const string HUSKY_SPRITE_BLUE = "./assets/blue_husky_sprite.bmp";
+        const string HUSKY_SPRITE_RED = "./assets/red_husky_sprite.bmp";
+
+        // describing the tile map
         const int TILE_SIZE = 32;
         const int X_TILES = 50;
         const int Y_TILES = 50;
@@ -166,7 +171,13 @@ class SDLClient
         // load in the tilemap and player assets from local storage
         TileSet tileSet = TileSet(renderer, TILEMAP_PATH, TILE_SIZE, X_TILES, Y_TILES);
         TileMap tileMap = TileMap(tileSet);
-        Player player = Player(renderer, SPRITE_PATH, 0, 0, 'A');
+
+        // TODO - UN-HARDCODE THIS; USE DATA FROM THE SERVER
+        // Render 4 characters, 2 for each team
+        Player player1 = Player(renderer, STANDARD_BLUE_SPRITE_PATH, 0, 0, 'A');
+        Player player2 = Player(renderer, STANDARD_BLUE_SPRITE_PATH, 32, 0, 'B');
+        Player player3 = Player(renderer, STANDARD_RED_SPRITE_PATH, 64, 0, 'C');
+        Player player4 = Player(renderer, STANDARD_RED_SPRITE_PATH, 32 * 10, 32 * 6, 'D');
 
         while (this.runApplication)
         {
@@ -179,30 +190,7 @@ class SDLClient
                 }
                 // Get Keyboard input
                 const ubyte* keyboardState = SDL_GetKeyboardState(null);
-                send_movement_client_packet(keyboardState, self_id);
-
-                // Check if it's legal to move a direction
-                // TODO: Consider moving this into a function
-                //       e.g. 'legal move'
-                bool canMove = true;
-
-                // Check for movement
-                if (keyboardState[SDL_SCANCODE_LEFT] && canMove)
-                {
-                    player.moveLeft();
-                }
-                if (keyboardState[SDL_SCANCODE_RIGHT] && canMove)
-                {
-                    player.moveRight();
-                }
-                if (keyboardState[SDL_SCANCODE_UP] && canMove)
-                {
-                    player.moveUp();
-                }
-                if (keyboardState[SDL_SCANCODE_DOWN] && canMove)
-                {
-                    player.moveDown();
-                }
+                // send_movement_client_packet(keyboardState, self_id);
 
                 // (3) Clear and Draw the Screen
                 // Gives us a clear "canvas"
@@ -214,7 +202,10 @@ class SDLClient
 
                 // Render out DrawableTileMap and player
                 tileMap.render(renderer, zoomFactor);
-                player.render(renderer);
+                player1.render(renderer);
+                player2.render(renderer);
+                player3.render(renderer);
+                player4.render(renderer);
 
                 // Little frame capping hack so we don't run too fast
                 SDL_Delay(125); // Finally show what we've drawn
