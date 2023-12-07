@@ -516,6 +516,9 @@ class HuskyPlayGround : GameWorld!()
     }
 }
 
+void main(){
+    
+}
 unittest
 {
     //Just to test all methods here are working!!

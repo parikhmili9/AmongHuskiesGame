@@ -31,7 +31,7 @@ struct Sprite
 		// Load the bitmap surface
 		SDL_Surface* myTestImage = SDL_LoadBMP(filepath.ptr);
 		writeln(myTestImage);
-		
+
 		// Create a texture from the surface
 		mTexture = SDL_CreateTextureFromSurface(renderer, myTestImage);
 		this.direction = 0;
@@ -93,5 +93,18 @@ struct Sprite
 				mFrame = 0;
 			}
 		}
+	}
+
+	void updateImage(SDL_Renderer* renderer, string filepath){
+		SDL_Surface* myTestImage = SDL_LoadBMP(filepath.ptr);
+		writeln(myTestImage);
+
+		// Create a texture from the surface
+		mTexture = SDL_CreateTextureFromSurface(renderer, myTestImage);
+		this.direction = 0;
+
+		// Done with the bitmap surface pixels after we create the texture, we have
+		// effectively updated memory to GPU texture.
+		SDL_FreeSurface(myTestImage);
 	}
 }

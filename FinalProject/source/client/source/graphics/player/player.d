@@ -1,7 +1,7 @@
 module client.source.graphics.player.player;
 
 import std.stdio;
-
+import std.math;
 import bindbc.sdl;
 import client.source.graphics.player.sprite;
 import client.source.packet.client_packet : ClientPacket;
@@ -12,9 +12,14 @@ struct Player
     Sprite playerSprite;
     char player_id;
     const int TILE_TO_PIXEL = 32;
-    this(SDL_Renderer* renderer, string filepath, int startX, int startY, char player_id)
+    string currFilePath;
+    string activeFilePath;
+    this(SDL_Renderer* renderer, string currFilePath, string activeFilePath, int startX, int startY, char player_id)
     {
-        playerSprite = Sprite(renderer, filepath, startX, startY);
+        this.currFilePath = currFilePath;
+        this.activeFilePath = activeFilePath;
+        // By default, we haven't actively picked up a ball.
+        playerSprite = Sprite(renderer, currFilePath, startX, startY);
         this.player_id = player_id;
     }
 
@@ -97,5 +102,21 @@ struct Player
             playerSprite.mState = STATE.IDLE;
         }
 
+    }
+
+    bool isHoldingOpponentBall(int[] oppBallCoords){
+        if(abs(this.getX() - oppBallCoords[0]) <= 32 &&  abs(this.getY() - oppBallCoords[1]) <= 32){
+            writeln(this.getX());
+            writeln(this.getY());
+            writeln(oppBallCoords);
+        }
+        return oppBallCoords[0] == this.getX() && oppBallCoords[1] == this.getY();
+    }
+
+    void markActive(SDL_Renderer* renderer){
+        this.playerSprite.updateImage(renderer, activeFilePath);
+    }
+    void markInactive(SDL_Renderer* renderer){
+        this.playerSprite.updateImage(renderer,currFilePath);
     }
 }

@@ -168,15 +168,37 @@ class SDLClient
     }
 
     // Updates the positions of the objects on the game board based on the current_server_packet.
-    void updateObjectPositions(ref Player player1, ref Player player2, ref Player player3, 
+    void updateObjectPositions(SDL_Renderer* renderer, ref Player player1, ref Player player2, ref Player player3,
     ref Player player4, ref Husky husky1, ref Husky husky2)
     {
         player1.setPositionFromTileValues(this.current_server_packet.player1Coords);
         player2.setPositionFromTileValues(this.current_server_packet.player2Coords);
+
         player3.setPositionFromTileValues(this.current_server_packet.player3Coords);
         player4.setPositionFromTileValues(this.current_server_packet.player4Coords);
+
         husky1.setPositionFromTileValues(this.current_server_packet.ball1Coords);
         husky2.setPositionFromTileValues(this.current_server_packet.ball2Coords);
+
+        writeln(player1.getX());
+        writeln(player1.getY());
+        writeln(this.current_server_packet.ball2Coords);
+        if (player1.isHoldingOpponentBall(
+            this.current_server_packet.ball2Coords)){
+                writeln("Player 1 is Holding the Opponent Husky");
+                player1.markActive(renderer);
+        } else if (player2.isHoldingOpponentBall(
+        this.current_server_packet.ball2Coords)){
+            player2.markActive(renderer);
+        }
+
+        if (player3.isHoldingOpponentBall(
+        this.current_server_packet.ball1Coords)){
+            player3.markActive(renderer);
+        } else if (player4.isHoldingOpponentBall(
+        this.current_server_packet.ball1Coords)){
+            player4.markActive(renderer);
+        }
 
     }
     void mainApplicationLoop()
@@ -207,12 +229,13 @@ class SDLClient
 
         // TODO - UN-HARDCODE THIS; USE DATA FROM THE SERVER
         // Render 4 characters, 2 for each team
-        Player player1 = Player(renderer, STANDARD_BLUE_SPRITE_PATH, 0, 0, 'A');
-        Player player2 = Player(renderer, STANDARD_BLUE_SPRITE_PATH, 32, 0, 'B');
-        Player player3 = Player(renderer, STANDARD_RED_SPRITE_PATH, 64, 0, 'C');
-        Player player4 = Player(renderer, STANDARD_RED_SPRITE_PATH, 32 * 10, 32 * 6, 'D');
-        Husky husky1 = Husky(renderer, HUSKY_SPRITE_BLUE, 10, 0, 'R');
-        Husky husky2 = Husky(renderer, HUSKY_SPRITE_RED, 10, 24, 'B');
+        Player player1 = Player(renderer, STANDARD_RED_SPRITE_PATH,ACTIVE_RED_SPRITE_PATH, 0, 0, 'A');
+        Player player2 = Player(renderer, STANDARD_RED_SPRITE_PATH,ACTIVE_RED_SPRITE_PATH, 32, 0, 'B');
+        Player player3 = Player(renderer, STANDARD_BLUE_SPRITE_PATH, ACTIVE_BLUE_SPRITE_PATH, 64, 0, 'C');
+        Player player4 = Player(renderer, STANDARD_BLUE_SPRITE_PATH,ACTIVE_BLUE_SPRITE_PATH, 32 * 10, 32 * 6, 'D');
+
+        Husky husky1 = Husky(renderer, HUSKY_SPRITE_RED, 544, 128, 'R');
+        Husky husky2 = Husky(renderer, HUSKY_SPRITE_BLUE, 544, 640, 'B');
 
 
         auto player1Coords = this.current_server_packet.player1Coords;
@@ -222,7 +245,7 @@ class SDLClient
                 writeln(this.current_server_packet.player1Coords);
                 player1Coords = this.current_server_packet.player1Coords;
             }
-            updateObjectPositions(player1, player2, player3, player4, husky1, husky2);
+            updateObjectPositions(renderer, player1, player2, player3, player4, husky1, husky2);
             // Handle events
             while (SDL_PollEvent(&(this.e)) != 0)
             {
