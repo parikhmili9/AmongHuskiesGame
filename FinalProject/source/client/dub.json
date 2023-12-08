@@ -17,5 +17,6 @@
 		}
 	],
 	"targetType": "executable",
-	"targetPath": "./bin"
+	"targetPath": "./bin",
+	"mainSourceFile": "source/app.d"
 }

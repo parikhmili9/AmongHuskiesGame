@@ -267,7 +267,6 @@ class SDLClient
         const string HUSKY_SPRITE_RED = "./assets/red_husky_sprite.bmp";
 
         // describing the tile map
-
         const int TILE_SIZE = 32;
         const int X_TILES = 50;
         const int Y_TILES = 50;
