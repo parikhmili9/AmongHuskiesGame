@@ -43,8 +43,10 @@ jobs:
       # to install some tools that emulate having an actual desktop window to run our program in.
       # 'xvfb ' is one such tool, and you can see how I have set it up below.
       - name: Setup configuration for install
-        run: echo 31 | cat > input.txt && cat input.txt; 
-      - name: build and run tests of client code
-        run: cd ./FinalProject/source/client && dub test 
+        run: echo 31 | cat > input.txt && cat input.txt;
       - name: build and run tests of server code
         run: cd ./FinalProject/source/server && dub test 
+      - name: build and run tests of client code
+        run: cd ./FinalProject/source/server && dub run && cd ./FinalProject/source/client && dub test 
+
+
