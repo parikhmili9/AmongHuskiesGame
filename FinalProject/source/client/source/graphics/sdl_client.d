@@ -40,6 +40,7 @@ class SDLClient
     SDLSupport ret;
     SDL_Window* window;
     SDL_Renderer* renderer;
+    bool is_not_ready = true;
 
     /**
     * The constructor for the SDL_CLient.
@@ -136,8 +137,8 @@ class SDLClient
                 if(temp.message != ""){
                     trim_and_print(temp.message);
                 }
+                this.is_not_ready = false;
                 this.current_server_packet = temp;
-
             }
         }
     }
@@ -267,12 +268,15 @@ class SDLClient
         }
     }
 
-
     /**
     * The game loop.
     */ 
     void mainApplicationLoop()
     {
+        writeln("Waiting for players to join...");
+        while(is_not_ready){
+            continue;
+        }
         // enumerate asset paths
         const string TILEMAP_PATH = "./assets/grid.bmp";
         const string STANDARD_BLUE_SPRITE_PATH = "./assets/light_blue_player_sprites.bmp";
