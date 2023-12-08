@@ -8,6 +8,8 @@
 
 ### Note - to build this software, not 1, but 2 dub projects have been built, the client, and the server
 
+-[Testing notice] When you test the client dub project, please note that the server must be on for the tests to run, as the client depends upon connection to the server.
+
 1. navigate to <code>FinalProject/source/server</code>
 2. run <code>dub run</code>
 3. navigate to <code>FinalProject/source/client</code>
