@@ -25,4 +25,5 @@
 2. Focus on other client's screens to see that they are updated with the main player's position.
 3. Return your focus to the main client that you were initially moving.
 4. Once you cross and pet the blue husky, you will glow with elation and your sprite will turn bright red from orange.
-5. From this point, you can continue testing but know that the 'victory condition' for this game is both players of 1 team touching the husky of the opposing team. Meeting this condition will end the game and also remove any ability to chat. 
+5. From this point, you can continue testing but know that the 'victory condition' for this game is both players of 1 team touching the husky of the opposing team. Meeting this condition will end the game and also remove any ability to chat.
+6. [known bug] If the husky is fully collided into, as opposed to just tapped, it will like you so much that it will follow you
