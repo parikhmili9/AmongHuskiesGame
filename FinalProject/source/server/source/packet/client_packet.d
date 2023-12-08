@@ -1,8 +1,20 @@
+/**
+ * Module: server.source.packet.client_packet
+ * 
+ * Description: This is a module for handling client packets. 
+ * This module defines a structure `ClientPacket` representing a packet sent by a client
+ * and provides serialization functionality.
+ */
 module server.source.packet.client_packet;
 
+// Import
 import core.stdc.string;
 
-// Enables communication by sending a client id and a integer representing the move.
+/**
+ * Description: Structure representing a client packet.
+ * It enables communication by sending a client id and a integer representing the move.
+ * The packet includes a client identifier, a move number, and a message.
+ */
 struct ClientPacket
 {
     char client_id;
@@ -16,7 +28,14 @@ struct ClientPacket
     // Send a message.
     char[80] message;
 
-    // Converts a ClientPacket to a character buffer to be passed to the server.
+    /**
+     * Method: serialize
+     *
+     * Description: This method converts a ClientPacket to a 
+     * character buffer for server communication.
+     *
+     * Returns: A character buffer containing the serialized data.
+     */
     char[ClientPacket.sizeof] serialize()
     {
         char[ClientPacket.sizeof] payload;

@@ -1,5 +1,16 @@
+/**
+ * Module: server.source.model.game_world
+ *
+ * Description: This module defines the GameWorld interface, 
+ * which represents the game world and provides methods to interact with it.
+ */
 module server.source.model.game_world;
 
+/**
+ * Interface: GameWorld
+ *
+ * Description: The GameWorld interface defines methods to interact with the game world.
+ */
 interface GameWorld()
 {
     int getRows();
@@ -17,5 +28,4 @@ interface GameWorld()
     void movePlayerDown(string playerName);
     void pickHusky(string playerName);
     void dropHusky(string playerName, int x, int y);
-
 }

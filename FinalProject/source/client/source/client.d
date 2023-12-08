@@ -1,4 +1,12 @@
+/**
+ * Module: client.source.client
+ *
+ * Description: This module defines a TCP client class that 
+ * connects to a server and sends/receives messages.
+ */
 module client.source.client;
+
+// Import
 import std.socket;
 import std.stdio;
 import core.thread.osthread;
@@ -7,7 +15,11 @@ import client.source.packet.deserialize_server;
 import client.source.packet.client_packet;
 import client.source.deque;
 
-// The purpose of the TCPClient class is to connect to a server and send messages.
+/**
+ * Class: TCPClient
+ *
+ * Description: The purpose of the TCPClient class is to connect to a server and send messages.
+ */
 class TCPClient
 {
     /// The client socket connected to a server
@@ -15,9 +27,16 @@ class TCPClient
 
     char clientId;
     Deque!(Packet) recieved_packets;
-    // Packet[] recieved_packets;
 
-    // Constructor
+    /**
+     * Constructor: this
+     * 
+     * Description: Creates a new instance of the TCPClient class.
+     *
+     * Params:
+     *      host = The IP address of the server to connect to. Default is "localhost".
+     *      port = The port number to connect to. Default is 50001.
+     */
     this(string host = "localhost", ushort port = 50001)
     {
         recieved_packets = new Deque!(Packet);
@@ -27,8 +46,10 @@ class TCPClient
         mSocket = new Socket(AddressFamily.INET, SocketType.STREAM);
 
         writeln(port);
+
         // Socket needs an 'endpoint', so we determine where we are going to connect to.
         mSocket.connect(new InternetAddress(host, port));
+
         writeln("Client conncted to server");
 
         // Our client waits until we receive at least one message confirming that we are connected
@@ -37,6 +58,7 @@ class TCPClient
 
         auto received1 = mSocket.receive(buffer);
         writeln("(client id from server)", buffer);
+
         clientId = buffer[0];
         writeln("Client id is: ", clientId);
         // Spin up the new thread that will just take in data from the server
@@ -44,7 +66,11 @@ class TCPClient
         writeln("Data From the server: ", recieved_packets.size());
     }
 
-    /// Destructor 
+    /**
+     * Destructor: ~this
+     * 
+     * Description: Cleans up resources when the object is no longer in use.
+     */
     ~this()
     {
         // Close the socket
@@ -59,6 +85,11 @@ class TCPClient
     }
 
     // Run the client thread to constantly send data to the server.
+    /**
+     * Method: run
+     *
+     * Description: This method runs the client thread to constantly send data to the server.
+     */
     void run()
     {
         writeln("Preparing to run client");
@@ -98,7 +129,11 @@ class TCPClient
         }
     }
 
-    /// Receive data from the server as it is broadcast out.
+    /**
+     * Method: receiveDataFromServer
+     *
+     * Description: This method receives data from the server as it is broadcast out.
+     */
     void receiveDataFromServer()
     {
         while (true)
@@ -129,6 +164,11 @@ class TCPClient
 
     }
 
+    /**
+     * Method: sendMove
+     *
+     * Description: This method sends a move to the server.
+     */
     void sendMove(ClientPacket info)
     {
         char[ClientPacket.sizeof] buffer;
@@ -140,5 +180,4 @@ class TCPClient
 
         mSocket.send(buffer);
     }
-
 }

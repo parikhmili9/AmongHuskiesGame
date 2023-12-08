@@ -1,7 +1,18 @@
+/**
+ * Module: server.source.packet.packet
+ * 
+ * Description: This module defines the Packet struct, which represents a data packet
+ * containing information about player coordinates, player assignments, ball
+ * coordinates, and a chat message.
+ */
 module server.source.packet.packet;
 
+// Import
 import core.stdc.string;
 
+/**
+ * Description: It represents a data packet containing information about the game state.
+ */
 struct Packet
 {
         int[2] player1Coords;
@@ -17,7 +28,13 @@ struct Packet
         // Message for chatting.
         char[80] message;
 
-        // Serialize packet
+        /**
+        * Method: serialize
+        * 
+        * Description: Serializes the packet into a char array for transmission.
+        *
+        * Returns: A char array containing the serialized packet.
+        */
         char[Packet.sizeof] serialize()
         {
                 char[Packet.sizeof] payload;
@@ -42,7 +59,7 @@ struct Packet
                         ball2Coords.sizeof);
                 memmove(&payload[playerChordsSize + playerAssignment.sizeof + ball1Coords.sizeof + ball2Coords.sizeof],
                         &message, message.sizeof);
+
                 return payload;
         }
-
 }

@@ -117,6 +117,50 @@ class SDLClient
         writeln("Ending application--good bye!");
     }
 
+    /// Writing an independent TCP client loop
+
+    void tcp_client_loop(){
+        self_id = tcp.intitalize_self();
+        writeln("Your Player ID is: ", self_id);
+        // writeln("I am here, size: ", tcp.recieved_packets.size());
+        
+        while(true){
+            Packet temp;
+            while(tcp.recieved_packets.size() != 0){
+            temp = tcp.server_packet_recieved();
+            }
+            if (temp.player1Coords != [-999,-999] && !is_null_packet(temp)){
+                if(temp.message != ""){
+                    trim_and_print(temp.message);
+                }
+                this.current_server_packet = temp;
+                //writeln(this.current_server_packet);
+                //ownerTid.send("HELLO",this.current_server_packet);
+            }
+
+        }
+    }
+
+    void trim_and_print(char[80] message){
+        char[] toPrint;
+        foreach(char c; message){
+            if (c != '\0'){
+                toPrint ~= c;
+            }
+        }
+        writeln(toPrint);
+    }
+
+    bool is_null_packet(Packet p){
+        if(p.player1Coords == [0,0]
+        && p.player2Coords == [0,0]
+        && p.player3Coords == [0,0]
+        && p.player4Coords == [0,0]){
+            return true;
+        }
+        return false;
+    }
+
     /**
     * method called inside of the tcp client via a thread. This method handles providing packets from the
     * server to this sdl_client via the tcp client.
