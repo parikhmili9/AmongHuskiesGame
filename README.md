@@ -22,15 +22,15 @@ https://youtu.be/F0XVOL1zQHM
 
 ## Team
 
-**Team Name**: *Edit this to your official team name*
+**Team Name**: *Team AmongHuskies*
 
 Team member Names:
 
 1. Ryan Looney
-2. *TODO my name is...*
-3. *TODO my name is...*
-4. *TODO my name is...*
-5. *TODO my name is...*
+2. Arjun Ramachandrula
+3. Mili Parikh
+4. Chirag Malhotra
+5. Vishant Mehta
 
 # Team spread sheet 
 
