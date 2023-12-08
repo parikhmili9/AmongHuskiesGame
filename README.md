@@ -3,7 +3,7 @@
 # Final Project! (Among Huskies)
 For this project, we built a game where users compete in 2 teams to pet a husky, competing for its adoration! The game requires 4 players, divided into teams of 2. The game terminates when both players from a single team touch the husky sprite of the opposing team. During the game, users may chat through the terminal as well. The team that pets the husky wins!
 
-- [Testing notice] When you test the client dub project, please note that the server must be on for the tests to run, as the client depends upon connection to the server. For this reason we only test the server code in the ci/cd automation.
+- [Testing notice] When you test the client dub project, please note that the server must be on for the tests to run, as the client depends upon connection to the server. 
 - [known bug] If the husky is fully collided into by a player, as opposed to just tapped, it will like you so much that it will follow you and you will not be able to complete the race for its adoration.
 
 ## Team
