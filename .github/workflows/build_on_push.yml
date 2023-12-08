@@ -47,6 +47,7 @@ jobs:
       - name: build and run tests of server code
         run: cd ./FinalProject/source/server && dub test 
       - name: build and run tests of client code
-        run: cd ./FinalProject/source/server && dub run && cd ./FinalProject/source/client && dub test 
-
+      # run the server in the background before running the client's tests
+        run: cd ./FinalProject/source/server dub run &;
+          cd ./FinalProject/source/client && dub test 
 
