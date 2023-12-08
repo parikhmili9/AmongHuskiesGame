@@ -6,6 +6,9 @@ import bindbc.sdl;
 import client.source.graphics.player.sprite;
 import client.source.packet.client_packet : ClientPacket;
 
+/** 
+* The struct that represents the Player object
+*/
 struct Player
 {
 
@@ -35,11 +38,18 @@ struct Player
         this.player_id = player_id;
     }
 
+
+    /**
+    * Returns the player's X position in pixels
+    */
     int getX()
     {
         return playerSprite.xPos;
     }
 
+    /**
+    * Returns the player's Y position in pixels
+    */
     int getY()
     {
         return playerSprite.yPos;

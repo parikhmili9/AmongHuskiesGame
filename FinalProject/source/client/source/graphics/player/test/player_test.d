@@ -2,7 +2,8 @@ module player_test;
 import std.stdio;
 import client.source.graphics.player.player;
 import client.source.graphics.husky.husky;
-// Test that the player is marked as active when it pets the husky
+
+// Test that the player can tell when the husky is in the same tile
 unittest {
 
     // player takes pixels as starting coordinates, and husky coords come in from the server as tiles.
