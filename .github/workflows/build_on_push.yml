@@ -34,17 +34,10 @@ jobs:
 #      - name: Install SDL2 deb
 #        run: wget http://http.us.debian.org/debian/pool/main/libs/libsdl2/libsdl2-dev_2.0.14+dfsg2-3+deb11u1_amd64.deb && sudo apt install -y ./libsdl2-dev_2.0.14+dfsg2-3+deb11u1_amd64.deb && sudo apt-get -f install -y
      
-      # These next two steps need a little bit more explaining, because as we are finding out
-      # testing graphics applications is really hard!
-      # You learned this when you wrote your GUI applications tests earlier.
-      # First and foremost, make sure your tests terminate at some point, otherwise they will run forever
-      # and we will never finish this test!
-      # Second, since we are running our code on github.com, we do not have a 'window', so we need
-      # to install some tools that emulate having an actual desktop window to run our program in.
-      # 'xvfb ' is one such tool, and you can see how I have set it up below.
+      # See Readme for project; We only run server tests here because running client tests requires
+      # the running of server. We tried to run the server in a background process via this file, but it was not having 
+      # the expected result
       - name: Setup configuration for install
         run: echo 31 | cat > input.txt && cat input.txt;
       - name: build and run tests of server code
         run: cd ./FinalProject/source/server && dub test 
-      - name: run client tests after booting server
-        run: cd ./FinalProject/source/server && dub run & && cd ./FinalProject/source/client && dub test 
