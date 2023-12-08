@@ -79,11 +79,6 @@ class Deque(T) : Container!(T){
         
         // if lengths aren't matching they can't be equal
         if (other.deque.length != this.deque.length) { return false; }
-        
-        // address is the same then they are equal
-        auto addrA = &this;
-        auto addrB = &other;
-        if (addrA == addrB) { return true; }
 
         // element equality check
         for (int i = 0; i < other.deque.length; i++) {

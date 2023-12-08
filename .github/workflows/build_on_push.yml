@@ -33,8 +33,7 @@ jobs:
         run: D_VERSION=$(wget -qO - http://downloads.dlang.org/releases/LATEST) && wget -qO dmd.deb http://downloads.dlang.org/releases/2.x/${D_VERSION}/dmd_${D_VERSION}-0_amd64.deb && sudo apt install -y ./dmd.deb && dmd --version && rm -rf dmd.deb 
 #      - name: Install SDL2 deb
 #        run: wget http://http.us.debian.org/debian/pool/main/libs/libsdl2/libsdl2-dev_2.0.14+dfsg2-3+deb11u1_amd64.deb && sudo apt install -y ./libsdl2-dev_2.0.14+dfsg2-3+deb11u1_amd64.deb && sudo apt-get -f install -y
-      - name: build and run tests of client code
-        run: cd ./FinalProject/source/client && dub test 
+     
       # These next two steps need a little bit more explaining, because as we are finding out
       # testing graphics applications is really hard!
       # You learned this when you wrote your GUI applications tests earlier.
@@ -43,13 +42,9 @@ jobs:
       # Second, since we are running our code on github.com, we do not have a 'window', so we need
       # to install some tools that emulate having an actual desktop window to run our program in.
       # 'xvfb ' is one such tool, and you can see how I have set it up below.
-      - name: build and run tests of server code
-        run: cd ./FinalProject/source/server && dub test 
       - name: Setup configuration for install
         run: echo 31 | cat > input.txt && cat input.txt; 
-        #      - name: Setup headless x11 window
-        #        run: sudo apt-get install -q -y --force-yes xvfb xorg xauth openbox  # xorg is needed to set DISPLAY variable later
-        #- name: Run graphical application tests in headless mode
-        #        run: cd ./labs/ci && xvfb-run --server-args="-screen 0 1024x768x24" ./ci
-      - name: Run non-graphical application tests
-        run: cd ./labs/ci && ./ci
+      - name: build and run tests of client code
+        run: cd ./FinalProject/source/client && dub test 
+      - name: build and run tests of server code
+        run: cd ./FinalProject/source/server && dub test 
