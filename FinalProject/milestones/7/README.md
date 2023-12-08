@@ -25,8 +25,4 @@
 2. Focus on other client's screens to see that they are updated with the main player's position.
 3. Return your focus to the main client that you were initially moving.
 4. Once you cross and pet the blue husky, you will glow with elation and your sprite will turn bright red from orange.
-5. Navigate to your red teammate's client screen - let's see if we can win this game.
-6. Navigate this client to the blue husky and move over it again - the program will now end
-7. The idea here is that the characters can <b>share</b> the joy of petting the husky
-8. If you re-run the program as the blue clients, you will see that the red husky will follow the blue players, and they can share in the joy of their husky companion forever
-
+5. From this point, you can continue testing but know that the 'victory condition' for this game is both players of 1 team touching the husky of the opposing team. Meeting this condition will end the game and also remove any ability to chat. 
