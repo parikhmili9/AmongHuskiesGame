@@ -143,6 +143,12 @@ class SDLClient
         }
     }
 
+    /** 
+     * It takes in the message, removes all extra characters and prints the trimmed
+     * string to the terminal chat.
+     * Params: 
+     *   p = char array of message
+     */
     void trim_and_print(char[200] message){
         string toPrint;
         foreach(char c; message){
@@ -151,7 +157,9 @@ class SDLClient
                 toPrint ~= c;
             }
         }
-        writeln(toPrint);
+        if(!toPrint.length == 0){
+            writeln(toPrint);
+        }
     }
 
     /**

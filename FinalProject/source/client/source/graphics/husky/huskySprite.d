@@ -4,7 +4,9 @@ import std.stdio;
 // Load the SDL2 library
 import bindbc.sdl;
 
-/// Sprite that holds a texture and position
+/** 
+ * Sprite that holds a texture and position for husky.
+ */
 struct HuskySprite
 {
 	int xPos;

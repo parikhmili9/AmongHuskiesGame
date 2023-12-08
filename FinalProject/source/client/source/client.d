@@ -6,7 +6,6 @@
  */
 module client.source.client;
 
-// Import
 import std.socket;
 import std.stdio;
 import core.thread.osthread;
@@ -56,10 +55,9 @@ class TCPClient
         // This will be something like "Hello friend\0"
         char[80] buffer;
 
-        auto received1 = mSocket.receive(buffer);
+        mSocket.receive(buffer);
 
         clientId = buffer[0];
-        //writeln("Client id is: ", clientId);
         // Spin up the new thread that will just take in data from the server
         new Thread({ receiveDataFromServer(); }).start();
     }
@@ -75,9 +73,9 @@ class TCPClient
         mSocket.close();
     }
 
-    /// For now this works but the server needs to send 
-    /// The spawn location to the client as well for all the players
-    /// Its better to do that 
+    /** 
+     * Getter for client Id.
+     */
     char intitalize_self(){
         return clientId;
     }
@@ -96,11 +94,6 @@ class TCPClient
         // Choose '80' bytes of information to be sent/received
 
         bool clientRunning = true;
-
-        // // Spin up the new thread that will just take in data from the server
-        // new Thread({ receiveDataFromServer(); }).start();
-
-        // sendMove();
 
         write(">");
         while (clientRunning)
@@ -169,11 +162,8 @@ class TCPClient
     void sendMove(ClientPacket info)
     {
         char[ClientPacket.sizeof] buffer;
-        /// Remove the line below ---------------
 
         buffer = info.serialize();
-        /// ------------------------
-        /// Some logic comes here
 
         mSocket.send(buffer);
     }

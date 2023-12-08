@@ -6,7 +6,6 @@
  */
 module client.source.packet.deserialize_server;
 
-// Import
 import std.stdio;
 import client.source.packet.packet;
 

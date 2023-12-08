@@ -39,7 +39,6 @@ interface Container(T){
 /**
     A Deque is a double-ended queue in which we can push and
     pop elements.
-
     Implements the Container interface.
 
 */

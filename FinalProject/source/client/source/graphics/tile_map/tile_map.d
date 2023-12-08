@@ -5,7 +5,10 @@ import std.stdio;
 import client.source.graphics.tile_map.tile_set : TileSet;
 import bindbc.sdl;
 
-// DrawableTilemap is responsible for drawing the world
+
+/** 
+ * DrawableTilemap is responsible for drawing the world
+ */
 struct TileMap
 {
     const int MAP_X_SIZE = 50;

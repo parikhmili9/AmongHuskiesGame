@@ -5,7 +5,6 @@
  */
 module server.source.packet.deserialize_client;
 
-// Import
 import server.source.packet.client_packet;
 
 /**

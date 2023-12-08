@@ -6,6 +6,9 @@ import bindbc.sdl;
 import client.source.graphics.husky.husky_sprite;
 import client.source.packet.client_packet : ClientPacket;
 
+/** 
+ * Represents the husky on the graphics application.
+ */
 struct Husky
 {
 

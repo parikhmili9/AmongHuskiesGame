@@ -15,4 +15,5 @@ tilemap-test-*
 *.obj
 *.lst
 *.DS_Store
+*.dll
 bin/

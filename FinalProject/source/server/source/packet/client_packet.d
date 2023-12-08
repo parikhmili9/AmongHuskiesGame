@@ -7,7 +7,6 @@
  */
 module server.source.packet.client_packet;
 
-// Import
 import core.stdc.string;
 
 /**

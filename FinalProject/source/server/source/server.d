@@ -141,9 +141,13 @@ class TCPServer
         }
     }
 
-    //Sends packets to all clients that are currently connected
-    // Function to spawn from a new thread for the client.
-    // The purpose is to listen for data sent from the client and then rebroadcast that information to all other clients.
+    /** 
+     * Sends packets to all clients that are currently connected
+     * Function to spawn from a new thread for the client.
+     * The purpose is to listen for data sent from the client and then rebroadcast that information to all other clients.
+     * Params:
+     *   initialPacket = 
+     */
     void sendPacketToAllClients(char[Packet.sizeof] initialPacket){
         foreach (idx, serverToClient; mClientsConnectedToServer)
         {

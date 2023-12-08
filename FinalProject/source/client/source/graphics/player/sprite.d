@@ -4,7 +4,9 @@ import std.stdio;
 // Load the SDL2 library
 import bindbc.sdl;
 
-/// Store state for sprites and very simple animation
+/** 
+ * Store state for sprites and very simple animation
+ */
 enum STATE
 {
 	IDLE,
@@ -14,7 +16,10 @@ enum STATE
 	WALK_UP
 };
 
-/// Sprite that holds a texture and position
+ 
+/** 
+ * Sprite that holds a texture and position
+ */
 struct Sprite
 {
 
