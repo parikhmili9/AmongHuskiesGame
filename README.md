@@ -1,7 +1,7 @@
 <img src="./media/banner.png" alt="banner" />
 
 # Final Project! (Among Huskies)
-For this project, we built a world where users can interact in a game-like application. The premise is that 2 teams are racing to pet a husky, competing for its adoration! The game requires 4 players, divided into teams of 2. The game terminates when both players from 1 team touch the husky sprite of the opposing team. During the game, users may chat through the terminal as well. The team that pets the husky wins!
+For this project, we built a game where users compete in 2 teams to pet a husky, competing for its adoration! The game requires 4 players, divided into teams of 2. The game terminates when both players from a single team touch the husky sprite of the opposing team. During the game, users may chat through the terminal as well. The team that pets the husky wins!
 
 ## Team
 
