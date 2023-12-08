@@ -46,8 +46,8 @@ jobs:
         run: echo 31 | cat > input.txt && cat input.txt;
       - name: build and run tests of server code
         run: cd ./FinalProject/source/server && dub test 
-      - name: build and run tests of client code
       # run the server in the background before running the client's tests
-        run: cd ./FinalProject/source/server dub run &;
-          cd ./FinalProject/source/client && dub test 
-
+      - name: run server in background process
+        run: cd ./FinalProject/source/server && dub run &
+      - name: run client tests after booting server
+        run: cd ./FinalProject/source/client && dub test 
