@@ -1,4 +1,4 @@
-module server.source.test.test;
+module server.source.test.network_test;
 
 import server.source.packet.packet;
 import server.source.packet.client_packet;

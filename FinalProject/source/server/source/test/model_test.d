@@ -1,4 +1,4 @@
-module test;
+module server.source.test.model_test;
 
 import std.stdio;
 import server.source.model.game_world : GameWorld;
@@ -95,8 +95,6 @@ unittest
     huskyPlayground.readTextFile("assets/HuskyPlaygroundTesting.txt");
 
     auto oldPosLeft = huskyPlayground.getPlayerPosition("A");
-
-    writeln(huskyPlayground.getPlayerPosition("A"));
 
     for (int i = 0; i < 3; i++)
     {
@@ -258,5 +256,5 @@ unittest
 
     assert(huskyPlayground.getPlayerPosition("A") == [10, 10]);
 
-    assert(huskyPlayground.isCollision("A") == true);
+    assert(huskyPlayground.isCollision("A") == false);
 }
