@@ -121,15 +121,12 @@ struct Player
             playerSprite.xPos += TILE_TO_PIXEL;
             playerSprite.mState = STATE.WALK_RIGHT;
         } else if (targetX < this.getX()){
-            writeln("MOVING PLAYER TO LEFT: ", targetX, targetY);
             playerSprite.xPos -= TILE_TO_PIXEL;
             playerSprite.mState = STATE.WALK_LEFT;
         } else if (targetY < this.getY()){
-            writeln("MOVING PLAYER UP: ", targetX, targetY);
             playerSprite.yPos -= TILE_TO_PIXEL;
             playerSprite.mState = STATE.WALK_UP;
         } else if (targetY > this.getY()){
-            writeln("MOVING PLAYER DOWN: ", targetX, targetY);
             playerSprite.yPos += TILE_TO_PIXEL;
             playerSprite.mState = STATE.WALK_DOWN;
         } else {
@@ -149,9 +146,6 @@ struct Player
         auto ballX = oppBallCoords[0] * TILE_TO_PIXEL;
         auto ballY = oppBallCoords[1] * TILE_TO_PIXEL;
         if(abs(this.getX() - ballX) <= TILE_TO_PIXEL &&  abs(this.getY() - ballY) <= TILE_TO_PIXEL){
-            writeln(this.getX());
-            writeln(this.getY());
-            writeln(oppBallCoords);
             return true;
         }
         return false;

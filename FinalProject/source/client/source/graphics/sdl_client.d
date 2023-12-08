@@ -351,6 +351,7 @@ class SDLClient
                 SDL_RenderPresent(renderer);
             }
         }
+        scope(exit) SDL_DestroyWindow(window);
         scope(exit) SDL_Quit();
     }
 }

@@ -40,7 +40,6 @@ struct Sprite
 	{
 		// Load the bitmap surface
 		SDL_Surface* myTestImage = SDL_LoadBMP(filepath.ptr);
-		writeln(myTestImage);
 
 		// Create a texture from the surface
 		mTexture = SDL_CreateTextureFromSurface(renderer, myTestImage);
