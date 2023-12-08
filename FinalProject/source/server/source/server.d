@@ -120,21 +120,17 @@ class TCPServer
                     playerListDup.popFront();
                     ubyte[] data_clientIdToSend = [cast(ubyte) clientIdToSend];
                     newClientSocket.send(data_clientIdToSend);
-                    writeln("Sent to client: ", clientIdToSend);
                 }
                 else
                 {
                     char specId = '$';
                     ubyte[] data_clientIdToSendForSpec = [cast(ubyte) specId];
                     newClientSocket.send(data_clientIdToSendForSpec);
-                    write("Send to spectator clients: ", specId);
                 }
 
             if(mClientsConnectedToServer.length >= 4){
                 char[Packet.sizeof] initialPacket = initialPacketToClients();
                 sendPacketToAllClients(initialPacket);
-                // newClientSocket.send(initialPacketToClients());
-                //writeln("Initial packet send to clients");
             }
             // Now we'll spawn a new thread for the client that
             // has recently joined.
@@ -186,7 +182,6 @@ class TCPServer
                     writeln("Client disconnected");
                     break;
                 }
-                writeln("Received some data (bytes): ", got);
 
                 // Store data that we receive in our server.
                 // We append the buffer to the end of our received data queue. Dlang doesn't have queues
@@ -207,12 +202,8 @@ class TCPServer
                     ClientPacket temp =  deserialize(buffer);
                     client_moves.push_back(temp);
 
-                    writeln("Got this from client:");
-                    writeln(buffer);
-
                     /// After we receive a single message, we'll just 
                     /// immediately broadcast out to all clients some data.
-                    // broadcastToAllClients();
 
                     while(client_moves.size != 0){
                         ClientPacket move = client_moves.pop_front();
@@ -312,7 +303,6 @@ class TCPServer
     char[Packet.sizeof] initialPacketToClients()
     {
         int[2][4] pCoords = h.getUpdatedPlayerLocations();
-        writeln(pCoords);
         int[2][2] bCoords = h.getBallCoords();
         char[4] playerChar = h.getPlayerNames();
         char[80] msg = '\0';
@@ -339,35 +329,6 @@ class TCPServer
     }
 
     /**
-    * Method: broadcastToAllClients
-    *
-    * Description: This is a method that takes out the server data 
-    * from the list and process it.
-    */
-    void broadcastToAllClients()
-    {
-        char[Packet.sizeof] send;
-
-        /// Processes each data as soon as it sees it and if there's a queue,
-        /// The mcurrentMessageToSend takes the one that came first and processes it 
-        /// Before processing the latest one. 
-        writeln("Broadcasting to :", mClientsConnectedToServer.length);
-        foreach (idx, serverToClient; mClientsConnectedToServer)
-        {
-            // Send whatever the latest data was to all the clients.
-            while (mCurrentMessageToSend[idx] <= mServerData.length - 1)
-            {
-                char[ClientPacket.sizeof] msg = mServerData[mCurrentMessageToSend[idx]];
-                send = checkValid(deserialize(msg));
-                writeln("Sending this");
-                writeln(send);
-                serverToClient.send(send);
-                mCurrentMessageToSend[idx]++;
-            }
-        }
-    }
-
-    /**
     * Method: checkValid
     *
     * Description: Checks the validity of a ClientPacket and performs corresponding actions.
@@ -384,9 +345,7 @@ class TCPServer
     {
         char[Packet.sizeof] sen;
         char clientId = data.client_id;
-        writeln("Check valid (client_id)", clientId);
         int command = data.move_num;
-        writeln("Check valid (command)", command);
         char[80] msg = data.message;
 
         string playerName = "";

@@ -57,13 +57,11 @@ class TCPClient
         char[80] buffer;
 
         auto received1 = mSocket.receive(buffer);
-        writeln("(client id from server)", buffer);
 
         clientId = buffer[0];
-        writeln("Client id is: ", clientId);
+        //writeln("Client id is: ", clientId);
         // Spin up the new thread that will just take in data from the server
         new Thread({ receiveDataFromServer(); }).start();
-        writeln("Data From the server: ", recieved_packets.size());
     }
 
     /**
@@ -103,7 +101,6 @@ class TCPClient
         // new Thread({ receiveDataFromServer(); }).start();
 
         // sendMove();
-        writeln("Packet sent");
 
         write(">");
         while (clientRunning)
