@@ -1,36 +1,21 @@
 <img src="./media/banner.png" alt="banner" />
 
-# Final Project!
+# Final Project! (Among Huskies)
+For this project, we built a game where users compete in 2 teams to pet a husky, competing for its adoration! The game requires 4 players, divided into teams of 2. The game terminates when both players from a single team touch the husky sprite of the opposing team. During the game, users may chat through the terminal as well. The team that pets the husky wins!
 
-## The Final Project Repository!
-
-Welcome to the final project repository!  
-
-Here is a welcome video showing the repoisory organization--be sure to read carefully through the instructions (Consuming a large spec and breaking it down is part of engineering!).
-
-<a href="https://youtu.be/F0XVOL1zQHM">
-<img src="./media/FinalProject.png" alt="Click for final project video" width="300">
-</a>
-
-https://youtu.be/F0XVOL1zQHM
-
-
-## Repository Organization 
-
-1. There are no more individual assignments.
-2. You will complete your final project in the [final project directory](./FinalProject). The organization is partially up to you on the file structure and organization, just make sure you organize it logically and against any requirements.
+- [known bug] If the husky is fully collided into by a player, as opposed to just tapped, it will like you so much that it will follow you and you will not be able to complete the race for its adoration.
 
 ## Team
 
-**Team Name**: *Edit this to your official team name*
+**Team Name**: *Team AmongHuskies*
 
 Team member Names:
 
 1. Ryan Looney
-2. *TODO my name is...*
-3. *TODO my name is...*
-4. *TODO my name is...*
-5. *TODO my name is...*
+2. Arjun Ramachandrula
+3. Mili Parikh
+4. Chirag Malhotra
+5. Vishant Mehta
 
 # Team spread sheet 
 
