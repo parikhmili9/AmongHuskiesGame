@@ -16,7 +16,7 @@
 1. navigate to <code>FinalProject/source/server</code>
 2. run <code>dub run</code>
 3. navigate to <code>FinalProject/source/client</code>
-4. RUN 4 INSTANCES OF THIS CLIENT (critical for the program to work, otherwise the graphical application will not start)
+4. use <code>dub run</code> to RUN 4 INSTANCES OF THIS CLIENT (critical for the program to work, otherwise the graphical application will not start)
 	- This will start the main graphical application
 5. To use the chat feature: In any client's terminal (spectator or player), writing text into the terminal and hitting <code>Enter</code> will broadcast that text to all other clients
 
