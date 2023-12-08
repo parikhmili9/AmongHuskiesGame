@@ -1,24 +1,7 @@
 <img src="./media/banner.png" alt="banner" />
 
-# Final Project!
-
-## The Final Project Repository!
-
-Welcome to the final project repository!  
-
-Here is a welcome video showing the repoisory organization--be sure to read carefully through the instructions (Consuming a large spec and breaking it down is part of engineering!).
-
-<a href="https://youtu.be/F0XVOL1zQHM">
-<img src="./media/FinalProject.png" alt="Click for final project video" width="300">
-</a>
-
-https://youtu.be/F0XVOL1zQHM
-
-
-## Repository Organization 
-
-1. There are no more individual assignments.
-2. You will complete your final project in the [final project directory](./FinalProject). The organization is partially up to you on the file structure and organization, just make sure you organize it logically and against any requirements.
+# Final Project! (Among Huskies)
+For this project, we built a world where users can interact in a game-like application. The game requires 4 players, divided into teams of 2. The game terminates when both players from 1 team touch the husky sprite of the opposing team. The team that meets this condition wins!
 
 ## Team
 
