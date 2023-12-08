@@ -33,8 +33,6 @@ jobs:
         run: D_VERSION=$(wget -qO - http://downloads.dlang.org/releases/LATEST) && wget -qO dmd.deb http://downloads.dlang.org/releases/2.x/${D_VERSION}/dmd_${D_VERSION}-0_amd64.deb && sudo apt install -y ./dmd.deb && dmd --version && rm -rf dmd.deb 
 #      - name: Install SDL2 deb
 #        run: wget http://http.us.debian.org/debian/pool/main/libs/libsdl2/libsdl2-dev_2.0.14+dfsg2-3+deb11u1_amd64.deb && sudo apt install -y ./libsdl2-dev_2.0.14+dfsg2-3+deb11u1_amd64.deb && sudo apt-get -f install -y
-      - name: build and run tests of project code
-        run: cd ./labs/ci && dub test 
       # These next two steps need a little bit more explaining, because as we are finding out
       # testing graphics applications is really hard!
       # You learned this when you wrote your GUI applications tests earlier.
@@ -49,5 +47,11 @@ jobs:
         #        run: sudo apt-get install -q -y --force-yes xvfb xorg xauth openbox  # xorg is needed to set DISPLAY variable later
         #- name: Run graphical application tests in headless mode
         #        run: cd ./labs/ci && xvfb-run --server-args="-screen 0 1024x768x24" ./ci
-      - name: Run non-graphical application tests
-        run: cd ./labs/ci && ./ci
+     
+      # See Readme for project; We only run server tests here because running client tests requires
+      # the running of server. We tried to run the server in a background process via this file, but it was not having 
+      # the expected result
+      - name: Setup configuration for install
+        run: echo 31 | cat > input.txt && cat input.txt;
+      - name: build and run tests of server code
+        run: cd ./FinalProject/source/server && dub test 
