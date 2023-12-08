@@ -1,7 +1,7 @@
 <img src="./media/banner.png" alt="banner" />
 
 # Final Project! (Among Huskies)
-For this project, we built a world where users can interact in a game-like application. The game requires 4 players, divided into teams of 2. The game terminates when both players from 1 team touch the husky sprite of the opposing team. The team that meets this condition wins!
+For this project, we built a world where users can interact in a game-like application. The game requires 4 players, divided into teams of 2. The game terminates when both players from 1 team touch the husky sprite of the opposing team. During the game, users may chat through the terminal as well. The team that meets this condition wins!
 
 ## Team
 
