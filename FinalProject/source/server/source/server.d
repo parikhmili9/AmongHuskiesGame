@@ -16,6 +16,8 @@ import server.source.packet.packet;
 import server.source.packet.client_packet;
 import server.source.packet.deserialize_client;
 import server.source.model.husky_playground : HuskyPlayGround;
+import server.source.deque;
+
 
 /**
  * Class: TCPServer
@@ -31,6 +33,7 @@ class TCPServer
     char[] playerListDup;
     Packet serverPacket;
 
+    auto client_moves = new Deque!(ClientPacket);
     /// The listening socket is responsible for handling new client connections.
     Socket mListeningSocket;
 
@@ -111,25 +114,30 @@ class TCPServer
             writeln("Friends on server = ", mClientsConnectedToServer.length);
 
             char clientIdToSend;
-            if (!playerListDup.empty)
-            {
-                clientIdToSend = playerListDup[0];
-                playerListDup.popFront();
-                ubyte[] data_clientIdToSend = [cast(ubyte) clientIdToSend];
-                newClientSocket.send(data_clientIdToSend);
-                writeln("Sent to client: ", clientIdToSend);
-            }
-            else
-            {
-                char specId = '$';
-                ubyte[] data_clientIdToSendForSpec = [cast(ubyte) specId];
-                newClientSocket.send(data_clientIdToSendForSpec);
-                write("Send to spectator clients: ", specId);
-            }
+                if (!playerListDup.empty)
+                {
+                    clientIdToSend = playerListDup[0];
+                    playerListDup.popFront();
+                    ubyte[] data_clientIdToSend = [cast(ubyte) clientIdToSend];
+                    newClientSocket.send(data_clientIdToSend);
+                    writeln("Sent to client: ", clientIdToSend);
+                }
+                else
+                {
+                    char specId = '$';
+                    ubyte[] data_clientIdToSendForSpec = [cast(ubyte) specId];
+                    newClientSocket.send(data_clientIdToSendForSpec);
+                    write("Send to spectator clients: ", specId);
+                }
 
-            newClientSocket.send(initialPacketToClients());
-            writeln("Initial packet send to clients");
-
+            if(mClientsConnectedToServer.length >= 4){
+                char[Packet.sizeof] initialPacket = initialPacketToClients();
+                sendPacketToAllClients(initialPacket);
+                // newClientSocket.send(initialPacketToClients());
+                //writeln("Initial packet send to clients");
+            }
+            // Now we'll spawn a new thread for the client that
+            // has recently joined.
             // Spawn a new thread for the client that has recently joined.
             // The server will now be running multiple threads and
             // handling a chat here with clients.
@@ -137,6 +145,17 @@ class TCPServer
         }
     }
 
+    //Sends packets to all clients that are currently connected
+    // Function to spawn from a new thread for the client.
+    // The purpose is to listen for data sent from the client and then rebroadcast that information to all other clients.
+    void sendPacketToAllClients(char[Packet.sizeof] initialPacket){
+        foreach (idx, serverToClient; mClientsConnectedToServer)
+        {
+            serverToClient.send(initialPacket);
+        }
+    }
+
+    
     /**
     * Method: clientLoop
     *
@@ -183,12 +202,23 @@ class TCPServer
                 else
                 {
                     mServerData ~= buffer;
+
+                    /// The new code with deque.
+                    ClientPacket temp =  deserialize(buffer);
+                    client_moves.push_back(temp);
+
                     writeln("Got this from client:");
                     writeln(buffer);
 
                     /// After we receive a single message, we'll just 
                     /// immediately broadcast out to all clients some data.
-                    broadcastToAllClients();
+                    // broadcastToAllClients();
+
+                    while(client_moves.size != 0){
+                        ClientPacket move = client_moves.pop_front();
+                        char[Packet.sizeof] save =  checkValid(move);
+                        sendPacketToAllClients(save);
+                    }
                 }
             }
         }
@@ -354,7 +384,9 @@ class TCPServer
     {
         char[Packet.sizeof] sen;
         char clientId = data.client_id;
+        writeln("Check valid (client_id)", clientId);
         int command = data.move_num;
+        writeln("Check valid (command)", command);
         char[80] msg = data.message;
 
         string playerName = "";

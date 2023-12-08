@@ -10,9 +10,10 @@ module client.source.client;
 import std.socket;
 import std.stdio;
 import core.thread.osthread;
-import client.source.packet.packet;
+import client.source.packet.packet: Packet;
 import client.source.packet.deserialize_server;
 import client.source.packet.client_packet;
+import client.source.deque;
 
 /**
  * Class: TCPClient
@@ -21,6 +22,12 @@ import client.source.packet.client_packet;
  */
 class TCPClient
 {
+    /// The client socket connected to a server
+    Socket mSocket;
+
+    char clientId;
+    Deque!(Packet) recieved_packets;
+
     /**
      * Constructor: this
      * 
@@ -32,6 +39,7 @@ class TCPClient
      */
     this(string host = "localhost", ushort port = 50001)
     {
+        recieved_packets = new Deque!(Packet);
         writeln("Starting client...attempt to create socket");
 
         // Create a socket for connecting to a server
@@ -53,6 +61,9 @@ class TCPClient
 
         clientId = buffer[0];
         writeln("Client id is: ", clientId);
+        // Spin up the new thread that will just take in data from the server
+        new Thread({ receiveDataFromServer(); }).start();
+        writeln("Data From the server: ", recieved_packets.size());
     }
 
     /**
@@ -66,6 +77,14 @@ class TCPClient
         mSocket.close();
     }
 
+    /// For now this works but the server needs to send 
+    /// The spawn location to the client as well for all the players
+    /// Its better to do that 
+    char intitalize_self(){
+        return clientId;
+    }
+
+    // Run the client thread to constantly send data to the server.
     /**
      * Method: run
      *
@@ -80,8 +99,8 @@ class TCPClient
 
         bool clientRunning = true;
 
-        // Spin up the new thread that will just take in data from the server
-        new Thread({ receiveDataFromServer(); }).start();
+        // // Spin up the new thread that will just take in data from the server
+        // new Thread({ receiveDataFromServer(); }).start();
 
         // sendMove();
         writeln("Packet sent");
@@ -95,9 +114,13 @@ class TCPClient
 
                 // Send the packet of information
                 char[80] fixedLine;
+                fixedLine[0] = clientId;
+                fixedLine[1] = ' ';
+                fixedLine[2] = ':';
+                fixedLine[3] =  ' ';
                 foreach (i, charElement; line)
                 {
-                    fixedLine[i] = charElement;
+                    fixedLine[i+4] = charElement;
                 }
 
                 ClientPacket p = ClientPacket('~', -1, fixedLine);
@@ -122,10 +145,23 @@ class TCPClient
             if (fromServer.length > 0)
             {
                 Packet serverData = deserialize(buffer);
-                updateGameState(serverData);
-                writeln("(from server)>", serverData.message);
+                recieved_packets.push_back(serverData);
             }
         }
+    }
+
+    Packet server_packet_recieved()
+    {
+        Packet toBeSent;
+        /// Update add the new state to the list. 
+        if(recieved_packets.size() == 0){
+            toBeSent.player1Coords = [-999,-999];
+            return toBeSent;
+        }
+        toBeSent = recieved_packets.pop_front();
+
+        return toBeSent;
+
     }
 
     /**
@@ -133,22 +169,15 @@ class TCPClient
      *
      * Description: This method sends a move to the server.
      */
-    void sendMove()
+    void sendMove(ClientPacket info)
     {
         char[ClientPacket.sizeof] buffer;
         /// Remove the line below ---------------
 
-        ClientPacket pac;
-        pac.client_id = 'A';
-        pac.move_num = 2;
-        buffer = pac.serialize();
+        buffer = info.serialize();
         /// ------------------------
         /// Some logic comes here
 
         mSocket.send(buffer);
     }
-    /// The client socket connected to a server
-    Socket mSocket;
-
-    char clientId;
 }

@@ -1,14 +1,8 @@
 // Import
-import client.source.client : TCPClient;
+import source.graphics.sdl_client;
 
-/**
- * This function creates an instance of TCPClient and starts it.
- */
 void main()
 {
-	// Create an instance of TCPClient
-	TCPClient client = new TCPClient();
-
-	// Run the client
-	client.run();
+	SDLClient client = new SDLClient();
+	client.mainApplicationLoop();
 }

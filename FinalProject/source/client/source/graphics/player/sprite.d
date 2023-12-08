@@ -1,4 +1,5 @@
 module client.source.graphics.player.sprite;
+import std.stdio;
 
 // Load the SDL2 library
 import bindbc.sdl;
@@ -25,24 +26,46 @@ struct Sprite
 	SDL_Rect mRectangle;
 	SDL_Texture* mTexture;
 
-	this(SDL_Renderer* renderer, string filepath, int startX, int startY)
+	/**
+	* Constructor for the husky sprite class.
+	*
+	* Params:
+	*   - renderer: SDL renderer for rendering graphics.
+	*   - filepath: Filepath to the sprite image.
+	*   - startX: Initial X coordinate in pixels.
+	*   - startY: Initial Y coordinate in pixels.
+	*   - spritePixelSize: Optional parameter, size of the sprite in pixels (default: 64).
+	*/
+	this(SDL_Renderer* renderer, string filepath, int startX, int startY, int spritePixelSize=64)
 	{
 		// Load the bitmap surface
 		SDL_Surface* myTestImage = SDL_LoadBMP(filepath.ptr);
+
 		// Create a texture from the surface
 		mTexture = SDL_CreateTextureFromSurface(renderer, myTestImage);
 		this.direction = 0;
+
 		// Done with the bitmap surface pixels after we create the texture, we have
 		// effectively updated memory to GPU texture.
 		SDL_FreeSurface(myTestImage);
 
-		// Rectangle is where we will represent the shape
-		mRectangle.x = startX;
-		mRectangle.y = startY;
-		mRectangle.w = 64;
-		mRectangle.h = 64;
+		// Setting the sprite's starting location
+		this.xPos = startX;
+		this.yPos = startY;
+		mRectangle.x = this.xPos;
+		mRectangle.y = this.yPos;
+
+		// setting the sprite's size
+		mRectangle.w = spritePixelSize;
+		mRectangle.h = spritePixelSize;
 	}
 
+	/**
+	* Renders the sprite to the screen.
+	*
+	* Params:
+	*   - renderer: SDL renderer for rendering graphics.
+	*/
 	void render(SDL_Renderer* renderer)
 	{
 
@@ -71,6 +94,7 @@ struct Sprite
 		selection.w = 64;
 		selection.h = 64;
 
+		// Location on the tilemap that the sprite will be rendered
 		mRectangle.x = xPos;
 		mRectangle.y = yPos;
 
@@ -84,5 +108,25 @@ struct Sprite
 				mFrame = 0;
 			}
 		}
+	}
+
+	/**
+	* Renders the sprite to the screen.
+	*
+	* Params:
+	*   - renderer: SDL renderer for rendering graphics.
+	*   - filepath: the filepath to this sprite.
+	*/
+	void updateImage(SDL_Renderer* renderer, string filepath){
+		SDL_Surface* myTestImage = SDL_LoadBMP(filepath.ptr);
+		writeln(myTestImage);
+
+		// Create a texture from the surface
+		mTexture = SDL_CreateTextureFromSurface(renderer, myTestImage);
+		this.direction = 0;
+
+		// Done with the bitmap surface pixels after we create the texture, we have
+		// effectively updated memory to GPU texture.
+		SDL_FreeSurface(myTestImage);
 	}
 }
