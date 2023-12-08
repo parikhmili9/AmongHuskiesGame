@@ -231,7 +231,6 @@ class SDLClient
 
         if (player1.isHoldingOpponentBall(
             this.current_server_packet.ball2Coords)){
-                writeln("Player 1 is Holding the Opponent Husky");
                 player1.markActive(renderer);
                 player1Activated = true;
         } else if (player2.isHoldingOpponentBall(
