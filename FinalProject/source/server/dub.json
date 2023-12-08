@@ -1,20 +1,18 @@
 {
-	"authors": [
-		"AmongHuskies"
-	],
-	"copyright": "Copyright © 2023, AmongHuskies",
-	"description": "Server Code for Final Project",
-	"license": "proprietary",
-	"name": "server",
-	"configurations": [
-		{
-			"name": "executable", 
-			"dependencies": {
-				"unit-threaded": "~>2.1.2"
-			}
-			
-		}
-	],
-	"targetType": "executable",
-	"targetPath": "./bin"
+  "authors": ["AmongHuskies"],
+  "copyright": "Copyright © 2023, AmongHuskies",
+  "description": "Server Code for Final Project",
+  "license": "proprietary",
+  "name": "server",
+  "configurations": [
+    {
+      "name": "executable",
+      "dependencies": {
+        "unit-threaded": "~>2.1.2"
+      }
+    }
+  ],
+  "targetType": "executable",
+  "targetPath": "./bin",
+  "mainSourceFile": "source/app.d"
 }
